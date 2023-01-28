@@ -1,6 +1,5 @@
-import DocCardList from '@theme/DocCardList';
-import {useCurrentSidebarCategory} from '@docusaurus/theme-common';
+Importer DocCardList depuis '@theme/DocCardList'; importer {useCurrentSidebarCategory} depuis '@docusaurus/theme-common';
 
-# Features
+# Fonctionnalités
 
 <DocCardList items={useCurrentSidebarCategory().items}/>
