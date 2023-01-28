@@ -4,18 +4,18 @@ import TabItem from '@theme/TabItem'
 # Selenium
 
 :::info Example Application
-This [Selenium][] guide expects you to have already gone through the [example Application setup][] to follow step-by-step. The general information may still be helpful otherwise.
+この [Selenium][] ガイドでは、 [アプリケーションの設定例][] ステップバイステップを実行していることを期待しています。 そうでなければ一般的な情報はまだ役に立つかもしれません。
 :::
 
-This WebDriver testing example will use [Selenium][] and a popular Node.js testing suite. You are expected to already have Node.js installed, along with `npm` or `yarn` although the [finished example project][] uses `yarn`.
+このWebDriverテストの例では、 [Selenium][] と一般的なNode.jsテストスイートを使用します。 すでに ノードを持っていることが必要です。 sがインストールされました 完成したプロジェクト `` と `yarn` と一緒に [npm][] または `yarn` を使用します。
 
-## Create a Directory for the Tests
+## テスト用のディレクトリを作成
 
-Let's create a space to write these tests in our project. We will be using a nested directory for this example project as we will later also go over other frameworks, but typically you will only need to use one. Create the directory we will use with `mkdir -p webdriver/selenium`. The rest of this guide will assume you are inside the `webdriver/selenium` directory.
+これらのテストをプロジェクトに書くためのスペースを作りましょう。 このプロジェクトのネストされたディレクトリ を使用します。後で他のフレームワークについても説明します。 しかし通常は1つだけ使う必要があります `mkdir -p webdriver/selenium` で使用するディレクトリを作成します。 このガイドの残りの部分は、あなたが `webdriver/selenium` ディレクトリ内にいると仮定します。
 
-## Initializing a Selenium Project
+## Seleniumプロジェクトの初期化
 
-We will be using a pre-existing `package.json` to bootstrap this test suite because we have already chosen specific dependencies to use and want to showcase a simple working solution. The bottom of this section has a collapsed guide on how to set it up from scratch.
+We will be using a pre-existing `package.json` to bootstrap this test suite because we have already chosen specific dependencies to use and want to showcase a simple working solution. このセクションの下部には、最初から設定する方法について、折りたたまれた ガイドがあります。
 
 `package.json`:
 
@@ -35,11 +35,11 @@ We will be using a pre-existing `package.json` to bootstrap this test suite beca
 }
 ```
 
-We have a script that runs [Mocha][] as a test framework exposed as the `test` command. We also have various dependencies that we will be using to run the tests. [Mocha][] as the testing framework, [Chai][] as the assertion library, and [`selenium-webdriver`][] which is the Node.js [Selenium][] package.
+[テスト][] コマンドとして公開されるテストフレームワークとして `Mocha` を実行するスクリプトがあります。 テストを実行するために使用する 様々な依存関係もあります。 [Mocha][] as the testing framework, [Chai][] as the assertion library, and [`selenium-webdriver`][] which is the Node.js [Selenium][] package.
 
-<details><summary>Click me if you want to see how to set a project up from scratch</summary>
+<details><summary>プロジェクトを一から立ち上げる方法を見たい場合は、ここをクリックしてください</summary>
 
-If you want to install the dependencies from scratch, just run the following command.
+依存関係を最初からインストールしたい場合は、以下のコマンドを実行してください。
 
 <Tabs groupId="package-manager"
 defaultValue="yarn"
@@ -89,9 +89,9 @@ yarn test
 
 </details>
 
-## Testing
+## テスト
 
-Unlike the [WebdriverIO Test Suite](webdriverio#config), Selenium does not come out of the box with a Test Suite and leaves it up to the developer to build those out. We chose [Mocha][], which is pretty neutral and not related to WebDrivers, so our script will need to do a bit of work to set up everything for us in the correct order. [Mocha][] expects a testing file at `test/test.js` by default, so let's create that file now.
+Unlike the [WebdriverIO Test Suite](webdriverio#config), Selenium does not come out of the box with a Test Suite and leaves it up to the developer to build those out. 私たちは [Mocha][]を選びました。これはかなり中立的で、WebDriversとは関係ありません。 だから我々の台本は正しい順序で全てを準備するために 少し作業をしなければならない [Mocha][] はデフォルトで test/test.js `のテストファイル` を期待していますので、そのファイルを作成しましょう。
 
 `test/test.js`:
 
@@ -178,11 +178,11 @@ describe('Hello Tauri', () => {
 })
 ```
 
-If you are familiar with JS testing frameworks, `describe`, `it`, and `expect` should look familiar. We also have semi-complex `before()` and `after()` callbacks to setup and teardown mocha. Lines that are not the tests themselves have comments explaining the setup and teardown code. If you were familiar with the Spec file from the [WebdriverIO example](webdriverio#spec), you notice a lot more code that isn't tests, as we have to set up a few more WebDriver related items.
+JS のテストフレームワークに精通している場合は、 ``, `それ`を記述し、 `` はよく見覚えがあるはずです。 また、 セミコンプレックス `の前に` と `after()` のコールバックを用意しています。 テスト自体ではない 行には、セットアップと分解コードの説明があります。 If you were familiar with the Spec file from the [WebdriverIO example](webdriverio#spec), you notice a lot more code that isn't tests, as we have to set up a few more WebDriver related items.
 
-## Running the Test Suite
+## テストスイートの実行
 
-Now that we are all set up with our dependencies and our test script, let's run it!
+これで依存関係とテスト・スクリプトでセットアップされましたので、実行しましょう!
 
 <Tabs groupId="package-manager"
 defaultValue="yarn"
@@ -206,7 +206,7 @@ yarn test
 </TabItem>
 </Tabs>
 
-We should see output the following output:
+出力は以下のようになります:
 
 ```text
 ➜  selenium git:(main) ✗ yarn test
@@ -225,13 +225,14 @@ $ Mocha
 Done in 0.93s.
 ```
 
-We can see that our `Hello Tauri` sweet we created with `decribe` had all 3 items we created with `it` pass their tests!
+`Hello Tauri` sweet, we created with `decribe` has all 3 items we created with `it` passes their tests!
 
-With [Selenium][] and some hooking up to a test suite, we just enabled e2e testing without modifying our Tauri application at all!
+[Selenium][] といくつかのテストスイートに接続することで、私たちは私たちの牡牛座 アプリケーションをまったく変更せずに e2e テストを有効にしました!
 
 [Selenium]: https://selenium.dev/
-[finished example project]: https://github.com/chippers/hello_tauri
-[example Application setup]: ./setup.md
+[npm]: https://github.com/chippers/hello_tauri
+[アプリケーションの設定例]: ./setup.md
+[テスト]: https://mochajs.org/
 [Mocha]: https://mochajs.org/
 [Chai]: https://www.chaijs.com/
 [`selenium-webdriver`]: https://www.npmjs.com/package/selenium-webdriver
