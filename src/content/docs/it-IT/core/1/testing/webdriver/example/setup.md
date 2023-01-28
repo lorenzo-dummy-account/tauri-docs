@@ -1,56 +1,56 @@
-import HelloTauriWebdriver from '@site/static/img/webdriver/hello-tauri-webdriver.png'
+importa HelloTauriWebdriver da '@site/static/img/webdriver/hello-tauri-webdriver.png'
 
-# Setup Example
+# Esempio Di Configurazione
 
-This example application solely focuses on adding WebDriver testing to an already existing project. To have a project to test in the following two sections, we will set up an extremely minimal Tauri application for use in our testing. We will not use the Tauri CLI, any frontend dependencies or build steps, and not be bundling the application afterward. This is to showcase exactly a minimal suite to show off adding WebDriver testing to an existing application.
+Questa applicazione di esempio si concentra esclusivamente sull'aggiunta di test WebDriver a un progetto già esistente. Per avere un progetto da testare nelle due sezioni seguenti, imposteremo un'applicazione Tauri estremamente minima per l'utilizzo in il nostro test. Non useremo il Tauri CLI, nessuna dipendenza dal frontend o passi di costruzione, e non aggregeremo l'applicazione in seguito. Questo per mostrare esattamente una suite minima per mostrare l'aggiunta di test WebDriver ad un'applicazione esistente.
 
-If you just want to see the finished example project that utilizes what will be shown in this example guide, then you can see https://github.com/chippers/hello_tauri.
+Se si desidera solo vedere il progetto di esempio finito che utilizza ciò che verrà mostrato in questa guida di esempio, poi puoi vedere https://github. om/chippers/hello_tauri.
 
-## Initializing a Cargo Project
+## Inizializzazione di un progetto di carico
 
-We want to create a new binary Cargo project to house this example application. We can easily do this from the command line with `cargo new hello-tauri-webdriver --bin`, which will scaffold a minimal binary Cargo project for us. This directory will serve as the working directory for the rest of this guide, so make sure commands you run are inside this new `hello-tauri-webdriver/` directory.
+Vogliamo creare un nuovo progetto Cargo binario per ospitare questa applicazione di esempio. Possiamo facilmente farlo dalla linea di comando con `cargo new hello-tauri-webdriver --bin`, che impalcerà un minimo progetto binario Cargo per noi. Questa directory servirà come directory di lavoro per il resto di questa guida, quindi assicurati che i comandi che esegui siano all'interno di questa nuova directory `hello-tauri-webdriver/`.
 
-## Creating a Minimal Frontend
+## Creare un Frontend minimale
 
-We will create a minimal HTML file to act as our example application's front end. We will also be using a few things from this frontend later during our WebDriver tests.
+Creeremo un file HTML minimo per agire come front end della nostra applicazione di esempio. Inoltre useremo alcune cose da questo frontend più tardi durante i nostri test WebDriver.
 
-First, let's create our Tauri `distDir` that we know we will need once building the Tauri portion of the application. `mkdir dist` should create a new directory called `dist/` in which we will be placing the following `index.html` file.
+In primo luogo, creiamo il nostro Tauri `distDir` che sappiamo che avremo bisogno di una volta che costruiremo la parte Tauri dell'applicazione. `mkdir dist` dovrebbe creare una nuova directory chiamata `dist/` in cui inseriremo il seguente file `index.html`.
 
 `dist/index.html`:
 
 ```html
-<!DOCTYPE html>
+<! OCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Hello Tauri!</title>
+    <title>Ciao Tauri!</title>
     <style>
       body {
         /* Add a nice colorscheme */
         background-color: #222831;
-        color: #ececec;
+        colore: #ececec;
 
-        /* Make the body the exact size of the window */
-        margin: 0;
-        height: 100vh;
-        width: 100vw;
+        /* Rendi il corpo la dimensione esatta della finestra */
+        margine: 0;
+        altezza: 100vh;
+        larghezza: 100vw;
 
-        /* Vertically and horizontally center children of the body tag */
+        /* Verticalmente e orizzontalmente centra i figli del tag del corpo */
         display: flex;
-        justify-content: center;
-        align-items: center;
+        giustifica-contenuto: centro;
+        elementi di allineamento: centro;
       }
     </style>
   </head>
   <body>
-    <h1>Hello, Tauri!</h1>
+    <h1>Ciao, Tauri!</h1>
   </body>
 </html>
 ```
 
-## Adding Tauri to the Cargo Project
+## Aggiungere Tauri al progetto Cargo
 
-Next, we will add necessary items to turn our Cargo project into a Tauri project. First, is adding the dependencies to the Cargo Manifest (`Cargo.toml`) so that Cargo knows to pull in our dependencies while building.
+Successivamente, aggiungeremo gli elementi necessari per trasformare il nostro progetto Cargo in un progetto Tauri. In primo luogo, sta aggiungendo le dipendenze al manifesto di carico (`Cargo. oml`) in modo che Cargo sappia tirare le nostre dipendenze durante la costruzione.
 
 `Cargo.toml`:
 
@@ -59,19 +59,19 @@ Next, we will add necessary items to turn our Cargo project into a Tauri project
 name = "hello-tauri-webdriver"
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.56"
+rust-version = "1. 6"
 
-# Needed to set up some things for Tauri at build time
+# Necessario impostare alcune cose per Tauri al tempo di costruzione
 [build-dependencies]
 tauri-build = "1"
 
-# The actual Tauri dependency, along with `custom-protocol` to serve the pages.
+# La dipendenza effettiva di Tauri, insieme a `custom-protocol` per servire le pagine.
 [dependencies]
 tauri = { version = "1", features = ["custom-protocol"] }
 
-# Make --release build a binary that is small (opt-level = "s") and fast (lto = true).
-# This is completely optional, but shows that testing the application as close to the
-# typical release settings is possible. Note: this will slow down compilation.
+# Crea --release build un binario piccolo (opt-level = "s") e veloce (lto = true).
+# Questo è completamente opzionale, ma mostra che testare l'applicazione come vicino alle impostazioni di rilascio
+# tipiche è possibile. Nota: questo rallenterà la compilazione.
 [profile.release]
 incremental = false
 codegen-units = 1
@@ -80,22 +80,22 @@ opt-level = "s"
 lto = true
 ```
 
-We added a `[build-dependency]` as you may have noticed. To use the build dependency, we must use it from a build script. We will create one now at `build.rs`.
+Abbiamo aggiunto un `[build-dependency]` come potresti aver notato. Per utilizzare la dipendenza di generazione, dobbiamo usarla da uno script build . Ne creeremo uno ora a `build.rs`.
 
 `build.rs`:
 
 ```rust
 fn main() {
-    // Only watch the `dist/` directory for recompiling, preventing unnecessary
-    // changes when we change files in other project subdirectories.
+    // Guarda solo la directory `dist/` per il recompiling, impedendo inutili
+    // modifiche quando modifichiamo i file in altre sottodirectory del progetto.
     println!("cargo:rerun-if-changed=dist");
 
-    // Run the Tauri build-time helpers
+    // Esegui gli helpers Tauri build-time
     tauri_build::build()
 }
 ```
 
-Our Cargo Project now knows how to pull in and build our Tauri dependencies with all that setup. Let's finish making this minimal example a Tauri application by setting up Tauri in the actual project code. We will be editing the `src/main.rs` file to add this Tauri functionality.
+Il nostro progetto Cargo ora sa come tirare e costruire le nostre dipendenze Tauri con tutte quelle impostazioni. Finiamo di rendere questo esempio minimale un'applicazione Tauri impostando Tauri nel codice del progetto reale. Modificheremo il file `src/main.rs` per aggiungere questa funzionalità Tauri.
 
 `src/main.rs`:
 
@@ -107,13 +107,13 @@ fn main() {
 }
 ```
 
-Pretty simple, right?
+Molto semplice, giusto?
 
 ## Tauri Configuration
 
-We are going to need 2 things to successfully build the application. First, we need an icon file. You can use any PNG for this next part and copy it into `icon.png`. Typically, this will be provided as part of the scaffolding when you use the Tauri CLI to create a project. To get the default Tauri icon, we can download the icon used by the Hello Tauri example repository with the command `curl -L "https://github.com/chippers/hello_tauri/raw/main/icon.png" --output icon.png`.
+Avremo bisogno di 2 cose per costruire con successo l'applicazione. In primo luogo, abbiamo bisogno di un file di icone. È possibile utilizzare qualsiasi PNG per questa parte successiva e copiarlo in `icon.png`. Tipicamente, questo sarà fornito come parte del ponteggio quando si utilizza il CLI Tauri per creare un progetto. Per ottenere l'icona Tauri predefinita, possiamo scaricare l'icona usata dal repository di esempio Hello Tauri con il comando `curl -L "https://github. om/chippers/hello_tauri/raw/main/icon.png" --output icon.png`.
 
-We will need a `tauri.conf.json` to set some important configuration values for Tauri. Again, this would typically come from the `tauri init` scaffolding command, but we will be creating our own minimal config here.
+Avremo bisogno di un `tauri.conf.json` per impostare alcuni valori di configurazione importanti per Tauri. Ancora una volta, questo sarebbe tipicamente venire dal `tauri init` comando ponteggi, ma qui creeremo la nostra configurazione minimale .
 
 `tauri.conf.json`:
 
@@ -124,8 +124,8 @@ We will need a `tauri.conf.json` to set some important configuration values for 
   },
   "tauri": {
     "bundle": {
-      "identifier": "studio.tauri.hello_tauri_webdriver",
-      "icon": ["icon.png"]
+      "identifier": "studio. auri.hello_tauri_webdriver",
+      "icona": ["icona. ng"]
     },
     "allowlist": {
       "all": false
@@ -133,27 +133,27 @@ We will need a `tauri.conf.json` to set some important configuration values for 
     "windows": [
       {
         "width": 800,
-        "height": 600,
-        "resizable": true,
-        "fullscreen": false
+        "altezza": 600,
+        "ridimensionabile": true,
+        "schermo intero": falso
       }
     ]
   }
 }
 ```
 
-I'll go over some of these. You can see the `dist/` directory we created earlier specified as the `distDir` property. We set a bundle identifier so that the built application has a unique id and set the `icon.png` as the only icon. We aren't using any Tauri APIs or features, so we disable them in `allowlist` by setting `"all": false`. The window values just set a single window to be created with some reasonable default values.
+Andrò sopra alcuni di questi. Puoi vedere la directory `dist/` che abbiamo creato precedentemente specificata come la proprietà `distDir`. Abbiamo impostato un identificatore bundle in modo che l'applicazione costruita abbia un id univoco e imposta l'icona `. ng` come unica icona . Non utilizziamo nessuna API Tauri o funzionalità, quindi le disattiviamo in `allowlist` impostando `"tutti": false`. I valori della finestra semplicemente impostano una singola finestra da creare con alcuni valori predefiniti ragionevoli.
 
-At this point, we have a basic Hello World application that should display a simple greeting when run.
+A questo punto, abbiamo un'applicazione Hello World di base che dovrebbe mostrare un semplice saluto durante l'esecuzione.
 
-## Running the Example Application
+## Esecuzione dell'applicazione di esempio
 
-To make sure we did it right, let's build this application! We will run this as a `--release` application because we will also run our WebDriver tests with a release profile. Run `cargo run --release`, and after some compiling, we should see the following application pop up.
+Per essere sicuri che l'abbiamo fatto bene, costruiamo questa applicazione! Eseguiremo questo come un'applicazione `--release` perché eseguiremo anche i nostri test WebDriver con un profilo di rilascio. Esegui `cargo run --release`, e dopo qualche compilazione, dovremmo vedere la seguente applicazione popup.
 
 <div style={{textAlign: 'center'}}>
   <img src={HelloTauriWebdriver}/>
 </div>
 
-_Note: If you are modifying the application and want to use the Devtools, then run it without `--release` and "Inspect Element" should be available in the right-click menu._
+_Osservazioni: Se si modifica l'applicazione e si desidera utilizzare Devtools, poi eseguirlo senza `--release` e "Ispeziona Element" dovrebbe essere disponibile nel menu di scelta rapida._
 
-We should now be ready to start testing this application with some WebDriver frameworks. This guide will go over both [WebdriverIO](webdriverio) and [Selenium](selenium) in that order.
+Ora dovremmo essere pronti ad iniziare a testare questa applicazione con alcuni framework WebDdriver. Questa guida andrà oltre entrambi [WebdriverIO](webdriverio) e [Selenio](selenium) in quell'ordine.
