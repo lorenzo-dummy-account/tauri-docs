@@ -1,52 +1,52 @@
 # Tauri Plugins
 
-Plugins allow you to hook into the Tauri application lifecycle and introduce new commands.
+プラグインを使用すると、牡牛座アプリケーションのライフサイクルにフックし、新しいコマンドを導入できます。
 
-## Using a Plugin
+## プラグインの使用
 
-To use a plugin, just pass the plugin instance to the App's `plugin` method:
+プラグインを使用するには、Appの `プラグイン` メソッドにプラグインインスタンスを渡してください。
 
 ```rust
 fn main() {
   tauri::Builder::default()
     .plugin(my_awesome_plugin::init())
     .run(tauri::generate_context!())
-    .expect("failed to run app");
+    expect("アプリケーションを実行できませんでした");
 }
 ```
 
-## Writing a Plugin
+## プラグインを書く
 
-Plugins are reusable extensions to the Tauri API that solve common problems. They are also a very convenient way to structure your code base!
+プラグインは、一般的な問題を解決するTauri APIの再利用可能な拡張機能です。 コードベースを構成するのに非常に便利な方法です。
 
-If you intend to share your plugin with others, we provide a ready-made template! With the tauri-cli installed just run:
+プラグインを他の人と共有する場合は、既製のテンプレートを提供します! Tauri-cli がインストールされているだけで実行されます:
 
 ```shell
-tauri plugin init --name awesome
+tauriプラグインinit --name awice
 ```
 
-### API package
+### APIパッケージ
 
-By default consumers of your plugin can call provided commands like this:
+デフォルトでは、プラグインの利用者は以下のように指定されたコマンドを呼び出すことができます。
 
 ```js
 import { invoke } from '@tauri-apps/api'
 invoke('plugin:awesome|do_something')
 ```
 
-where `awesome` will be replaced by your plugin name.
+`awesome` はプラグイン名に置き換えられます。
 
-This isn't very convenient, however, so it's common for plugins to provide a so-called _API package_, a JavaScript package that provides convenient access to your commands.
+これはあまり便利ではありませんが、プラグインが _API パッケージ_を提供することは一般的です。 コマンドに便利なアクセスを提供する JavaScript パッケージ。
 
-> An example of this is the [tauri-plugin-store](https://github.com/tauri-apps/tauri-plugin-store), which provides a convenient class structure for accessing a store. You can scaffold a tauri plugin with attached javascript API package like this:
+> 例えば、 [tauri-plugin-store](https://github.com/tauri-apps/tauri-plugin-store)は、ストアにアクセスするための便利なクラス構造を提供します。 以下のように、追加された javascript API パッケージを使って、tauri プラグインを足場に置くことができます。
 
 ```shell
-tauri plugin init --name awesome --api
+tauriプラグインinit --name aweson -api
 ```
 
-## Writing a Plugin
+## プラグインを書く
 
-Using the `tauri::plugin::Builder` you can define plugins similar to how you define your app:
+`tauri::plugin::Builder` を使用すると、アプリの定義と同様のプラグインを定義できます。
 
 ```rust
 use tauri::{
@@ -62,7 +62,7 @@ use tauri::{
 fn initialize() {}
 
 #[tauri::command]
-// this will be accessible with `invoke('plugin:awesome|do_something')`.
+// これは `invoke('plugin:awesome|do_something')` でアクセスできます。
 fn do_something() {}
 
 pub fn init<R: Runtime>() -> TauriPlugin<R> {
@@ -72,7 +72,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
 }
 ```
 
-Plugins can setup and maintain state, just like your app can:
+プラグインはアプリと同じように状態をセットアップして維持できます：
 
 ```rust
 use tauri::{
@@ -101,19 +101,19 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
 }
 ```
 
-### Conventions
+### コンベンション
 
-- The crate exports an `init` method to create the plugin.
-- Plugins should have a clear name with `tauri-plugin-` prefix.
-- Include `tauri-plugin` keyword in `Cargo.toml`/`package.json`.
-- Document your plugin in English.
-- Add an example app showcasing your plugin.
+- 木箱はプラグインを作成するために `init` メソッドをエクスポートします。
+- プラグインは `tauri-plugin-` 接頭辞で明確な名前を持つ必要があります。
+- `Cargo.toml` / `package.json`に`tauri-plugin` キーワードを含めます。
+- プラグインを英語で文書化します。
+- プラグインを紹介するサンプルアプリを追加します。
 
-### Advanced
+### 高度な設定
 
-Instead of relying on the `tauri::plugin::TauriPlugin` struct returned by `tauri::plugin::Builder::build`, you can implement the `tauri::plugin::Plugin` yourself. This allows you to have full control over the associated data.
+Instead of relying on the `tauri::plugin::TauriPlugin` struct returned by `tauri::plugin::Builder::build`, you can implement the `tauri::plugin::Plugin` yourself. これにより、関連するデータを完全に制御できます。
 
-Note that each function on the `Plugin` trait is optional, except the `name` function.
+`プラグイン` トレイトの各関数は、 `name` 関数を除いて任意であることに注意してください。
 
 ```rust
 use tauri::{plugin::{Plugin, Result as PluginResult}, Runtime, PageLoadPayload, Window, Invoke, AppHandle};
@@ -125,12 +125,12 @@ struct MyAwesomePlugin<R: Runtime> {
 
 // the plugin custom command handlers if you choose to extend the API.
 #[tauri::command]
-// this will be accessible with `invoke('plugin:awesome|initialize')`.
+// これは `invoke('plugin:awesome|initialize')` でアクセスできます。
 // where `awesome` is the plugin name.
 fn initialize() {}
 
 #[tauri::command]
-// this will be accessible with `invoke('plugin:awesome|do_something')`.
+// これは `invoke('plugin:awesome|do_something')` でアクセスできます。
 fn do_something() {}
 
 impl<R: Runtime> MyAwesomePlugin<R> {
@@ -144,31 +144,31 @@ impl<R: Runtime> MyAwesomePlugin<R> {
 }
 
 impl<R: Runtime> Plugin<R> for MyAwesomePlugin<R> {
-  /// The plugin name. Must be defined and used on the `invoke` calls.
+  /// The plugin name. `invoke` 呼び出しで定義して使用する必要があります。
   fn name(&self) -> &'static str {
     "awesome"
   }
 
-  /// The JS script to evaluate on initialization.
-  /// Useful when your plugin is accessible through `window`
-  /// or needs to perform a JS task on app initialization
-  /// e.g. "window.awesomePlugin = { ... the plugin interface }"
+  /// 初期化時に評価する JS スクリプト。
+  /// `window` でプラグインにアクセスできるときに便利です。
+  /// またはアプリの初期化で JS タスクを実行する必要があります。
+  /// e. ウィンドウを開きます。 wesomePlugin = { ... the plugin interface }"
   fn initialization_script(&self) -> Option<String> {
     None
   }
 
-  /// initialize plugin with the config provided on `tauri.conf.json > plugins > $yourPluginName` or the default value.
+  /// `tauriで提供される設定でプラグインを初期化します。 onf.json > plugins > $yourPluginName` またはデフォルト値。
   fn initialize(&mut self, app: &AppHandle<R>, config: serde_json::Value) -> PluginResult<()> {
-    Ok(())
+    Ok())
   }
 
-  /// Callback invoked when the Window is created.
+  /// Window が作成されたときに呼び出されたコールバック。
   fn created(&mut self, window: Window<R>) {}
 
-  /// Callback invoked when the webview performs navigation.
+  /// webview がナビゲーションを実行したときに呼び出されたコールバック。
   fn on_page_load(&mut self, window: Window<R>, payload: PageLoadPayload) {}
 
-  /// Extend the invoke handler.
+  /// 呼び出しハンドラを拡張します。
   fn extend_api(&mut self, message: Invoke<R>) {
     (self.invoke_handler)(message)
   }
