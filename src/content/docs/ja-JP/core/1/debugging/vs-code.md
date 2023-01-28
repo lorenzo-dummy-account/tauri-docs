@@ -1,19 +1,19 @@
-# Debugging in VS Code
+# VS コードでのデバッグ
 
-This guide describes how to setup debugging in VS Code for the [Core Process in Tauri applications][].
+このガイドでは、牡牛座アプリケーションの [コアプロセスのVSコードでデバッグをセットアップする方法について説明します][]。
 
-## Setup
+## セットアップ
 
-Install the [`vscode-lldb`][] extension.
+[`vscode-lldb`][] 拡張機能をインストールします。
 
-## Configure launch.json
+## launch.jsonの設定
 
-Create a `.vscode/launch.json` file and paste the below JSON contents into it:
+`.vscode/launch.json` ファイルを作成し、以下の JSON コンテンツを以下に貼り付けます:
 
 ```json title=".vscode/launch.json"
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
+  // IntelliSenseを使用して、可能な属性について学習します。
+  // ホバーで既存の属性の説明を表示します。
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
@@ -45,9 +45,9 @@ Create a `.vscode/launch.json` file and paste the below JSON contents into it:
 }
 ```
 
-This uses `cargo` directly to build the Rust application and load it in both development and production modes.
+これは `貨物` を直接使用して、Rust アプリケーションを構築し、開発モードと本番モードの両方にロードします。
 
-Note that it does not use the Tauri CLI, so exclusive CLI features are not executed. The `beforeDevCommand` and `beforeBuildCommand` scripts must be executed beforehand or configured as a task in the `preLaunchTask` field. Below is an example `.vscode/tasks.json` file that has two tasks, one for a `beforeDevCommand` that spawns a development server and one for `beforeBuildCommand`:
+Tauri CLI は使用しないので、排他的な CLI 機能は実行されません。 `beforeDevCommand` と `beforeBuildCommand` のスクリプトは、事前に実行するか、 `preLaunchTask` フィールドでタスクとして設定する必要があります。 Below is an example `.vscode/tasks.json` file that has two tasks, one for a `beforeDevCommand` that spawns a development server and one for `beforeBuildCommand`:
 
 ```json title=".vscode/tasks.json"
 {
@@ -77,8 +77,8 @@ Note that it does not use the Tauri CLI, so exclusive CLI features are not execu
 }
 ```
 
-Now you can set breakpoints in `src-tauri/src/main.rs` or any other Rust file and start debugging by pressing `F5`.
+`src-tauri/src/main.rs` またはその他のRustファイルでブレークポイントを設定し、 `F5` を押してデバッグを開始できます。
 
 [`vscode-lldb`]: https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb
 
-[Core Process in Tauri applications]: ../../references/architecture/process-model.md#the-core-process
+[コアプロセスのVSコードでデバッグをセットアップする方法について説明します]: ../../references/architecture/process-model.md#the-core-process
