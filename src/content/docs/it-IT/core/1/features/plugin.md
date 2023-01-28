@@ -1,10 +1,10 @@
 # Tauri Plugins
 
-Plugins allow you to hook into the Tauri application lifecycle and introduce new commands.
+I plugin consentono di agganciare il ciclo di vita dell'applicazione Tauri e introdurre nuovi comandi.
 
-## Using a Plugin
+## Usare un plugin
 
-To use a plugin, just pass the plugin instance to the App's `plugin` method:
+Per usare un plugin, basta passare l'istanza del plugin al metodo `plugin` dell'app:
 
 ```rust
 fn main() {
@@ -15,38 +15,38 @@ fn main() {
 }
 ```
 
-## Writing a Plugin
+## Scrittura di un plugin
 
-Plugins are reusable extensions to the Tauri API that solve common problems. They are also a very convenient way to structure your code base!
+I plugin sono estensioni riutilizzabili dell'API Tauri che risolvono problemi comuni. Sono anche un modo molto conveniente per strutturare la tua base di codice!
 
-If you intend to share your plugin with others, we provide a ready-made template! With the tauri-cli installed just run:
+Se hai intenzione di condividere il tuo plugin con altri, forniamo un modello pronto! Con il tauri-cli installato appena eseguito:
 
 ```shell
-tauri plugin init --name awesome
+plugin tauri init --name fantastico
 ```
 
-### API package
+### Pacchetto API
 
-By default consumers of your plugin can call provided commands like this:
+Per impostazione predefinita, i consumatori del tuo plugin possono chiamare comandi forniti in questo modo:
 
 ```js
 import { invoke } from '@tauri-apps/api'
-invoke('plugin:awesome|do_something')
+invoke('plugin:awesome<unk> do_something')
 ```
 
-where `awesome` will be replaced by your plugin name.
+dove `impressionante` sarà sostituito dal tuo nome del plugin.
 
-This isn't very convenient, however, so it's common for plugins to provide a so-called _API package_, a JavaScript package that provides convenient access to your commands.
+Questo non è molto conveniente, tuttavia, quindi è comune per i plugin fornire un cosiddetto pacchetto API __, un pacchetto JavaScript che fornisce un comodo accesso ai tuoi comandi.
 
-> An example of this is the [tauri-plugin-store](https://github.com/tauri-apps/tauri-plugin-store), which provides a convenient class structure for accessing a store. You can scaffold a tauri plugin with attached javascript API package like this:
+> Un esempio di questo è il [tauri-plugin-store](https://github.com/tauri-apps/tauri-plugin-store), che fornisce una comoda struttura di classe per accedere a un negozio. È possibile impalcare un plugin tauri con allegato pacchetto API javascript in questo modo:
 
 ```shell
-tauri plugin init --name awesome --api
+tauri plugin init --name fantastico --api
 ```
 
-## Writing a Plugin
+## Scrittura di un plugin
 
-Using the `tauri::plugin::Builder` you can define plugins similar to how you define your app:
+Usando `tauri::plugin::Builder` puoi definire plugin simili a come definisci la tua app:
 
 ```rust
 use tauri::{
@@ -54,15 +54,15 @@ use tauri::{
   Runtime,
 };
 
-// the plugin custom command handlers if you choose to extend the API:
+// i gestori di comandi personalizzati del plugin se scegli di estendere l'API:
 
 #[tauri::command]
-// this will be accessible with `invoke('plugin:awesome|initialize')`.
-// where `awesome` is the plugin name.
+// questo sarà accessibile con `invoke('plugin:awesome<unk> initialize')`.
+// dove `awesome` è il nome del plugin.
 fn initialize() {}
 
 #[tauri::command]
-// this will be accessible with `invoke('plugin:awesome|do_something')`.
+// questo sarà accessibile con `invoke('plugin:awesome<unk> do_something')`.
 fn do_something() {}
 
 pub fn init<R: Runtime>() -> TauriPlugin<R> {
@@ -72,7 +72,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
 }
 ```
 
-Plugins can setup and maintain state, just like your app can:
+I plugin possono configurare e mantenere lo stato, proprio come la tua app può:
 
 ```rust
 use tauri::{
@@ -84,91 +84,91 @@ use tauri::{
 struct MyState {}
 
 #[tauri::command]
-// this will be accessible with `invoke('plugin:awesome|do_something')`.
+// questo sarà accessibile con `invoke('plugin:awesome<unk> do_something')`.
 fn do_something<R: Runtime>(_app: AppHandle<R>, state: State<'_, MyState>) {
-  // you can access `MyState` here!
+  // puoi accedere a `MyState` qui!
 }
 
 pub fn init<R: Runtime>() -> TauriPlugin<R> {
   Builder::new("awesome")
-    .invoke_handler(tauri::generate_handler![do_something])
-    .setup(|app_handle| {
-      // setup plugin specific state here
-      app_handle.manage(MyState::default());
-      Ok(())
+    . nvoke_handler(tauri::generate_handler![do_something])
+    . etup(<unk> app_handle<unk> {
+      // setup plugin specific state qui
+      app_handle. anage(MyState::default());
+      Ok())
     })
     .build()
 }
 ```
 
-### Conventions
+### Convenzioni
 
-- The crate exports an `init` method to create the plugin.
-- Plugins should have a clear name with `tauri-plugin-` prefix.
-- Include `tauri-plugin` keyword in `Cargo.toml`/`package.json`.
-- Document your plugin in English.
-- Add an example app showcasing your plugin.
+- La cassa esporta un metodo `init` per creare il plugin.
+- I plugin dovrebbero avere un nome chiaro con il prefisso `tauri-plugin-`.
+- Includi `tauri-plugin` keyword in `Cargo.toml`/`package.json`.
+- Documenta il tuo plugin in inglese.
+- Aggiungi un'app di esempio che mostra il tuo plugin.
 
-### Advanced
+### Avanzate
 
-Instead of relying on the `tauri::plugin::TauriPlugin` struct returned by `tauri::plugin::Builder::build`, you can implement the `tauri::plugin::Plugin` yourself. This allows you to have full control over the associated data.
+Invece di affidarsi alla struttura `tauri::plugin::TauriPlugin` restituita da `tauri::plugin::Builder::build`puoi implementare tu stesso `tauri::plugin::Plugin`. Questo consente di avere il pieno controllo sui dati associati.
 
-Note that each function on the `Plugin` trait is optional, except the `name` function.
+Si noti che ogni funzione sul tratto `Plugin` è opzionale, tranne la funzione `nome`.
 
 ```rust
 use tauri::{plugin::{Plugin, Result as PluginResult}, Runtime, PageLoadPayload, Window, Invoke, AppHandle};
 
 struct MyAwesomePlugin<R: Runtime> {
-  invoke_handler: Box<dyn Fn(Invoke<R>) + Send + Sync>,
-  // plugin state, configuration fields
+  invoke_handler: Box<dyn Fn(Invoke<R>) + Invia + Sincronizza>,
+  // stato plugin, campi di configurazione
 }
 
-// the plugin custom command handlers if you choose to extend the API.
+// i gestori di comandi personalizzati del plugin se si sceglie di estendere l'API.
 #[tauri::command]
-// this will be accessible with `invoke('plugin:awesome|initialize')`.
-// where `awesome` is the plugin name.
+// questo sarà accessibile con `invoke('plugin:awesome<unk> initialize')`.
+// dove `awesome` è il nome del plugin.
 fn initialize() {}
 
 #[tauri::command]
-// this will be accessible with `invoke('plugin:awesome|do_something')`.
+// questo sarà accessibile con `invoke('plugin:awesome<unk> do_something')`.
 fn do_something() {}
 
 impl<R: Runtime> MyAwesomePlugin<R> {
-  // you can add configuration fields here,
-  // see https://doc.rust-lang.org/1.0.0/style/ownership/builders.html
+  // puoi aggiungere campi di configurazione qui,
+  // vedi https://doc. ust-lang.org/1.0.0/style/ownership/builders. tml
   pub fn new() -> Self {
     Self {
-      invoke_handler: Box::new(tauri::generate_handler![initialize, do_something]),
+      invoke_handler: Box::new(tauri::generate_handler! inizializza, do_something]),
     }
   }
 }
 
-impl<R: Runtime> Plugin<R> for MyAwesomePlugin<R> {
-  /// The plugin name. Must be defined and used on the `invoke` calls.
+impl<R: Runtime> Plugin<R> per MyAwesomePlugin<R> {
+  /// Il nome del plugin. Deve essere definito e usato nelle chiamate `invoke`.
   fn name(&self) -> &'static str {
     "awesome"
   }
 
-  /// The JS script to evaluate on initialization.
-  /// Useful when your plugin is accessible through `window`
-  /// or needs to perform a JS task on app initialization
-  /// e.g. "window.awesomePlugin = { ... the plugin interface }"
-  fn initialization_script(&self) -> Option<String> {
+  /// Lo script JS per valutare l'inizializzazione.
+  /// Utile quando il plugin è accessibile tramite `window`
+  /// o deve eseguire un'attività JS sull'inizializzazione dell'app
+  /// e. . "finestra. wesomePlugin = { ... the plugin interface }"
+  fn initialization_script(&self) -> Opzione<String> {
     None
   }
 
-  /// initialize plugin with the config provided on `tauri.conf.json > plugins > $yourPluginName` or the default value.
+  /// inizializza il plugin con la configurazione fornita su `tauri. onf.json > plugin > $yourPluginName` o il valore predefinito.
   fn initialize(&mut self, app: &AppHandle<R>, config: serde_json::Value) -> PluginResult<()> {
     Ok(())
   }
 
-  /// Callback invoked when the Window is created.
+  /// Callback invocato quando la finestra è creata.
   fn created(&mut self, window: Window<R>) {}
 
-  /// Callback invoked when the webview performs navigation.
+  /// Callback invocato quando la webview esegue la navigazione.
   fn on_page_load(&mut self, window: Window<R>, payload: PageLoadPayload) {}
 
-  /// Extend the invoke handler.
+  /// Estendi il gestore di richiami.
   fn extend_api(&mut self, message: Invoke<R>) {
     (self.invoke_handler)(message)
   }
