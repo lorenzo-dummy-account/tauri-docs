@@ -1,67 +1,67 @@
-import Command from '@theme/Command'
+从 '@theme/Command' 导入命令
 
-# Icons
+# 图标
 
-Tauri ships with a default iconset based on its logo. This is NOT what you want when you ship your application. To remedy this common situation, Tauri provides the `icon` command that will take an input file (`"./app-icon.png"` by default) and create all the icons needed for the various platforms.
+Tauri船只的标志是默认的图标。 这不是你在运送应用程序时想要的。 为了纠正这种常见情况，Tauri提供了 `图标` 命令，它将需要输入文件(`)。 app-icon.png"` 默认情况下, 并创建各种平台所需的所有图标。
 
-:::info Note on filetypes
+:::info 注释在文件类型
 
 - `icon.icns` = macOS
 - `icon.ico` = Windows
 - `*.png` = Linux
-- `Square*Logo.png` & `StoreLogo.png` = Currently unused but intended for AppX/MS Store targets.
+- `正方形*Logo.png` & `StoreLogo.png` = 当前未使用但打算用于 AppX/MS 存储目标。
 
-Note that icon types may be used on platforms other than those listed above (especially `png`). Therefore we recommend including all icons even if you intend to only build for a subset of platforms.
+注意图标类型可能会用于上面列出的平台以外的平台(特别是 `png`)。 因此，我们建议包括所有图标，即使您只打算构建平台子集。
 
 :::
 
-## Command Usage
+## 命令使用
 
-Starting with `@tauri-apps/cli` / `tauri-cli` version 1.1 the `icon` subcommand is part of the main cli:
+开始于 `@tauri-apps/cli` / `tauri-cli` 版本 1.1 `图标` 子命令是主客户端的一部分：
 
 <Command name="icon" />
 
 ```console
-> cargo tauri icon --help
-cargo-tauri-icon 1.1.0
+> 货运标签图标 --help
+cargo-tauri-icon 1.1。
 
-Generates various icons for all major platforms
+为所有主要平台生成各种图标
 
-USAGE:
-    cargo tauri icon [OPTIONS] [INPUT]
+USAGE：
+    货运标签图标 [OPTIONS] [INPUT]
 
-ARGS:
-    <INPUT>    Path to the source icon (png, 1240x1240px with transparency) [default: ./app-icon.png]
+方舟：
+    <INPUT>    源图标路径(png), 1240x1240像素具有透明度) [默认： 应用程序图标。 ng]
 
-OPTIONS:
-    -h, --help               Print help information
-    -o, --output <OUTPUT>    Output directory. Default: 'icons' directory next to the tauri.conf.json file
-    -v, --verbose            Enables verbose logging
-    -V, --version            Print version information
+选项：
+    - h, --help 打印帮助信息
+    -o, --output <OUTPUT>    输出目录。 默认: tauri.conf.json 文件
+    -v, --verbose 启用详细日志
+    -V, --version 打印版本信息
 ```
 
-By default, the icons will be placed in your `src-tauri/icons` folder where they will automatically be included in your built app. If you want to source your icons from a different location, you can edit this part of the `tauri.conf.json` file:
+默认情况下，图标将被放置在您的 `src-tauri/icons` 文件夹中，他们将被自动放置在您的内置应用程序中。 如果您想要从不同的位置来源自您的图标，您可以编辑 `tauri.conf.json` 文件的这一部分：
 
 ```json
-{
-  "tauri": {
-    "bundle": {
+主席:
+  "tauri":
+    "bundle": format@@
       "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
+        "icons/32x32). ng",
+        "icons/128x128 ng",
         "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
+        "icons/icon cns”，
+        "icons/icon"。 co"
       ]
     }
   }
 }
 ```
 
-## Creating the icons manually
+## 手动创建图标
 
-If you prefer to build these icons yourself (if you want to have a simpler design for small sizes or because you don't want to depend on the CLI's internal image resizing), the required layer sizes and names for the [`icns`][] file are described [in the Tauri repo][] and the [`ico`][] file must include layers for 16, 24, 32, 48, 64 and 256 pixels. For an optimal display of the ICO image _in development_, the 32px layer should be the first layer.
+如果您希望自己构建这些图标(如果您想要为小尺寸设计一个更简单的设计，或者因为您不想依赖CLI的内部图像大小调整)， [`icns`][] 文件 [在 Tauri repo][] 和 [`ico`][] 文件必须包含16层， 24、32、48、64和256像素。 为了在开发</em>中最佳地显示ICO 图像 _，32px 图层应该是第一层。</p>
 
-[in the Tauri repo]: https://github.com/tauri-apps/tauri/blob/dev/tooling/cli/src/helpers/icns.json
+[在 Tauri repo]: https://github.com/tauri-apps/tauri/blob/dev/tooling/cli/src/helpers/icns.json
 [`icns`]: https://en.wikipedia.org/wiki/Apple_Icon_Image_format
 [`ico`]: https://en.wikipedia.org/wiki/ICO_(file_format)
