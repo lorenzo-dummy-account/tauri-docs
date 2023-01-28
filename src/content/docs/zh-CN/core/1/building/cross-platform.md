@@ -2,156 +2,155 @@
 sidebar_position: 5
 ---
 
-# Cross-Platform Compilation
+# 跨平台汇编
 
-Tauri relies heavily on native libraries and toolchains, so meaningful cross-compilation is **not possible** at the current moment. The next best option is to compile utilizing a CI/CD pipeline hosted on something like [GitHub Actions][], Azure Pipelines, GitLab, or other options. The pipeline can run the compilation for each platform simultaneously making the compilation and release process much easier.
+Tauri relies heavily on native libraries and toolchains, so meaningful cross-compilation is **not possible** at the current moment. 下一个最好的选项是使用在 [GitHub 操作][]上托管的 CI/CD 管道进行编译 Azure Pipelines、GitLab或其他选项。 管道可以运行每个平台的编译，同时使编译和释放过程更加容易。
 
-For an easy setup, we currently provide [Tauri Action][], a GitHub Action that runs on all the supported platforms, compiles your software, generates the necessary artifacts, and uploads them to a new GitHub release.
+为了便于安装，我们目前提供 [Tauri 操作][]，一个运行在所有支持平台上的 GitHub 动作。 编译您的软件，生成必要的工件，并将它们上传到新的GitHub 版本。
 
 ## Tauri GitHub Action
 
-Tauri Action leverages GitHub Actions to simultaneously build your application as a Tauri native binary for macOS, Linux, and Windows, and automates creating a GitHub release.
+Tauri Action利用GitHub Action同时构建您的应用程序为 macOS 的 Tauri本机二进制文件 Linux和Windows自动创建一个 GitHub 版本。
 
-This GitHub Action may also be used as a testing pipeline for your Tauri app, guaranteeing compilation runs fine on all platforms for each pull request sent, even if you don't wish to create a new release.
+此 GitHub 动作也可以用作您的 Tauri应用的测试管道， 即使您不想创建一个新版本，保证编译在所有平台上运行良好的每个拉取请求。
 
-:::info Code Signing
+::::info 代码签名
 
-To setup code signing for both Windows and macOS on your workflow, follow the specific guide for each platform:
+若要在您的工作流中同时为 Windows 和 macOS 设置代码签名，请遵循每个平台的特定指南：
 
-- [Windows Code Signing with GitHub Actions][]
-- [macOS Code Signing with GitHub Actions][]
+- [使用 GitHub 操作符号签名][]
+- [使用 GitHub 操作 macOS 代码签名][]
 
 :::
 
-### Getting Started
+### 正在开始
 
-To set up Tauri Action you must first set up a GitHub repository. You can use this action on a repo that doesn't have Tauri configured since it automatically initializes Tauri before building and configuring it to use your artifacts.
+要设置 Tauri 动作，您必须先设置 GitHub 仓库。 你可以在一个没有配置Tauri的仓库使用此操作，因为它在构建之前自动初始化Tauri并配置它来使用你的工艺品。
 
-Go to the Actions tab on your GitHub project and choose "New workflow", then choose "Set up a workflow yourself". Replace the file with the [Tauri Action production build workflow example][]. Alternatively, you may set up the workflow based on the [example at the bottom of this page](#example-workflow)
+转到您的 GitHub 项目上的动作选项卡，然后选择"新工作流"，然后选择"自己设置一个工作流"。 用 [Tauri Action production buildflow example][] 替换该文件。 或者，您可以在此页面底部基于 [示例设置工作流](#example-workflow)
 
-### Configuration
+### 配置
 
-You can configure Tauri with the `configPath`, `distPath` and `iconPath` options. See the actions Readme for details.
+您可以使用 `配置路径`, `远程路径` 和 `图标路径` 选项配置Tauri。 详细信息请参阅“Readme”。
 
 
 <!-- FIXME: tauriScript is currently broken.
   Custom Tauri CLI scripts can be run with the `tauriScript` option. So instead of running `yarn tauri build` or `npx tauri build`, `${tauriScript}` will be executed. This can be useful when you need custom build functionality such as when creating Tauri apps e.g. a `desktop:build` script.
 -->
 
-When your app isn't on the root of the repo, use the `projectPath` input.
+当您的应用不在仓库的根目录中，请使用 `projectPath` 输入。
 
-You may modify the workflow name, change the triggers, and add more steps such as `npm run lint` or `npm run test`. The important part is that you keep the below line at the end of the workflow, since this runs the build script and releases the artifacts:
+您可以修改工作流名称，更改触发器， 并添加更多步骤，如 `npm 运行行` 或 `npm 运行测试`。 重要的部分是在工作流的末尾保留下面一行， 因为这将运行构建脚本并发布艺术品：
 
 ```yaml
-- uses: tauri-apps/tauri-action@v0
+- 使用：tauri-apps/tauri-action@v0
 ```
 
-### How to Trigger
+### 如何触发
 
-The release workflow in the README examples linked above is triggered by pushes on the "release" branch. The action automatically creates a tag and title for the GitHub release using the application version specified in `tauri.config.json`.
+在以上链接的README 示例中发布的工作流是由推送“发布”分支触发的。 该操作使用 `tauri.config.json` 指定的应用程序版本自动为 GitHub 版本创建一个标签和标题。
 
-You can also trigger the workflow on the push of a version tag such as "app-v0.7.0". For this you can change the start of the release workflow:
+您也可以在推送“app-v0.7.0”等版本标签时触发工作流。 为此您可以更改发布工作流的起点：
 
 ```yaml
-name: publish
-on:
-  push:
-    tags:
+姓名：发布
+on：
+  推送：
+    标签：
       - 'app-v*'
-  workflow_dispatch:
+  workflow_paich：
 ```
 
-### Example Workflow
+### Workflow 示例
 
-Below is an example workflow that has been setup to run every time a new version is created on git.
+下面是一个示例工作流，它已经设置，每次在git上创建一个新版本时运行。
 
-This workflow sets up the environment on Windows, Ubuntu, and macOS latest versions. Note under `jobs.release.strategy.matrix` the platform array which contains `macos-latest`, `ubuntu-20.04`, and `windows-latest`.
+此工作流在 Windows 、 Ubuntu 和 macOS 最新版本上设置环境。 `jobs.release.strategy.matrix` 平台数组包含 `macos-最新`, `ubuntu-20.04`和 `窗口最新`。
 
-The steps this workflow takes are:
+工作流采取的步骤是：
 
-1. Checkout the repository using `actions/checkout@v3`
-2. Set up Node LTS and a cache for global npm/yarn/pnpm package data using `actions/setup-node@v3`.
-3. Set up Rust and a cache for the `target/` folder using `dtolnay/rust-toolchain@stable` and `swatinem/rust-cache@v2`.
-4. Installs all the dependencies and run the build script (for the web app).
-5. Finally, it uses `tauri-apps/tauri-action@v0` to run `tauri build`, generate the artifacts, and create the GitHub release.
+1. 使用 `actions/checkout@v3 结帐资源库`
+2. 使用 `actions/setup-node@v3` 设置全局npm/yarn/pnpm 软件包数据的节点LTS和缓存。
+3. 使用 `dtolnay/rust-toolchain@stable` 和 `swatinem/rust-cache@v2` 为 `目标/` 文件夹设置Rust和缓存。
+4. 安装所有依赖关系并运行构建脚本(适用于 web 应用)。
+5. 最后，它使用 `tauri-apps/tauri-action@v0` 来运行 `tauri构建`, 生成工件，并创建GitHub 版本。
 
 ```yaml
-name: Release
-on:
-  push:
-    tags:
+名称
+发布于：
+  推送：
+    标签：
       - 'v*'
-  workflow_dispatch:
+  workflow_paich：
 
-jobs:
+jobs：
   release:
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [macos-latest, ubuntu-20.04, windows-latest]
+    strategy：
+      fail-fast：false
+      矩阵：
+        平台：[macos-latest, ubuntu-20。 4, windows-latest]
     runs-on: ${{ matrix.platform }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    步骤:
+      - 名称: 结帐仓库
+        使用: actions/checkout@v3
 
-      - name: Install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-20.04'
-        # You can remove libayatana-appindicator3-dev if you don't use the system tray feature.
-        run: |
+      - 名称: 安装依赖关系(仅在ubuntu)
+        如果矩阵的话。 latform == 'ubuntu-20.04'
+        # 如果您不使用系统托盘功能，您可以删除 libayatana-appindicator3-dev
+        运行：|
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev librsvg2-dev
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4 -dev libayatana-appindicator3-dev librsvg2-dev
 
-      - name: Rust setup
-        uses: dtolnay/rust-toolchain@stable
+      - 名称：Rust setup
+        uses: dtolnay/rust-toolchain@start
 
-      - name: Rust cache
+      - 名称：Rust cache
         uses: swatinem/rust-cache@v2
-        with:
-          workspaces: './src-tauri -> target'
+        with
+          workspaces: '. src-tauri -> target'
 
-      - name: Sync node version and setup cache
+      - 名称：同步节点版本和设置缓存
         uses: actions/setup-node@v3
-        with:
+        with
           node-version: 'lts/*'
-          cache: 'yarn' # Set this to npm, yarn or pnpm.
+          cache: 'yarn' # 将其设置为 npm, yarn 或 pnpm
 
-      - name: Install app dependencies and build web
-        # Remove `&& yarn build` if you build your frontend in `beforeBuildCommand`
-        run: yarn && yarn build # Change this to npm, yarn or pnpm.
+      - 名称：安装应用程序依赖关系并构建web
+        # 删除&& yarn build`，如果你在 `pre-BuildCommand`
+        运行：yarn && yarn building # 将其更改为 npm， yarn 或 pnpm
 
-      - name: Build the app
-        uses: tauri-apps/tauri-action@v0
+      - 名称：生成应用程序
+        用法：tauri-apps/tauri-action@v0
 
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: ${{ github.ref_name }} # This only works if your workflow triggers on new tags.
-          releaseName: 'App Name v__VERSION__' # tauri-action replaces \_\_VERSION\_\_ with the app version.
-          releaseBody: 'See the assets to download and install this version.'
+        env：
+          GITHUB_TOKEN：${{ secrets.GITHUB_TOKEN }}
+        与
+          标签：${{ github.ref_name }} # 只有当您的工作流触发到新标签时才能使用。
+          releaseName: 'App name v__VERSION__' # tauri-action replace \_\_VERSION\__
+          releaseBody：“查看要下载并安装此版本的资源。”
           releaseDraft: true
           prerelease: false
 ```
 
-### GitHub Environment Token
+### GitHub 环境令牌
 
-The GitHub Token is automatically issued by GitHub for each workflow run without further configuration, which means there is no risk of secret leakage. This token however only has read permissions by default and you may get a "Resource not accessible by integration" error when running the workflow. If this happens, you may need to add write permissions to this token. To do this go to your GitHub Project Settings, and then select Actions, scroll down to "Workflow permissions" and check "Read and write permissions".
+GitHub Token 是由 GitHub 自动为每次运行的工作流发布的，无需进一步配置，这意味着不存在秘密泄漏的风险。 但这个令牌在运行工作流时仅有读取权限，您可能会得到一个“无法通过集成访问的资源”错误。 如果发生这种情况，您可能需要添加此令牌的写权限。 要做到这一点，请前往您的GitHub 项目设置，然后选择动作，向下滚动到"工作流权限"并检查"读写权限"。
 
-You can see the GitHub Token being passed to the workflow below:
+您可以看到GitHub 令牌传递到下面的工作流：
 
 ```yaml
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-### Usage Notes
+### 使用说明
 
-Make sure to check the [documentation for GitHub Actions][github actions] to understand better how this workflow works. Take care to read the [Usage limits, billing, and administration][usage limits billing and administration] documentation for GitHub Actions. Some project templates may already implement this GitHub action workflow, such as [tauri-svelte-template][]. You can use this action on a repo that doesn't have Tauri configured. Tauri automatically initializes before building and configuring it to use your web artifacts.
+请务必检查 GitHub 动作</a> 的 文档，以更好地了解此工作流程是如何运作的。 注意阅读GitHub 操作的 [使用限额、账单和管理][usage limits billing and administration] 文档。 一些项目模板可能已经实现此 GitHub 动作工作流程，如 [tauri-svelte模板][]。 您可以在未配置Tauri的仓库中使用此操作。 在构建之前自动初始化并配置它来使用您的 web 工艺品。</p>
 
-[Tauri Action]: https://github.com/tauri-apps/tauri-action
-[Tauri Action production build workflow example]: https://github.com/tauri-apps/tauri-action#creating-a-release-and-uploading-the-tauri-bundles
-[GitHub Actions]: https://docs.github.com/en/actions
-[github actions]: https://docs.github.com/en/actions
+[Tauri 操作]: https://github.com/tauri-apps/tauri-action
+[Tauri Action production buildflow example]: https://github.com/tauri-apps/tauri-action#creating-a-release-and-uploading-the-tauri-bundles
+[GitHub 操作]: https://docs.github.com/en/actions
 [usage limits billing and administration]: https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration
-[tauri-svelte-template]: https://github.com/probablykasper/tauri-svelte-template
-[Windows Code Signing with GitHub Actions]: ../distribution/sign-windows.md#bonus-sign-your-application-with-github-actions
-[macOS Code Signing with GitHub Actions]: ../distribution/sign-macos.md#example
+[tauri-svelte模板]: https://github.com/probablykasper/tauri-svelte-template
+[使用 GitHub 操作符号签名]: ../distribution/sign-windows.md#bonus-sign-your-application-with-github-actions
+[使用 GitHub 操作 macOS 代码签名]: ../distribution/sign-macos.md#example
