@@ -1,88 +1,88 @@
 ---
-sidebar_label: Windows Code Signing
+sidebar_label: Windowsコード署名
 sidebar_position: 2
 ---
 
-# Windows - Code signing guide locally & with GitHub Actions
+# Windows - コード署名ガイド & GitHub Actions
 
-## Intro
+## はじめに
 
-Code signing your application lets users know that they downloaded the official executable of your app and not some 3rd party malware that poses as your app. While it is not required, it improves users' confidence in your app.
+コード署名を使用すると、アプリケーションの公式実行ファイルをダウンロードし、アプリとしてポーズを取るサードパーティのマルウェアではないことをユーザーに知らせることができます。 必須ではありませんが、アプリに対するユーザーの信頼性が向上します。
 
-## Prerequisites
+## 前提条件
 
-- Windows - you can likely use other platforms, but this tutorial uses Powershell native features.
-- A working Tauri application
-- Code signing certificate - you can acquire one of these on services listed in [Microsoft's docs][]. There are likely additional authorities for non-EV certificates than included in that list, please compare them yourself and choose one at your own risk.
-  - Please make sure to get a **code signing** certificate, SSL certificates do not work!
+- Windows - おそらく他のプラットフォームを使用することはできますが、このチュートリアルではPowershellネイティブ機能を使用します。
+- 動作中の牡牛座アプリケーション
+- コード署名証明書 - [Microsoftのドキュメント][] に記載されているサービスでこれらのいずれかを取得できます。 そのリストに含まれている以外のEV以外の証明書については、当局が追加されている可能性があります。それらを自分で比較し、自己責任で選択してください。
+  - **コード** 証明書を取得してください。SSL 証明書が動作しません！
 
-This guide assumes that you have a standard code signing certificate> If you have an EV certificate, which generally involves a hardware token, please follow your issuer's documentation instead.
+このガイドでは、標準コード署名証明書があることを前提としています> EV証明書をお持ちの場合。 一般的にハードウェアトークンが関与します代わりに発行者の書類に従ってください
 
 :::note
 
-If you sign the app with an EV Certificate, it'll receive an immediate reputation with Microsoft SmartScreen and won't show any warnings to users.
+EV証明書を使用してアプリに署名すると、Microsoft SmartScreenで即座に評判が得られ、ユーザーに警告は表示されません。
 
-If you opt for an OV Certificate, which is generally cheaper and available to individuals, Microsoft SmartScreen will still show a warning to users when they download the app. It might take some time until your certificate builds enough reputation. You may opt for [submitting your app][] to Microsoft for manual review. Although not guaranteed, if the app does not contain any malicious code, Microsoft may grant additional reputation and potentially remove the warning for that specific uploaded file.
+一般的に安価で個人が利用できるOV証明書を選ぶ場合 Microsoft SmartScreenは、ユーザーがアプリをダウンロードしたときに警告を表示します。 証明書が十分な評判を築くまでには時間がかかる場合があります。 [アプリを送信する][] をマイクロソフトに手動で確認することができます。 保証されませんが、アプリに悪意のあるコードが含まれていない場合。 Microsoftは追加の評判を付与し、特定のアップロードされたファイルの警告を削除する可能性があります。
 
 :::
 
-## Getting Started
+## はじめに
 
-There are a few things we have to do to get Windows prepared for code signing. This includes converting our certificate to a specific format, installing this certificate, and decoding the required information from the certificate.
+Windowsをコード署名用に準備させるためには、いくつかのことをしなければなりません。 これには、当社の証明書を特定のフォーマットに変換し、この証明書をインストールし、証明書から必要な情報をデコードすることが含まれます。
 
-### A. Convert your `.cer` to `.pfx`
+### A. `.cer` を `.pfx` に変換する
 
-1. You will need the following:
+1. 以下が必要です:
 
-   - certificate file (mine is `cert.cer`)
-   - private key file (mine is `private-key.key`)
+   - 証明書ファイル(mine は `cert.cer`)
+   - 秘密キーファイル（mineは `private-key.key`）
 
-2. Open up a command prompt and change to your current directory using `cd Documents/Certs`
+2. コマンドプロンプトを開き、 `cd Documents/Certs` を使用して現在のディレクトリに変更します
 
-3. Convert your `.cer` to a `.pfx` using `openssl pkcs12 -export -in cert.cer -inkey private-key.key -out certificate.pfx`
+3. `.cer` を `.pfx` に `openssl pkcs12 -export in cert.cer -inkey private-key.key -out certificate.pfx`
 
-4. You should be prompted to enter an export password **DON'T FORGET IT!**
+4. エクスポートパスワードの入力を求められる必要があります **忘れないでください!**
 
-### B. Import your `.pfx` file into the keystore.
+### B. キーストアに `.pfx` ファイルをインポートします。
 
-We now need to import our `.pfx` file.
+次に、 `.pfx` ファイルをインポートする必要があります。
 
-1. Assign your export password to a variable using `$WINDOWS_PFX_PASSWORD = 'MYPASSWORD'`
+1. `$WINDOWS_PFX_PASSWORD = 'MYPASSWORD'` を使用して、エクスポートパスワードを変数に割り当てます
 
-2. Now Import the certificate using `Import-PfxCertificate -FilePath Certs/certificate.pfx -CertStoreLocation Cert:\CurrentUser\My -Password (ConvertTo-SecureString -String $env:WINDOWS_PFX_PASSWORD -Force -AsPlainText)`
+2. `Import-PfxCertificate -FilePath Certificate -Certificate.pfx -CertStoreLocation Cert:\CurrentUser\My -Password (ConvertTo-SecureString -String $env:WINDOWS_PFX_PASSWORD -Force -AsPlainText)`
 
-### C. Prepare Variables
+### C. 変数の準備
 
-1. We need the SHA-1 thumbprint of the certificate; you can get this using `openssl pkcs12 -info -in certificate.pfx` and look under for following
+1. 証明書の SHA-1 サムネイルが必要です。これは `openssl pkcs12 -info in-certificate.pfx` で取得し、以下を参照してください。
 
 ```
-Bag Attributes
-    localKeyID: A1 B1 A2 B2 A3 B3 A4 B4 A5 B5 A6 B6 A7 B7 A8 B8 A9 B9 A0 B0
+バッグ属性
+    localKeyID: A1 B1 A2 A2 A3 A4 A4 A4 A5 A5 A6 A6 A7 A7 A8 A9 B9 A0 B0
 ```
 
-2. You will capture the `localKeyID` but with no spaces, in this example, it would be `A1B1A2B2A3B3A4B4A5B5A6B6A7B7A8B8A9B9A0B0`. This is our `certificateThumbprint`.
+2. `localKeyID` をキャプチャしますが、スペースはありません。この例では、 `A1B1A2B2A2B2A3B3A4B4A5B5A6B6A7B7A8A9B9A0B0B0` になります。 これは `certificateThumbprint` です。
 
-3. We need the SHA digest algorithm used for your certificate (Hint: this is likely `sha256`
+3. 証明書に使用されるSHAダイジェストアルゴリズムが必要です（ヒント：これは可能性が `sha256`
 
-4. We also need a timestamp URL; this is a time server used to verify the time of the certificate signing. I'm using `http://timestamp.comodoca.com`, but whoever you got your certificate from likely has one as well.
+4. タイムスタンプURLも必要です。これは証明書署名の時刻を確認するために使用されるタイムサーバーです。 私は `http://timestamp.comodoca.com`を使用していますが、あなたが証明書を取得した人も同様に1つ持っています。
 
-## Prepare `tauri.conf.json` file
+## `tauri.conf.json` ファイルを準備する
 
 1. Now that we have our `certificateThumbprint`, `digestAlgorithm`, & `timestampUrl` we will open up the `tauri.conf.json`.
 
-2. In the `tauri.conf.json` you will look for the `tauri` -> `bundle` -> `windows` section. You see, there are three variables for the information we have captured. Fill it out like below.
+2. `tauri.conf.json` で `tauri` -> `bundle` -> `windows` セクションを探します。 ご覧の通り３つの変数が捕捉されています 以下のように記入してください。
 
 ```json tauri.conf.json
 "windows": {
-        "certificateThumbprint": "A1B1A2B2A3B3A4B4A5B5A6B6A7B7A8B8A9B9A0B0",
+        "certificateThumbprint": "A1B1A2B2A3B3A4B4A5B5A6A6A7B7A8B8A9A9B8A9A0B0B0",
         "digestAlgorithm": "sha256",
         "timestampUrl": "http://timestamp.comodoca.com"
 }
 ```
 
-3. Save and run `yarn | yarn build`
+3. 保存して実行 `yarn | yarn build`
 
-4. In the console output, you should see the following output.
+4. コンソール出力では、次の出力が表示されます。
 
 ```
 info: signing app
@@ -90,39 +90,39 @@ info: running signtool "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.190
 info: "Done Adding Additional Store\r\nSuccessfully signed: APPLICATION FILE PATH HERE
 ```
 
-Which shows you have successfully signed the `.exe`.
+`.exe` に正常に署名したことを示します。
 
-And that's it! You have successfully signed your .exe file.
+そしてそれはそれ! .exeファイルに正常に署名しました。
 
-## BONUS: Sign your application with GitHub Actions.
+## BONUS: GitHub Actionsでアプリケーションに署名します。
 
-We can also create a workflow to sign the application with GitHub actions.
+また、GitHub のアクションでアプリケーションに署名するワークフローを作成することもできます。
 
 ### GitHub Secrets
 
-We need to add a few GitHub secrets for the proper configuration of the GitHub Action. These can be named however you would like.
+GitHub Actionの適切な設定のために、いくつかのGitHubシークレットを追加する必要があります。 これらはあなたが望むだろうが、名前を付けることができます。
 
-- You can view the [encrypted secrets][] guide on how to add GitHub secrets.
+- GitHubの秘密を追加する方法については、 [暗号化された秘密][] ガイドをご覧ください。
 
-The secrets we used are as follows
+使用した秘密は以下の通りです
 
-|         GitHub Secrets         |                                                        Value for Variable                                                         |
-|:------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------:|
-|      WINDOWS_CERTIFICATE       | Base64 encoded version of your .pfx certificate, can be done using this command `certutil -encode certificate.pfx base64cert.txt` |
-| WINDOWS_CERTIFICATE_PASSWORD |                                 Certificate export password used on creation of certificate .pfx                                  |
+|         GitHub Secrets         |                                                   変数の値                                                   |
+|:------------------------------:|:--------------------------------------------------------------------------------------------------------:|
+|      WINDOWS_CERTIFICATE       | .pfx 証明書の Base64 エンコードされたバージョンは、このコマンド `certutil -encode certificate.pfx base64cert.txt` を使用して行うことができます。 |
+| WINDOWS_CERTIFICATE_PASSWORD |                     Certificate export password used on creation of certificate .pfx                     |
 
-### Workflow Modifications
+### ワークフローの変更
 
-1. We need to add a step in the workflow to import the certificate into the Windows environment. This workflow accomplishes the following
+1. 証明書を Windows 環境にインポートするには、ワークフローにステップを追加する必要があります。 このワークフローは以下を達成します
 
-   1. Assign GitHub secrets to environment variables
-   2. Create a new `certificate` directory
-   3. Import `WINDOWS_CERTIFICATE` into tempCert.txt
-   4. Use `certutil` to decode the tempCert.txt from base64 into a `.pfx` file.
-   5. Remove tempCert.txt
-   6. Import the `.pfx` file into the Cert store of Windows & convert the `WINDOWS_CERTIFICATE_PASSWORD` to a secure string to be used in the import command.
+   1. GitHub のシークレットを環境変数に割り当てる
+   2. 新しい `証明書` ディレクトリを作成
+   3. `WINDOWS_CERTIFICATE` を tempCert.txt にインポート
+   4. `certutil` を使用して、tempCert.txt を base64 から `.pfx` ファイルにデコードします。
+   5. tempCert.txt を削除
+   6. `をインポートします。 fx <code>` ファイルを Windows の Cert store に変換 & インポートコマンドで使用する安全な文字列に `WINDOWS_CERTIFICATE_PASSWORD` を変換します。
 
-2. We will be using the [`tauri-action` publish template][].
+2. [`tauri-action` 公開テンプレート][] を使用します。
 
 ```yml
 name: 'publish'
@@ -164,10 +164,10 @@ jobs:
           releaseName: 'App v__VERSION__'
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true
-          prerelease: false
+          プレリリース: false
 ```
 
-3. Right above `-name: install app dependencies and build it` you will want to add the following step
+3. 右上の `-name: アプリの依存関係をインストールしてビルド` 次のステップを追加します。
 
 ```yml
 - name: import windows certificate
@@ -183,11 +183,11 @@ jobs:
     Import-PfxCertificate -FilePath certificate/certificate.pfx -CertStoreLocation Cert:\CurrentUser\My -Password (ConvertTo-SecureString -String $env:WINDOWS_CERTIFICATE_PASSWORD -Force -AsPlainText)
 ```
 
-4. Save and push to your repo.
+4. 保存してリポジトリにプッシュします。
 
-5. Your workflow can now import your windows certificate and import it into the GitHub runner, allowing for automated code-signing!
+5. ワークフローで windows 証明書をインポートして GitHub ランナーにインポートできるようになり、自動的なコード署名が可能になりました。
 
-[Microsoft's docs]: https://learn.microsoft.com/en-us/windows-hardware/drivers/dashboard/code-signing-cert-manage
-[submitting your app]: https://www.microsoft.com/en-us/wdsi/filesubmission/
-[encrypted secrets]: https://docs.github.com/en/actions/reference/encrypted-secrets
-[`tauri-action` publish template]: https://github.com/tauri-apps/tauri-action
+[Microsoftのドキュメント]: https://learn.microsoft.com/en-us/windows-hardware/drivers/dashboard/code-signing-cert-manage
+[アプリを送信する]: https://www.microsoft.com/en-us/wdsi/filesubmission/
+[暗号化された秘密]: https://docs.github.com/en/actions/reference/encrypted-secrets
+[`tauri-action` 公開テンプレート]: https://github.com/tauri-apps/tauri-action
