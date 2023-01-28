@@ -1,45 +1,44 @@
-import Tabs from '@theme/Tabs'
-import TabItem from '@theme/TabItem'
+importer des onglets depuis '@theme/Tabs' importer TabItem depuis '@theme/TabItem'
 
 # Selenium
 
-:::info Example Application
-This [Selenium][] guide expects you to have already gone through the [example Application setup][] to follow step-by-step. The general information may still be helpful otherwise.
+:::info Exemple d'Application
+Ce guide [Sélénium][] attend que vous ayez déjà parcouru l' [exemple d'installation de l'application][] pour suivre étape par étape. Les informations générales peuvent encore être utiles autrement.
 :::
 
-This WebDriver testing example will use [Selenium][] and a popular Node.js testing suite. You are expected to already have Node.js installed, along with `npm` or `yarn` although the [finished example project][] uses `yarn`.
+Cet exemple de test WebDriver utilisera [Selenium][] et une suite de tests Node.js populaire. Vous devez déjà avoir nœud. s installés, avec `npm` ou `yarn` bien que le [projet d'exemple fini][] utilise `yarn`.
 
-## Create a Directory for the Tests
+## Créer un répertoire pour les tests
 
-Let's create a space to write these tests in our project. We will be using a nested directory for this example project as we will later also go over other frameworks, but typically you will only need to use one. Create the directory we will use with `mkdir -p webdriver/selenium`. The rest of this guide will assume you are inside the `webdriver/selenium` directory.
+Créons un espace pour écrire ces tests dans notre projet. Nous utiliserons un répertoire imbriqué pour ce projet d'exemple car nous passerons plus tard à d'autres frameworks, mais en général, vous n'aurez besoin que d'en utiliser un. Créez le répertoire que nous utiliserons avec `mkdir -p webdriver/sélénium`. Le reste de ce guide supposera que vous êtes à l'intérieur du répertoire `webdriver/sélénium`.
 
-## Initializing a Selenium Project
+## Initialisation d'un projet Selenium
 
-We will be using a pre-existing `package.json` to bootstrap this test suite because we have already chosen specific dependencies to use and want to showcase a simple working solution. The bottom of this section has a collapsed guide on how to set it up from scratch.
+Nous utiliserons un package `préexistant. son` pour amorcer cette suite de tests parce que nous avons déjà choisi des dépendances spécifiques à utiliser et que nous voulons présenter une solution de travail simple. Le bas de cette section a un guide réduit sur la façon de le configurer à partir de zéro.
 
 `package.json`:
 
 ```json
 {
-  "name": "selenium",
-  "version": "1.0.0",
+  "name": "sélénium",
+  "version": "1.0. ",
   "private": true,
   "scripts": {
     "test": "mocha"
   },
-  "dependencies": {
-    "chai": "^4.3.4",
+  "dépendances": {
+    "chai": "^4. .4",
     "mocha": "^9.0.3",
-    "selenium-webdriver": "^4.0.0-beta.4"
+    "sélénium-webdriver": "^4.0.0-beta.4"
   }
 }
 ```
 
-We have a script that runs [Mocha][] as a test framework exposed as the `test` command. We also have various dependencies that we will be using to run the tests. [Mocha][] as the testing framework, [Chai][] as the assertion library, and [`selenium-webdriver`][] which is the Node.js [Selenium][] package.
+Nous avons un script qui exécute [Mocha][] en tant que framework de test exposé comme la commande `test`. Nous avons également différentes dépendances que nous utiliserons pour exécuter les tests. [Mocha][] comme le framework de test, [Chai][] comme la bibliothèque d'assertion, et [`sélénium-webdriver`][] qui est le noeud. s [Sélénium][] paquet.
 
-<details><summary>Click me if you want to see how to set a project up from scratch</summary>
+<details><summary>Cliquez sur moi si vous voulez voir comment configurer un projet à partir de zéro</summary>
 
-If you want to install the dependencies from scratch, just run the following command.
+Si vous voulez installer les dépendances à partir de zéro, lancez la commande suivante.
 
 <Tabs groupId="package-manager"
 defaultValue="yarn"
@@ -63,7 +62,7 @@ yarn add mocha chai selenium-webdriver
 </TabItem>
 </Tabs>
 
-I suggest also adding a `"test": "mocha"` item in the `package.json` `"scripts"` key so that running Mocha can be called simply with
+Je suggère également d'ajouter un élément `"test": "mocha"` dans le paquet `. fils` `clé "scripts"` pour que Mocha en cours d'exécution puisse être appelée simplement avec
 
 <Tabs groupId="package-manager"
 defaultValue="yarn"
@@ -89,9 +88,9 @@ yarn test
 
 </details>
 
-## Testing
+## Tests en cours
 
-Unlike the [WebdriverIO Test Suite](webdriverio#config), Selenium does not come out of the box with a Test Suite and leaves it up to the developer to build those out. We chose [Mocha][], which is pretty neutral and not related to WebDrivers, so our script will need to do a bit of work to set up everything for us in the correct order. [Mocha][] expects a testing file at `test/test.js` by default, so let's create that file now.
+Contrairement à la [suite de test WebdriverIO](webdriverio#config), Le sélénium ne sort pas de la boîte avec une suite de test et laisse au développeur le soin de les construire. Nous avons choisi [Mocha][], qui est assez neutre et non lié aux WebDrivers, donc notre script devra faire un peu de travail pour tout mettre en place dans le bon ordre. [Mocha][] attend un fichier de test à `test/test.js` par défaut, alors créons ce fichier maintenant.
 
 `test/test.js`:
 
@@ -102,87 +101,88 @@ const { expect } = require('chai')
 const { spawn, spawnSync } = require('child_process')
 const { Builder, By, Capabilities } = require('selenium-webdriver')
 
-// create the path to the expected application binary
-const application = path.resolve(
+// crée le chemin vers le binaire d'application attendu
+const application = path. esolve(
   __dirname,
   '..',
   '..',
-  '..',
+  '. ',
   'target',
   'release',
   'hello-tauri-webdriver'
 )
 
-// keep track of the webdriver instance we create
+// gardez la trace de l'instance du webdriver que nous créons
 let driver
 
-// keep track of the tauri-driver process we start
+// gardez la trace du processus tauri-driver que nous lançons
 let tauriDriver
 
 before(async function () {
-  // set timeout to 2 minutes to allow the program to build if it needs to
-  this.timeout(120000)
+  // set timeout to 2 minutes to allow the program to build if it need to
+  this. imeout(120000)
 
-  // ensure the program has been built
+  // s'assurer que le programme a été construit
   spawnSync('cargo', ['build', '--release'])
 
-  // start tauri-driver
+  // démarre tauri-driver
   tauriDriver = spawn(
-    path.resolve(os.homedir(), '.cargo', 'bin', 'tauri-driver'),
+    chemin. esolve(os.homedir(), '.cargo', 'bin', 'tauri-driver'),
     [],
-    { stdio: [null, process.stdout, process.stderr] }
+    { stdio: [null, process. tdout, process.stderr] }
   )
 
-  const capabilities = new Capabilities()
-  capabilities.set('tauri:options', { application })
-  capabilities.setBrowserName('wry')
+  capacités const = nouvelles capacités()
+  capacités. et('tauri:options', { application })
+  capacités. etBrowserName('wry')
 
-  // start the webdriver client
-  driver = await new Builder()
-    .withCapabilities(capabilities)
+  // démarre le client webdriver
+  driver = attend new Builder()
+    . ithCapabilities(capacités)
     .usingServer('http://localhost:4444/')
-    .build()
+    . uild()
 })
 
 after(async function () {
-  // stop the webdriver session
-  await driver.quit()
+  // arrête la session webdriver
+  attendent le pilote. uit()
 
-  // kill the tauri-driver process
-  tauriDriver.kill()
+  // tue le processus tauri-driver
+  tauriDriver. ill()
 })
 
-describe('Hello Tauri', () => {
-  it('should be cordial', async () => {
-    const text = await driver.findElement(By.css('body > h1')).getText()
-    expect(text).to.match(/^[hH]ello/)
+describe('Bonjour Tauri', () => {
+  it('doit être cordial', async () => {
+    const text = wait driver. 
+ indElement(By. ss('body > h1')).getText()
+    expect(text).to. atch(/^[hH]ello/)
   })
 
-  it('should be excited', async () => {
-    const text = await driver.findElement(By.css('body > h1')).getText()
-    expect(text).to.match(/!$/)
+  it('doit être excité', async () => {
+    const text = wait driver. indElement(By.css('body > h1')).getText()
+    expect(text).to. atch(/! /)
   })
 
-  it('should be easy on the eyes', async () => {
-    // selenium returns color css values as rgb(r, g, b)
-    const text = await driver
-      .findElement(By.css('body'))
-      .getCssValue('background-color')
+  it('doit être facile aux yeux', async () => {
+    // le sélénium retourne les valeurs de couleur css en tant que rgb(r, g, b)
+    texte const = attendre le pilote
+      . indElement(By.css('body'))
+      . etCssValue('background-color')
 
     const rgb = text.match(/^rgb\((?<r>\d+), (?<g>\d+), (?<b>\d+)\)$/).groups
-    expect(rgb).to.have.all.keys('r', 'g', 'b')
+    expect(rgb).to.have ll.keys('r', 'g', 'b')
 
-    const luma = 0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b
+    const luma = 0.2126 * rgb.r + 0.7152 * rgb.g + 0. 722 * rgb.b
     expect(luma).to.be.lessThan(100)
   })
 })
 ```
 
-If you are familiar with JS testing frameworks, `describe`, `it`, and `expect` should look familiar. We also have semi-complex `before()` and `after()` callbacks to setup and teardown mocha. Lines that are not the tests themselves have comments explaining the setup and teardown code. If you were familiar with the Spec file from the [WebdriverIO example](webdriverio#spec), you notice a lot more code that isn't tests, as we have to set up a few more WebDriver related items.
+Si vous êtes familier avec les frameworks de test JavaScript, `décrivez`, `il`, et `attendez-vous à` devrait avoir l'air familier. Nous avons également des fonctions de rappel semi-complexes `avant()` et `after()` à configurer et déchirer mocha. Les lignes qui ne sont pas les tests eux-mêmes ont des commentaires expliquant la configuration et le code décomposé. Si vous étiez familier avec le fichier Spec de l'exemple [WebdriverIO](webdriverio#spec), vous remarquez beaucoup plus de code qui n'est pas des tests, car nous devons configurer quelques éléments liés à WebDriver supplémentaires.
 
-## Running the Test Suite
+## Exécution de la suite de test
 
-Now that we are all set up with our dependencies and our test script, let's run it!
+Maintenant que nous sommes tous configurés avec nos dépendances et notre script de test, nous allons l'exécuter!
 
 <Tabs groupId="package-manager"
 defaultValue="yarn"
@@ -206,32 +206,36 @@ yarn test
 </TabItem>
 </Tabs>
 
-We should see output the following output:
+Nous devrions voir la sortie suivante :
 
 ```text
-➜  selenium git:(main) ✗ yarn test
-yarn run v1.22.11
+<unk> selenium git:(main) <unk> yarn test
+yarn run v1.22. 1
 $ Mocha
 
 
-  Hello Tauri
-    ✔ should be cordial (120ms)
-    ✔ should be excited
-    ✔ should be easy on the eyes
+  Bonjour Tauri
+    ✔ devrait être cordial (120ms)
+    ✔ devrait être excité
+    ✔ devrait être facile sur les yeux
 
 
-  3 passing (588ms)
+  3 passant (588ms)
 
-Done in 0.93s.
+Terminé en 0. 3 secondes.
 ```
 
-We can see that our `Hello Tauri` sweet we created with `decribe` had all 3 items we created with `it` pass their tests!
+Nous pouvons voir que notre `Bonjour Tauri` doux que nous avons créé avec `decribe` a eu les 3 items que nous avons créés avec `il` passer leurs tests !
 
-With [Selenium][] and some hooking up to a test suite, we just enabled e2e testing without modifying our Tauri application at all!
+Avec [sélénium][] et un peu de raccordement à une suite de test, nous avons juste activé le test e2e sans modifier du tout notre application Tauri !
+
+[Sélénium]: https://selenium.dev/
 
 [Selenium]: https://selenium.dev/
-[finished example project]: https://github.com/chippers/hello_tauri
-[example Application setup]: ./setup.md
+
+[sélénium]: https://selenium.dev/
+[projet d'exemple fini]: https://github.com/chippers/hello_tauri
+[exemple d'installation de l'application]: ./setup.md
 [Mocha]: https://mochajs.org/
 [Chai]: https://www.chaijs.com/
-[`selenium-webdriver`]: https://www.npmjs.com/package/selenium-webdriver
+[`sélénium-webdriver`]: https://www.npmjs.com/package/selenium-webdriver
