@@ -1,22 +1,22 @@
-# Window Customization
+# ウィンドウのカスタマイズ
 
-Tauri provides lots of options for customizing the look and feel of your app's window. You can create custom titlebars, have transparent windows, enforce size constraints, and more.
+牡牛座は、アプリケーションのウィンドウのルックアンドフィールをカスタマイズするためのオプションの多くを提供します。 カスタムタイトルバーの作成、透明なウィンドウの作成、サイズ制約の適用などができます。
 
-## Configuration
+## 設定
 
-There are three ways to change the window configuration:
+ウィンドウの設定を変更するには、次の3つの方法があります。
 
-- [Through tauri.conf.json](../../api/config.md#tauri.windows)
-- [Through the JS API](../../api/js/window.md#webviewwindow)
-- [Through the Window in Rust](https://docs.rs/tauri/1/tauri/window/struct.Window.html)
+- [tauri.conf.jsonから](../../api/config.md#tauri.windows)
+- [JS APIを通じて](../../api/js/window.md#webviewwindow)
+- [Rust の窓を通して](https://docs.rs/tauri/1/tauri/window/struct.Window.html)
 
-## Creating a Custom Titlebar
+## カスタムタイトルバーの作成
 
-A common use of these window features is creating a custom titlebar. This short tutorial will guide you through that process.
+これらのウィンドウ機能の一般的な使用方法は、カスタムのタイトルバーを作成することです。 この短いチュートリアルでは、そのプロセスをご案内します。
 
 ### CSS
 
-You'll need to add some CSS for the titlebar to keep it at the top of the screen and style the buttons:
+タイトルバーにCSSを追加して、ボタンのスタイルを変更する必要があります。
 
 ```css
 .titlebar {
@@ -44,7 +44,7 @@ You'll need to add some CSS for the titlebar to keep it at the top of the screen
 
 ### HTML
 
-Now, you'll need to add the HTML for the titlebar. Put this at the top of your `<body>` tag:
+ここで、タイトルバーにHTMLを追加する必要があります。 `<body>` タグの上にこれを置いてください:
 
 ```html
 <div data-tauri-drag-region class="titlebar">
@@ -66,11 +66,11 @@ Now, you'll need to add the HTML for the titlebar. Put this at the top of your `
 </div>
 ```
 
-Note that you may need to move the rest of your content down so that the titlebar doesn't cover it.
+タイトルバーがカバーしていないように、残りのコンテンツを下に移動する必要がある場合があります。
 
 ### JS
 
-Finally, you'll need to make the buttons work:
+最後に、ボタンを動作させる必要があります。
 
 ```js
 import { appWindow } from '@tauri-apps/api/window'
