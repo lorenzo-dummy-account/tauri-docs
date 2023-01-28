@@ -2,26 +2,26 @@
 sidebar_position: 8
 ---
 
-# Embedding Additional Files
+# Incrustar archivos adicionales
 
-You may need to include additional files in your application bundle that aren't part of your frontend (your `distDir`) directly or which are too big to be inlined into the binary. We call these files `resources`.
+Puede que necesite incluir archivos adicionales en el paquete de su aplicación que no son parte de su frontend (su `distDir`) directamente o que son demasiado grandes para ser incrustados en el binario. Llamamos a estos archivos `recursos`.
 
-To bundle the files of your choice, you can add the `resources` property to the `tauri > bundle` object in your `tauri.conf.json` file.
+Para empaquetar los archivos de su elección, puedes añadir la propiedad `resources` al objeto `tauri > paquete` en tu tauri `. archivo onf.json`.
 
-See more about tauri.conf.json configuration [here][tauri.bundle].
+Vea más sobre la configuración de tauri.conf.json [aquí][tauri.bundle].
 
-`resources` expects a list of strings targeting files either with absolute or relative paths. It supports glob patterns in case you need to include multiple files from a directory.
+`recursos` espera una lista de archivos de cadenas de destino con rutas absolutas o relativas. Soporta patrones de glob en caso de que necesite incluir varios archivos de un directorio.
 
-Here is a sample to illustrate the configuration. This is not a complete `tauri.conf.json` file:
+Aquí hay una muestra para ilustrar la configuración. Este no es un archivo `tauri.conf.json`:
 
 ```json title=tauri.conf.json
 {
   "tauri": {
     "bundle": {
       "resources": [
-        "/absolute/path/to/textfile.txt",
-        "relative/path/to/jsonfile.json",
-        "resources/*"
+        "/absolute/path/to/textfile. xt",
+        "relative/path/to/jsonfile. hijo",
+        "recursos/*"
       ]
     },
     "allowlist": {
@@ -35,13 +35,13 @@ Here is a sample to illustrate the configuration. This is not a complete `tauri.
 
 :::note
 
-Absolute paths and paths containing parent components (`../`) can only be allowed via `"$RESOURCE/*"`. Relative paths like `"path/to/file.txt"` can be allowed explicitly via `"$RESOURCE/path/to/file.txt"`.
+Las rutas absolutas y las rutas que contienen componentes padre (`../`) sólo pueden permitirse a través de `"$RESOURCE/*"`. Rutas relativas como `"path/to/file.txt"` pueden permitirse explícitamente a través de `"$RESOURCE/path/to/file.txt"`.
 
 :::
 
-## Accessing files in JavaScript
+## Accediendo a archivos en JavaScript
 
-In this example we want to bundle additional i18n json files that look like this:
+En este ejemplo queremos empaquetar archivos i18n json adicionales que se ven así:
 
 ```json title=de.json
 {
@@ -50,54 +50,54 @@ In this example we want to bundle additional i18n json files that look like this
 }
 ```
 
-In this case, we store these files in a `lang` directory next to the `tauri.conf.json`. For this we add `"lang/*"` to `resources` and `$RESOURCE/lang/*` to the fs scope as shown above.
+En este caso, almacenamos estos archivos en un directorio `lang` junto al `tauri.conf.json`. Para esto sumamos `"lang/*"` a `recursos` y `$RESOURCE/lang/*` al ámbito fs como se muestra arriba.
 
-Note that you must configure the allowlist to enable `path > all` and the [`fs` APIs][] you need, in this example `fs > readTextFile`.
+Ten en cuenta que debes configurar la lista permitida para habilitar `ruta > todos` y [`fs` APIs][] que necesitas. en este ejemplo `fs > readTextFile`.
 
 ```javascript
-import { resolveResource } from '@tauri-apps/api/path'
-// alternatively, use `window.__TAURI__.path.resolveResource`
-import { readTextFile } from '@tauri-apps/api/fs'
-// alternatively, use `window.__TAURI__.fs.readTextFile`
+importar { resolveResource } desde '@tauri-apps/api/path'
+// alternativamente, usar `window.__TAURI__.path. esolveResource`
+importar { readTextFile } desde '@tauri-apps/api/fs'
+// alternativamente, usar `window.__TAURI__.fs.readTextFile`
 
-// `lang/de.json` is the value specified on `tauri.conf.json > tauri > bundle > resources`
+// `lang/de.json` es el valor especificado en `tauri. onf.json > tauri > bundle > resources`
 const resourcePath = await resolveResource('lang/de.json')
-const langDe = JSON.parse(await readTextFile(resourcePath))
+const langDe = JSON. arse(await readTextFile(resourcePath))
 
-console.log(langDe.hello) // This will print 'Guten Tag!' to the devtools console
+console.log(langDe.hello) // Esto imprimirá 'Guten Tag!' en la consola de devtools
 ```
 
-## Accessing files in Rust
+## Acceder a archivos en Rust
 
-This is based on the example above. On the Rust side you need an instance of the [`PathResolver`][] which you can get from [`App`][] and [`AppHandle`][]:
+Esto se basa en el ejemplo anterior. En el lado de Rust necesitas una instancia del [`PathResolver`][] que puedes obtener de [`App`][] y [`AppHandle`][]:
 
 ```rust
 tauri::Builder::default()
   .setup(|app| {
     let resource_path = app.path_resolver()
-      .resolve_resource("lang/de.json")
-      .expect("failed to resolve resource");
+      .resolve_resource("lang/de. hijo")
+      . xpect("failed to resolve resource");
 
-    let file = std::fs::File::open(&resource_path).unwrap();
+    let file = std::fs::File::open(&resource_path). nwrap();
     let lang_de: serde_json::Value = serde_json::from_reader(file).unwrap();
 
-    println!("{}", lang_de.get("hello").unwrap()); // This will print 'Guten Tag!' to the terminal
+    println!("{}", lang_de. et("hola").unwrap()); // Esto imprimirá 'Guten Tag!' en el terminal
 
     Ok(())
-  })
+})
 ```
 
 ```rust
 #[tauri::command]
-fn hello(handle: tauri::AppHandle) -> String {
-   let resource_path = handle.path_resolver()
+fn hola(handle: tauri::AppHandle) -> String {
+   let resource_path = handle. ath_resolver()
       .resolve_resource("lang/de.json")
-      .expect("failed to resolve resource");
+      . xpect("failed to resolve resource");
 
-    let file = std::fs::File::open(&resource_path).unwrap();
+    let file = std::fs::File::open(&resource_path). nwrap();
     let lang_de: serde_json::Value = serde_json::from_reader(file).unwrap();
 
-    lang_de.get("hello").unwrap()
+    lang_de.get("hola").unwrap()
 }
 ```
 
