@@ -101,7 +101,7 @@ Our Cargo Project now knows how to pull in and build our Tauri dependencies with
 
 ```rust
 fn main() {
-    tauri::Builder::default()
+    tauri:: Builder::default()
         .run(tauri::generate_context!())
         .expect("unable to run Tauri application");
 }
