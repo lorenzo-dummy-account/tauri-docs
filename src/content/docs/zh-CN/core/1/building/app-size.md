@@ -2,132 +2,132 @@
 sidebar_position: 6
 ---
 
-# Reducing App Size
+# 减少应用大小
 
-With Tauri, we are working to reduce the environmental footprint of applications by using fewer system resources where available, providing compiled systems that don't need runtime evaluation, and offering guides so that engineers can go even smaller without sacrificing performance or security. By saving resources we are doing our part to help you help us save the planet -- which is the only bottom line that companies in the 21st Century should care about.
+我们正在与Tauri合作，利用现有的系统资源减少应用的环境足迹。 提供不需要运行时评价的编译系统，并提供指南，以便工程师能够在不牺牲性能或安全的情况下更小一些。 通过节省资源，我们正在尽自己的努力帮助我们拯救地球——这是21世纪公司应该关心的唯一底线。
 
-So if you are interested in learning how to improve your app size and performance, read on!
+所以，如果您有兴趣学习如何提高您的应用大小和性能，请阅读！
 
-### You can't improve what you can't measure
+### 您不能改进您无法测量的内容
 
-Before you can optimize your app, you need to figure out what takes up space in your app! Here are a couple of tools that can assist you with that:
+在你可以优化你的应用之前，你需要找到你应用中占用的空间！ 这里有几个工具可以帮助您：
 
-- **`cargo-bloat`** - A Rust utility to determine what takes the most space in your app. It gives you an excellent, sorted overview of the most significant Rust functions.
+- **`货运博客`** - 用于确定您应用中占用最多空间的橡胶。 它为您提供了一个精彩、分类的最重要的Rust功能概述。
 
-- **`cargo-expand`** - [Macros][] make your rust code more concise and easier to read, but they are also hidden size traps! Use [`cargo-expand`][cargo-expand] to see what those macros generate under the hood.
+- **`货物展开`** - [宏][] 使您的rust 代码更简洁，更容易阅读， 但它们也是隐藏的尺寸陷阱！ 使用 [`货物扩展`][cargo-expand] 查看这些宏在立刻下产生了什么。
 
-- **`rollup-plugin-visualizer`** - A tool that generates beautiful (and insightful) graphs from your rollup bundle. Very convenient for figuring out what JavaScript dependencies contribute to your final bundle size the most.
+- **`滚动插件可视化器`** - 一个从你的滚动包生成美丽(和洞察)图形的工具。 非常方便地查出JavaScript依赖关系对您的最后捆绑大小起到的作用。
 
-- **`rollup-plugin-graph`** - You noticed a dependency included in your final frontend bundle, but you are unsure why? [`rollup-plugin-graph`][rollup-plugin-graph] generates Graphviz-compatible visualizations of your entire dependency graph.
+- **`滚动插件图`** - 你注意到一个依赖关系包含在你的最后前端包中，但你为什么不确定？ [`滚动插件图`][rollup-plugin-graph] 生成您整个依赖图的 Graphviz-compatible 直观图像。
 
-These are just a couple of tools that you might use. Make sure to check your frontend bundlers plugin list for more!
+这些只是你可以使用的几个工具。 请确保检查您的前端捆包插件列表更多！
 
 ## Checklist
 
-1. [Minify Javascript](#minify-javascript)
-2. [Optimize Dependencies](#optimize-dependencies)
-3. [Optimize Images](#optimize-images)
-4. [Remove Unnecessary Custom Fonts](#remove-unnecessary-custom-fonts)
-5. [Allowlist Config](#allowlist-config)
-6. [Rust Build-time Optimizations](#rust-build-time-optimizations)
-7. [Stripping](#stripping)
+1. [最小化 Javascript](#minify-javascript)
+2. [优化依赖关系](#optimize-dependencies)
+3. [优化图像](#optimize-images)
+4. [删除不需要的自定义字体](#remove-unnecessary-custom-fonts)
+5. [允许列表配置](#allowlist-config)
+6. [Rust 生成时间优化](#rust-build-time-optimizations)
+7. [正在拆解](#stripping)
 8. [UPX](#upx)
 
-### Minify JavaScript
+### 最小化 JavaScript
 
-JavaScript makes up a large portion of a typical Tauri app, so it's important to make the JavaScript as lightweight as possible.
+JavaScript 在典型的Tauri应用程序中占很大比例，因此使JavaScript尽可能轻的重量变得非常重要。
 
-You can choose from a plethora of JavaScript bundlers; popular choices are [Vite][], [webpack][], and [rollup][]. All of them can produce minified JavaScript if configured correctly, so consult your bundler documentation for specific options. Generally speaking, you should make sure to:
+您可以从过多的 JavaScript 捆绑包中选择；热门选项是 [Vite][], [webpack][], 和 [滚动][] 如果配置正确，所有它们都可以生成迷你的 JavaScript，所以请参阅您的 bundler 文档以获取特定的选项。 一般来说，你应该确保：
 
-#### Enable tree shaking
+#### 启用树摇动
 
-This option removes unused JavaScript from your bundle. All popular bundlers enable this by default.
+此选项将从您的捆包中删除未使用的 JavaScript。 所有流行的捆绑程序默认启用此功能。
 
-#### Enable minification
+#### 启用最小化
 
-Minification removes unnecessary whitespace, shortens variable names, and applies other optimizations. Most bundlers enable this by default; a notable exception is [rollup][], where you need plugins like [rollup-plugin-terser][] or [rollup-plugin-uglify][].
+最小化会移除不必要的空白，缩短变量名称，并应用其他优化。 大多数绑定程序默认启用此功能； 一个值得注意的异常是 [滚动][], 在那里你需要像 [滚动插件][] 或 [滚动插件][] 这样的插件。
 
-Note: You can use minifiers like [terser][] and [esbuild][] as standalone tools.
+注意：您可以使用诸如 [变量器][] and [esbuild][] 作为独立工具。
 
-#### Disable source maps
+#### 禁用源地图
 
-Source maps provide a pleasant developer experience when working with languages that compile to JavaScript, such as [TypeScript][]. As source maps tend to be quite large, you must disable them when building for production. They have no benefit to your end-user, so it's effectively dead weight.
+源地图提供了一个愉快的开发者体验，使用编译到 JavaScript 的语言，例如 [TypeScript][]。 由于源图往往相当大，您必须在构建生产时禁用它们。 他们对你的最终用户没有好处，因此实际上已经死去了重量。
 
-### Optimize Dependencies
+### 优化依赖关系
 
-Many popular libraries have smaller and faster alternatives that you can choose from instead.
+许多受欢迎的库都有更小和更快的替代品，你可以从中选择。
 
-Most libraries you use depend on many libraries themselves, so a library that looks inconspicuous at first glance might add **several megabytes** worth of code to your app.
+您使用的大部分库依赖于许多库本身。 这样一个初看起来不那么明显的库可能会为您的应用添加 **个数值代码的** megabytes 。
 
-You can use [Bundlephobia][] to find the cost of JavaScript dependencies. Inspecting the cost of Rust dependencies is generally harder since the compiler does many optimizations.
+您可以使用 [Bundlephobia][] 来找到JavaScript 依赖的成本。 由于编译器进行了许多优化，检查Rust 依赖的成本通常比较困难。
 
-If you find a library that seems excessively large, Google around, chances are someone else already had the same thought and created an alternative. A good example is [Moment.js][] and it's [many alternatives][you-dont-need-momentjs].
+如果你发现一个似乎过大的库，谷歌周围就有可能有其他人已经有相同的想法并创建了一个替代方案。 一个很好的例子是 [Moment.js][] 和它的 [许多备选方案][you-dont-need-momentjs]。
 
-But keep in mind: **The best dependency is no dependency**, meaning that you should always prefer language builtins over 3rd party packages.
+但要记住： **最好的依赖关系不是依赖于**, 这意味着你应该总是喜欢语言内置而不是第三方包.
 
-### Optimize Images
+### 优化图像
 
-According to the [Http Archive][], images are the [biggest contributor to website weight][http archive report, image bytes]. So if your app includes images or icons, make sure to optimize them!
+根据 [Http归档][], 图像是网站重量最大的 [贡献者][http archive report, image bytes] 因此，如果您的应用包含图像或图标，请确保优化它们！
 
 You can choose between a variety of manual options ([GIMP][], [Photoshop][], [Squoosh][]) or plugins for your favorite frontend build tools ([vite-imagetools][], [vite-plugin-imagemin][], [image-minimizer-webpack-plugin][]).
 
-Do note that the `imagemin` library most of the plugins use is [officially unmaintained][imagemin is unmaintained].
+请注意， `imagemin` 库里使用的大多数插件都是 [官方未维护][imagemin is unmaintained]。
 
-#### Use Modern Image Formats
+#### 使用现代图像格式
 
-Formats such as `webp` or `avif` offer size reductions of **up to 95%** compared to jpeg while maintaining excellent visual accuracy. You can use tools such as [Squoosh][] to try different formats on your images.
+Formats such as `webp` or `avif` offer size reductions of **up to 95%** compared to jpeg while maintaining excellent visual accuracy. 您可以使用诸如 [Squoosh][] 等工具来尝试在您的 图像上的不同格式。
 
-#### Size Images Accordingly
+#### 相应大小图像
 
-No one appreciates you shipping the 6K raw image with your app, so make sure to size your image accordingly. Images that appear large on-screen should be sized larger than images that take up less screen space.
+没有人欣赏你用你的应用程序运输6K原始图像，所以确保你的图像相应大小。 显示在屏幕上的图像大小应该大于占用屏幕空间较少的图像。
 
-#### Don't Use Responsive Images
+#### 不要使用响应图像
 
-In a Web Environment, you are supposed to use [Responsive Images][] to load the correct image size for each user dynamically. Since you are not dynamically distributing images over the web, using Responsive Images only needlessly bloats your app with redundant copies.
+在 Web 环境中，您应该使用 [响应图像][] 动态加载每个用户正确的图像大小。 由于您没有在网络上动态传播图像，使用响应性图像只会不必要地将您的应用程序与多余的副本混合。
 
-#### Remove Metadata
+#### 删除元数据
 
-Images that were taken straight from a camera or stock photo side often include metadata about the camera and lens model or photographer. Not only are those wasted bytes, but metadata properties can also hold potentially sensitive information such as the time, day, and location of the photo.
+直接从相机或存量照片一侧拍摄的图像往往包括有关相机和镜头模型或摄影师的元数据。 不仅那些被浪费的字节，而且元数据 属性也可能包含可能敏感的信息，例如时间； 照片的日期和位置。
 
-### Remove Unnecessary Custom Fonts
+### 删除不需要的自定义字体
 
-Consider not shipping custom fonts with your app and relying on system fonts instead. If you must ship custom fonts, make sure they are in modern, optimized formats such as `woff2`.
+不要将自定义字体与您的应用配送，而是依靠系统字体。 如果您必须配送自定义字体，请确保它们是现代的，优化格式，如 `woff2`。
 
-Fonts can be pretty big, so using the fonts already included in the Operating System reduces the footprint of your app. It also avoids FOUT (Flash of Unstyled Text) and makes your app feel more "native" since it uses the same font as all other apps.
+字体可能相当大，所以使用已经包含在操作系统中的字体可以减少您应用的足迹。 它也会避免FOUT (无样式文本闪存) 并使您的应用感觉更加“本质”，因为它使用与所有其他应用相同的字体。
 
-If you must include custom fonts, make sure you include them in modern formats such as `woff2` as those tend to be much smaller than legacy formats.
+如果您必须包含自定义字体， 请确保您将它们包括在现代格式中，例如 `woff2` ，因为这些格式比旧格式小得多。
 
-Use so-called **"System Font Stacks"** in your CSS. There are a number of variations, but here are 3 basic ones to get you started:
+在您的 CSS 中使用所谓的 **"System Font Stacks"** 有数字 的变异，但这里有3个基本变异来让你开始：
 
-**Sans-Serif**
+**桑塞夫**
 
 ```css
 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
   sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
 ```
 
-**Serif**
+**序列号**
 
 ```css
-font-family: Iowan Old Style, Apple Garamond, Baskerville, Times New Roman, Droid
-    Serif, Times, Source Serif Pro, serif, Apple Color Emoji, Segoe UI Emoji, Segoe
-    UI Symbol;
+字体系列: Iowan 旧风格, Apple Garamond, Baskerville, Times New Roman, Droid
+    Serif, 时间、源码专业，系列，苹果彩色表情，Segoe UI 表情，Segoe
+    UI 符号；
 ```
 
-**Monospace**
+**等宽度**
 
 ```css
-font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation
-    Mono, monospace;
+font-family：ui-monospace，SFMono-Regular，SF Mono，Mensoras，Liberation
+    Mono，monospace；
 ```
 
-### Allowlist Config
+### 允许列表配置
 
-You can reduce the size of your app by only enabling the Tauri API features you need in the `allowlist` config.
+您只能通过启用 Tauri API 功能来减少您在 `允许列表` 配置中所需的大小。
 
-The `allowlist` config determines what API features to enable; disabled features will **not be compiled into your app**. This is an easy way of shedding some extra weight.
+The `allowlist` config determines what API features to enable; disabled features will **not be compiled into your app**. 这是一种轻而易举的降低某些额外重量的方式。
 
-An example from a typical `tauri.conf.json`:
+典型的 `tauri.conf.json` 的示例：
 
 ```json
 {
@@ -148,137 +148,137 @@ An example from a typical `tauri.conf.json`:
 }
 ```
 
-### Rust Build-Time Optimizations
+### Rust 生成时间优化
 
-Configure your cargo project to take advantage of Rusts size optimization features. [Why is a rust executable large ?][] provides an excellent explanation of why this matters and an in-depth walkthrough. At the same time, [Minimizing Rust Binary Size][] is more up-to-date and has a couple of extra recommendations.
+配置您的货运项目以利用Rusts大小优化功能。 [为什么神秘的可执行性很强？][] 提供了一个很好的解释说明为什么这个问题很重要，并且有一个深入的走向。 与此同时， [最小化Rust 二进制大小][] 是更最新的，还有一些额外的建议。
 
-Rust is notorious for producing large binaries, but you can instruct the compiler to optimize the final executable's size.
+Rust 因为生产大二进制而臭名昭著，但你可以指示编译器优化最终可执行文件的大小。
 
-Cargo exposes several options that determine how the compiler generates your binary. The "recommended" options for Tauri apps are these:
+货物暴露了几个选项来决定编译器如何生成你的二进制。 "推荐"选项为 Tauri 应用：
 
 ```toml
 [profile.release]
-panic = "abort" # Strip expensive panic clean-up logic
-codegen-units = 1 # Compile crates one after another so the compiler can optimize better
-lto = true # Enables link to optimizations
-opt-level = "s" # Optimize for binary size
+pasic = “中止” # Strit correspondic cleartical
+codegen-units = 1 # 编译器一个接一个，所以编译器可以优化
+lto = true # 启用优化链接
+opt-level = "s" # 优化二进制大小
 ```
 
 :::note
-There is also `opt-level = "z"` available to reduce the resulting binary size. `"s"` and `"z"` can sometimes be smaller than the other, so test it with your application!
+还有 `选择级别 = “z”` 可用来减少产生的二进制大小。 `"s"` and `"z"` 有时可以小于对方, 所以用您的应用程序来测试它!
 
-We've seen smaller binary sizes from `"s"` for Tauri example applications, but real-world applications can always differ.
+对于Tauri示例应用程序来说，我们已经从 `"s"` 中看到了较小的二进制尺寸，但现实世界的应用程序总是不同的。
 :::
 
-For a detailed explanation of each option and a bunch more, refer to the [Cargo books Profiles section][cargo profiles].
+欲了解每个选项和一堆更多选项的详细说明，请参阅 [货物簿概况部分][cargo profiles]。
 
-#### Disable Tauri's Asset Compression
+#### 禁用Tauri资产压缩
 
-By default, Tauri uses Brotli to compress assets in the final binary. Brotli embeds a large (~170KiB) lookup table to achieve great results, but if the resources you embed are smaller than this or compress poorly, the resulting binary may be bigger than any savings.
+默认情况下，Tauri 使用 Brotli来压缩最终二进制素材。 Brotli有一个庞大的查询表 (~170KiB) 以取得巨大的结果。 但如果你嵌入的资源小于这个或压缩不好，由此产生的二进制可能会比任何节省都大。
 
-Compression can be disabled by setting `default-features` to `false` and specifying everything except the `compression` feature:
+可以通过设置 `默认功能` 至 `false` 并指定除 `压缩` 功能以外的所有功能：
 
 ```toml
 [dependencies]
-tauri = { version = "...", features = ["objc-exception", "wry"], default-features = false }
+tauri = Power version = "...", features = ["objc-excition", "wry", default-features = false }
 ```
 
-#### Unstable Rust Compression Features
+#### 不稳定的橡胶压缩功能
 
-:::caution
-The following suggestions are all unstable features and require a nightly toolchain. See the [Unstable Features][cargo unstable features] documentation for more information on what this involves.
+:::谨慎
+以下建议都是不稳定的功能，需要一个夜间的工具链。 请参阅 [不稳定特性][cargo unstable features] 文档以获取更多关于这涉及的信息。
 :::
 
-The following methods involve using unstable compiler features and require the rust nightly toolchain. If you don't have the nightly toolchain + `rust-src` nightly component added, try the following:
+以下方法涉及使用不稳定的编译器功能，需要夜间的工具链。 如果您没有夜间的工具链+ `故障src` 夜间组件, 请尝试以下几点：
 
 ```shell
-rustup toolchain install nightly
-rustup component add rust-src --toolchain nightly
+生长工具链每晚安装
+生长组件每晚添加 rust-src --toolchain
 ```
 
-The Rust Standard Library comes precompiled. This means Rust is faster to install, but also that the compiler can't optimize the Standard Library. You can apply the optimization options for the rest of your binary + dependencies to the std with an unstable flag. This flag requires specifying your target, so know the target triple you are targeting.
+Rust 标准库是预编译的。 这意味着安装速度更快，但是编译器无法优化标准库。 您可以对您的二进制+依赖关系的其余部分应用最优化选项来应用不稳定标记。 这个标志需要指定您的目标，因此知道您正在攻击的目标三倍。
 
 ```shell
-cargo +nightly build --release -Z build-std --target x86_64-unknown-linux-gnu
+货运+夜间生成 --release -Z build-std --targets x86_64-unknown-linux-gnu
 ```
 
-If you are using `panic = "abort"` in your release profile optimizations, you need to make sure the `panic_abort` crate is compiled with std. Additionally, an extra std feature can further reduce the binary size. The following applies to both:
+如果您正在发布配置文件优化中使用 `thenic = "中止"` 您需要确保 `恐慌_中止程序` crate 被编译成std。 此外，额外的标准特性可以进一步减少二进制文件的大小。 以下两者均适用：
 
 ```shell
-cargo +nightly build --release -Z build-std=std,panic_abort -Z build-std-features=panic_immediate_abort --target x86_64-unknown-linux-gnu
+货运+夜间生成 --release -Z build-std=std,panic_abort -Z build-std-features=panic_immediate_abort --target x86_64-unknown-linux-gnu
 ```
 
-See the unstable documentation for more details about [`-Z build-std`][cargo build-std] and [`-Z build-std-features`][cargo build-std-features].
+查看不稳定文档了解更多关于 [`-Z build-std`][cargo build-std] 和 [`-Z build-std-features`][cargo build-std-features]
 
-### Stripping
+### 正在拆解
 
-Use strip utilities to remove debug symbols from your compiled app.
+使用脱纸工具从您编译的应用中移除调试符号。
 
-Your compiled app includes so-called "Debug Symbols" that include function and variable names. Your end-users will probably not care about Debug Symbols, so this is a pretty surefire way to save some bytes!
+您已编译的应用程序包括所谓的“调试符号”，其中包括函数和可变名称。 您的最终用户可能不会关心调试符号，因此这是保存一些字节的非常可靠的方式！
 
-The easiest way is to use the famous `strip` utility to remove this debugging information.
+最简单的方法是使用著名的 `脱机` 工具来删除此调试信息。
 
 ```shell
-strip target/release/my_application
+脱硫目标/释放/my_applications
 ```
 
-See your local `strip` manpage for more information and flags that can be used to specify what information gets stripped out from the binary.
+查看您的本地 `strip` manpage 以获取更多信息和标记，用于指定从二进制文件中删除的信息。
 
 :::info
 
-Rust 1.59 now has a builtin version of `strip`! It can be enabled by adding the following to your `Cargo.toml`:
+Rust 1.59 现在有一个内置版本的 `strip`！ It can be enabled by adding the following to your `Cargo.toml`:
 
 ```toml
 [profile.release]
-strip = true  # Automatically strip symbols from the binary.
+drit = true # 自动从二进制文件中删除符号。
 ```
 
 :::
 
 ### UPX
 
-UPX, **Ultimate Packer for eXecutables**, is a dinosaur amongst the binary packers. This 23-year old, well-maintained piece of kit is GPL-v2 licensed with a pretty liberal usage declaration. Our understanding of the licensing is that you can use it for any purposes (commercial or otherwise) without needing to change your license unless you modify the source code of UPX.
+UPX, **eXecutable的最终包装**, 是二进制包装中的恐龙。 这个23年来维护良好的工具包是GPLv2型，它得到了相当宽松的使用申报。 我们对许可证的理解是，除非您修改UPX源代码，否则您可以用于任何目的(商业或其他目的)，无需更改您的许可证。
 
-Maybe your target audience has very slow internet, or your app needs to fit on a tiny USB stick, and all the above steps haven't resulted in the savings you need. Fear not, as we have one last trick up our sleeves:
+也许您的目标受众的互联网非常慢，或者您的应用需要适合一个小的 USB 棍棒， 而且所有上述步骤都没有带来您所需的节余。 由于我们有最后一个陷阱，我们不会担心：
 
-[UPX][] compresses your binary and creates a self-extracting executable that decompresses itself at runtime.
+[UPX][] 压缩你的二进制并创建一个自动提取的可执行文件在运行时自动解压自己。
 
-:::caution
-You should know that this technique might flag your binary as a virus on Windows and macOS - so use at your own discretion, and as always, validate with [Frida][] and do real distribution testing!
+:::警告
+你应该知道这个技术可能会将你的二进制文件标记为 Windows 和 macOS 上的病毒，所以你可以自行斟酌使用。 并一如既往，通过 [Frida][] 验证并进行真正的发行测试！
 :::
 
-#### Usage on macOS
+#### macOS 使用情况
 
 <!-- Add additional platforms -->
 
 ```
-brew install upx
-yarn tauri build
-upx --ultra-brute src-tauri/target/release/bundle/macos/app.app/Contents/macOS/app
+酿造好安装
+yarn tauri构建
+upx --ultra-brute src-tauri/target/release/bundle/macos/app. pp/Contents/macOS/app
 
-                        Ultimate Packer for eXecutables
+                        eXecutable的最终包
                             Copyright (C) 1996 - 2018
-UPX 3.95        Markus Oberhumer, Laszlo Molnar & John Reiser   Aug 26th 2018
+UPX 3。 5 Markus Oberhumer， Laszlo Molnar & John Reiser Aug 262018
 
-        File size         Ratio      Format      Name
-    --------------------   ------   -----------   -----------
-    963140 ->    274448   28.50%   macho/amd64   app
+        文件大小比格式名称
+    -------------------- ------------ ------------
+    963140 ->    274448 28。 0% macho/amd64 应用程序
 ```
 
-[Macros]: https://doc.rust-lang.org/book/ch19-06-macros.html
+[宏]: https://doc.rust-lang.org/book/ch19-06-macros.html
 [cargo-expand]: https://github.com/dtolnay/cargo-expand
 [rollup-plugin-graph]: https://github.com/ondras/rollup-plugin-graph
 [Vite]: https://vitejs.dev
 [webpack]: https://webpack.js.org
-[rollup]: https://rollupjs.org/guide/en/
-[rollup-plugin-terser]: https://github.com/TrySound/rollup-plugin-terser
-[rollup-plugin-uglify]: https://github.com/TrySound/rollup-plugin-uglify
-[terser]: https://terser.org
+[滚动]: https://rollupjs.org/guide/en/
+[滚动插件]: https://github.com/TrySound/rollup-plugin-terser
+[滚动插件]: https://github.com/TrySound/rollup-plugin-uglify
+[变量器]: https://terser.org
 [esbuild]: https://esbuild.github.io
 [TypeScript]: https://www.typescriptlang.org
 [Moment.js]: https://momentjs.com
 [you-dont-need-momentjs]: https://github.com/you-dont-need/You-Dont-Need-Momentjs
-[Http Archive]: https://httparchive.org
+[Http归档]: https://httparchive.org
 [http archive report, image bytes]: https://httparchive.org/reports/page-weight#bytesImg
 [imagemin is unmaintained]: https://github.com/imagemin/imagemin/issues/385
 [GIMP]: https://www.gimp.org
@@ -287,9 +287,9 @@ UPX 3.95        Markus Oberhumer, Laszlo Molnar & John Reiser   Aug 26th 2018
 [vite-plugin-imagemin]: https://github.com/vbenjs/vite-plugin-imagemin
 [image-minimizer-webpack-plugin]: https://github.com/webpack-contrib/image-minimizer-webpack-plugin
 [Squoosh]: https://squoosh.app
-[Responsive Images]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images
-[Why is a rust executable large ?]: https://lifthrasiir.github.io/rustlog/why-is-a-rust-executable-large.html
-[Minimizing Rust Binary Size]: https://github.com/johnthagen/min-sized-rust
+[响应图像]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images
+[为什么神秘的可执行性很强？]: https://lifthrasiir.github.io/rustlog/why-is-a-rust-executable-large.html
+[最小化Rust 二进制大小]: https://github.com/johnthagen/min-sized-rust
 [cargo unstable features]: https://doc.rust-lang.org/cargo/reference/unstable.html#unstable-features
 [cargo profiles]: https://doc.rust-lang.org/cargo/reference/profiles.html
 [cargo build-std]: https://doc.rust-lang.org/cargo/reference/unstable.html#build-std
