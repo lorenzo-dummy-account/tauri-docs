@@ -1,36 +1,36 @@
-# Continuous Integration
+# Intégration continue
 
-Utilizing Linux and some programs to create a fake display, it is possible to run [WebDriver][] tests with [`tauri-driver`][] on your CI. The following example uses the [WebdriverIO][] example we [previously built together][] and GitHub Actions.
+Utiliser Linux et certains programmes pour créer un faux affichage, il est possible d'exécuter [WebDriver][] tests avec [`tauri-driver`][] sur votre CI. L'exemple suivant utilise l'exemple [WebdriverIO][] que nous avons [précédemment construit ensemble][] et GitHub Actions.
 
-This means the following assumptions:
+Cela signifie les hypothèses suivantes :
 
-1. The Tauri application is in the repository root and the binary builds when running `cargo build --release`.
-2. The [WebDriverIO][] test runner is in the `webdriver/webdriverio` directory and runs when `yarn test` is used in that directory.
+1. L'application Tauri est à la racine du dépôt et le binaire se construit lorsque vous exécutez `cargo build --release`.
+2. L'exécuteur de test [WebDriverIO][] est dans le répertoire `webdriver/webdriverio` et s'exécute lorsque `yarn test` est utilisé dans ce répertoire .
 
-The following is a commented GitHub Actions workflow file at `.github/workflows/webdriver.yml`
+Ce qui suit est un fichier commenté de workflow GitHub Actions sur `.github/workflows/webdriver.yml`
 
 ```yaml
-# run this action when the repository is pushed to
-on: [push]
+# exécute cette action lorsque le dépôt est poussé vers
+sur: [push]
 
-# the name of our workflow
-name: WebDriver
+# le nom de notre workflow
+nom: WebDriver
 
 jobs:
-  # a single job named test
-  test:
-    # the display name of the test job
-    name: WebDriverIO Test Runner
+  # un seul job nommé test
+  test :
+    # le nom d'affichage de la tâche de test
+    nom: WebDriverIO Test Runner
 
-    # we want to run on the latest linux environment
+    # nous voulons exécuter sur le dernier environnement linux
     runs-on: ubuntu-latest
 
-    # the steps our job runs **in order**
-    steps:
-      # checkout the code on the workflow runner
+    # les étapes que notre tâche est exécutée **in order**
+    étapes :
+      # checkout le code sur l'exécuteur de workflow
       - uses: actions/checkout@v2
 
-      # install system dependencies that Tauri needs to compile on Linux.
+      # installer les dépendances système dont Tauri a besoin pour compiler sous Linux.
       # note the extra dependencies for `tauri-driver` to run which are: `webkit2gtk-driver` and `xvfb`
       - name: Tauri dependencies
         run: >-
@@ -73,17 +73,17 @@ jobs:
         working-directory: webdriver/webdriverio
 
       # install the latest version of `tauri-driver`.
-      # note: the tauri-driver version is independent of any other Tauri versions
-      - name: Install tauri-driver
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
+      # note: la version tauri-driver est indépendante de toute autre version de Tauri
+      - nom: Installer tauri-driver
+        utilise: actions-rs/cargo@v1
+        avec:
+          commande: install
           args: tauri-driver
 
-      # run the WebdriverIO test suite.
-      # we run it through `xvfb-run` (the dependency we installed earlier) to have a fake
-      # display server which allows our application to run headless without any changes to the code
-      - name: WebdriverIO
+      # exécuter la suite de test WebdriverIO.
+      # nous l'exécutons via `xvfb-run` (la dépendance que nous avons installée plus tôt) pour avoir un faux
+      # serveur d'affichage qui permet à notre application de fonctionner headless sans aucune modification au code
+      - nom: WebdriverIO
         run: xvfb-run yarn test
         working-directory: webdriver/webdriverio
 ```
@@ -92,4 +92,4 @@ jobs:
 [`tauri-driver`]: https://crates.io/crates/tauri-driver
 [WebdriverIO]: https://webdriver.io/
 [WebDriverIO]: https://webdriver.io/
-[previously built together]: ./example/webdriverio.md
+[précédemment construit ensemble]: ./example/webdriverio.md
