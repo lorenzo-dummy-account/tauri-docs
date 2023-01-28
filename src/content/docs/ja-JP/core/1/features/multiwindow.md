@@ -1,14 +1,14 @@
-# Multiwindow
+# マルチウィンドウ
 
-Manage multiple windows on a single application.
+1つのアプリケーションで複数のウィンドウを管理します。
 
-## Creating a window
+## ウィンドウの作成
 
-A window can be created statically from the Tauri configuration file or at runtime.
+ウィンドウは、牡牛座設定ファイルまたは実行時に静的に作成できます。
 
-### Static window
+### 静的ウィンドウ
 
-Multiple windows can be created with the [tauri.windows][] configuration array. The following JSON snippet demonstrates how to statically create several windows through the config:
+[tauri.windows][] 設定配列で複数のウィンドウを作成できます。 次の JSON スニペットは、設定を使用して複数のウィンドウを静的に作成する方法を示します。
 
 ```json tauri.conf.json
 {
@@ -29,21 +29,21 @@ Multiple windows can be created with the [tauri.windows][] configuration array. 
 }
 ```
 
-Note that the window label must be unique and can be used at runtime to access the window instance. The complete list of configuration options available for static windows can be found in the [WindowConfig][] documentation.
+window ラベルは一意でなければならず、実行時にウィンドウインスタンスにアクセスするために使用できることに注意してください。 静的ウィンドウで利用可能な設定オプションの完全なリストは、 [WindowConfig][] ドキュメントを参照してください。
 
-### Runtime window
+### ランタイムウィンドウ
 
-You can also create windows at runtime either via the Rust layer or through the Tauri API.
+Rust レイヤーまたは Tauri API 経由で実行時にウィンドウを作成することもできます。
 
-#### Create a window in Rust
+#### Rust にウィンドウを作成
 
-A window can be created at runtime using the [WindowBuilder][] struct.
+[WindowBuilder][] 構造体を使用して、実行時にウィンドウを作成できます。
 
-To create a window, you must have an instance of the running [App][] or an [AppHandle][].
+ウィンドウを作成するには、実行中の [App][] または [AppHandle][] のインスタンスが必要です。
 
-##### Create a window using the [App][] instance
+##### [App][] インスタンスを使用してウィンドウを作成します
 
-The [App][] instance can be obtained in the setup hook or after a call to [Builder::build][].
+[App][] インスタンスは、セットアップ フックまたは [Builder::build][] の呼び出し後に取得できます。
 
 ```rust Using the setup hook
 tauri::Builder::default()
@@ -62,7 +62,7 @@ tauri::Builder::default()
   })
 ```
 
-Using the setup hook ensures static windows and Tauri plugins are initialized. Alternatively, you can create a window after building the [App][]:
+セットアップ フックを使用すると、静的なウィンドウと牡牛座のプラグインが初期化されることが保証されます。 または、 [App][] をビルドした後にウィンドウを作成することもできます。
 
 ```rust Using the built app
 let app = tauri::Builder::default()
@@ -82,11 +82,11 @@ let local_window = tauri::WindowBuilder::new(
 ).build()?;
 ```
 
-This method is useful when you cannot move ownership of values to the setup closure.
+このメソッドは、値の所有権をセットアップ終了に移動できない場合に便利です。
 
-##### Create a window using an [AppHandle][] instance
+##### [AppHandle][] インスタンスを使用してウィンドウを作成する
 
-An [AppHandle][] instance can be obtained using the [`App::handle`] function or directly injected in Tauri commands.
+[AppHandle][] インスタンスは、[`App::handle`]関数を使うか、牡牛座コマンドに直接挿入することができます。
 
 ```rust Create a window in a separate thread
 tauri::Builder::default()
@@ -116,13 +116,13 @@ async fn open_docs(handle: tauri::AppHandle) {
 
 :::info
 
-When creating windows in a Tauri command, ensure the command function is `async` to avoid a deadlock on Windows due to the [wry#583][] issue.
+Tauriコマンドでウィンドウを作成する場合 `wry#583` の問題により、Windowsのデッドロックを避けるために、コマンド関数が [非同期][] であることを確認してください。
 
 :::
 
-#### Create a window in JavaScript
+#### JavaScriptでウィンドウを作成
 
-Using the Tauri API you can easily create a window at runtime by importing the [WebviewWindow][] class.
+Tauri API を使用すると、 [WebviewWindow][] クラスをインポートすることで、実行時に簡単にウィンドウを作成できます。
 
 ```js Create a window using the WebviewWindow class
 import { WebviewWindow } from '@tauri-apps/api/window'
@@ -139,17 +139,17 @@ webview.once('tauri://error', function (e) {
 })
 ```
 
-## Accessing a window at runtime
+## 実行時にウィンドウにアクセスする
 
-The window instance can be queried using its label and the [get_window][] method on Rust or [WebviewWindow.getByLabel][] on JavaScript.
+window インスタンスは、そのラベルと Rust の [get_window][] メソッド、JavaScript の [WebviewWindow.getByLabel][] メソッドを使用してクエリできます。
 
 ```rust Using get_window
 use tauri::Manager;
 tauri::Builder::default()
   .setup(|app| {
     let main_window = app.get_window("main").unwrap();
-    Ok(())
-  })
+    Ok())
+})
 ```
 
 Note that you must import [tauri::Manager][] to use the [get_window][] method on [App][] or [AppHandle][] instances.
@@ -159,9 +159,9 @@ import { WebviewWindow } from '@tauri-apps/api/window'
 const mainWindow = WebviewWindow.getByLabel('main')
 ```
 
-## Communicating with other windows
+## 他のウィンドウとの通信
 
-Window communication can be done using the event system. See the [Event Guide][] for more information.
+ウィンドウ通信は、イベントシステムを使用して行うことができます。 詳細は [イベント ガイド][] を参照してください。
 
 [tauri.windows]: ../../api/config.md#tauriconfig.windows
 [WindowConfig]: ../../api/config.md#windowconfig
@@ -170,8 +170,8 @@ Window communication can be done using the event system. See the [Event Guide][]
 [AppHandle]: https://docs.rs/tauri/1.0.0/tauri/struct.AppHandle.html
 [Builder::build]: https://docs.rs/tauri/1.0.0/tauri/struct.Builder.html#method.build
 [get_window]: https://docs.rs/tauri/1.0.0/tauri/trait.Manager.html#method.get_window
-[wry#583]: https://github.com/tauri-apps/wry/issues/583
+[非同期]: https://github.com/tauri-apps/wry/issues/583
 [WebviewWindow]: ../../api/js/window.md#webviewwindow
 [WebviewWindow.getByLabel]: ../../api/js/window.md#getbylabel
 [tauri::Manager]: https://docs.rs/tauri/1.0.0/tauri/trait.Manager.html
-[Event Guide]: ./events.md
+[イベント ガイド]: ./events.md
