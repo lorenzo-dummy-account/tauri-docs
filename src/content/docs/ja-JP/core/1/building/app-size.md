@@ -2,102 +2,102 @@
 sidebar_position: 6
 ---
 
-# Reducing App Size
+# アプリサイズを小さくする
 
-With Tauri, we are working to reduce the environmental footprint of applications by using fewer system resources where available, providing compiled systems that don't need runtime evaluation, and offering guides so that engineers can go even smaller without sacrificing performance or security. By saving resources we are doing our part to help you help us save the planet -- which is the only bottom line that companies in the 21st Century should care about.
+Tauri社は、利用可能なシステムリソースを少なくすることで、アプリケーションの環境フットプリントの削減に取り組んでいます。 実行時評価を必要としないコンパイルされたシステムを提供し、エンジニアがパフォーマンスやセキュリティを犠牲にすることなく、さらに小型化できるようにガイドを提供します。 資源を節約することで地球を救うお手伝いをしています 21世紀における企業が注目すべきボトムラインです
 
-So if you are interested in learning how to improve your app size and performance, read on!
+アプリのサイズとパフォーマンスを向上させる方法を学ぶことに興味がある方は、こちらをご覧ください!
 
-### You can't improve what you can't measure
+### 測定できないものを改善することはできません
 
-Before you can optimize your app, you need to figure out what takes up space in your app! Here are a couple of tools that can assist you with that:
+アプリを最適化する前に、アプリの空き容量を把握する必要があります。 次のようなツールをご紹介します。
 
-- **`cargo-bloat`** - A Rust utility to determine what takes the most space in your app. It gives you an excellent, sorted overview of the most significant Rust functions.
+- **`cargo-bloat`** - アプリで最も容量が多いものを決定する Rust ユーティリティ。 最も重要な Rust 機能の優れたソートされた概要を提供します。
 
-- **`cargo-expand`** - [Macros][] make your rust code more concise and easier to read, but they are also hidden size traps! Use [`cargo-expand`][cargo-expand] to see what those macros generate under the hood.
+- **`cargo-expand`** - [Macros][] rust コードをより簡潔かつ読みやすくする でも彼らも隠しサイズの罠だ! [`cargo-expand`][cargo-expand] を使用して、それらのマクロがどのように生成されるかを確認します。
 
-- **`rollup-plugin-visualizer`** - A tool that generates beautiful (and insightful) graphs from your rollup bundle. Very convenient for figuring out what JavaScript dependencies contribute to your final bundle size the most.
+- **`rollup-plugin-visualizer`** - ロールアップバンドルから美しい(そして洞察力のある)グラフを生成するツール。 JavaScriptの依存関係が最終的なバンドルサイズに最も貢献するものを把握するのに非常に便利です。
 
-- **`rollup-plugin-graph`** - You noticed a dependency included in your final frontend bundle, but you are unsure why? [`rollup-plugin-graph`][rollup-plugin-graph] generates Graphviz-compatible visualizations of your entire dependency graph.
+- **`rollup-plugin-graph`** - 最後のフロントエンドバンドルに含まれている依存性に気づいたが、なぜか分からないのか？ [`rollup-plugin-graph`][rollup-plugin-graph] 依存関係グラフ全体のGraphviz互換のビジュアライゼーションを生成します。
 
-These are just a couple of tools that you might use. Make sure to check your frontend bundlers plugin list for more!
+これらはあなたが使用するかもしれないツールのほんの一部です。 フロントエンドバンドラーのプラグインリストを確認してください!
 
 ## Checklist
 
-1. [Minify Javascript](#minify-javascript)
-2. [Optimize Dependencies](#optimize-dependencies)
-3. [Optimize Images](#optimize-images)
-4. [Remove Unnecessary Custom Fonts](#remove-unnecessary-custom-fonts)
+1. [JavascriptをMinifyする](#minify-javascript)
+2. [依存関係の最適化](#optimize-dependencies)
+3. [画像の最適化](#optimize-images)
+4. [不要なカスタムフォントを削除](#remove-unnecessary-custom-fonts)
 5. [Allowlist Config](#allowlist-config)
-6. [Rust Build-time Optimizations](#rust-build-time-optimizations)
-7. [Stripping](#stripping)
+6. [Rust BuildTime Optimizations](#rust-build-time-optimizations)
+7. [剥離中](#stripping)
 8. [UPX](#upx)
 
-### Minify JavaScript
+### JavaScriptを圧縮する
 
-JavaScript makes up a large portion of a typical Tauri app, so it's important to make the JavaScript as lightweight as possible.
+JavaScriptは典型的な牡牛座アプリの大部分を構成しているので、JavaScriptをできるだけ軽量にすることが重要です。
 
-You can choose from a plethora of JavaScript bundlers; popular choices are [Vite][], [webpack][], and [rollup][]. All of them can produce minified JavaScript if configured correctly, so consult your bundler documentation for specific options. Generally speaking, you should make sure to:
+たくさんの JavaScript バンドラから選択できます。一般的な選択肢は、 [Vite][]、 [webpack][]、および [rollup][] です。 これらはすべて、正しく設定されている場合は minified JavaScript を生成できますので、特定のオプションについてはバンドラのドキュメントを参照してください。 一般的に言えば、次のことを確認する必要があります:
 
-#### Enable tree shaking
+#### 揺れを有効にする
 
-This option removes unused JavaScript from your bundle. All popular bundlers enable this by default.
+このオプションは、バンドルから未使用の JavaScript を削除します。 すべての一般的なバンドラはデフォルトでこれを有効にします。
 
-#### Enable minification
+#### ミニファイを有効にする
 
-Minification removes unnecessary whitespace, shortens variable names, and applies other optimizations. Most bundlers enable this by default; a notable exception is [rollup][], where you need plugins like [rollup-plugin-terser][] or [rollup-plugin-uglify][].
+Minificationは不要な空白を削除し、変数名を短縮し、その他の最適化を適用します。 Most bundlers enable this by default; a notable exception is [rollup][], where you need plugins like [rollup-plugin-terser][] or [rollup-plugin-uglify][].
 
-Note: You can use minifiers like [terser][] and [esbuild][] as standalone tools.
+注意: [terser][] や [esbuild][] のような、スタンドアロンのツールとして使用できます。
 
-#### Disable source maps
+#### ソースマップを無効にする
 
-Source maps provide a pleasant developer experience when working with languages that compile to JavaScript, such as [TypeScript][]. As source maps tend to be quite large, you must disable them when building for production. They have no benefit to your end-user, so it's effectively dead weight.
+ソースマップは、 [TypeScript][] のようなJavaScriptにコンパイルされる言語を扱う際に、快適な開発者体験を提供します。 ソースマップはかなり大きい傾向がありますので、プロダクション用にビルドする際に無効にしなければなりません。 彼らはあなたのエンドユーザーに利点がないので、それは効果的に死んで重量です。
 
-### Optimize Dependencies
+### 依存関係の最適化
 
-Many popular libraries have smaller and faster alternatives that you can choose from instead.
+多くの人気のあるライブラリには、代わりに選択できるより小さく、より速い選択肢があります。
 
-Most libraries you use depend on many libraries themselves, so a library that looks inconspicuous at first glance might add **several megabytes** worth of code to your app.
+ほとんどのライブラリは多くのライブラリに依存しています。 目立たないように見えるライブラリは、アプリに **数メガバイト** 相当のコードを追加する可能性があります。
 
-You can use [Bundlephobia][] to find the cost of JavaScript dependencies. Inspecting the cost of Rust dependencies is generally harder since the compiler does many optimizations.
+[Bundlephobia][] を使用して JavaScript の依存関係のコストを求めることができます。 Rust 依存関係のコストを調べるのは一般的に難しい。なぜなら、コンパイラは多くの最適化を行うからだ。
 
-If you find a library that seems excessively large, Google around, chances are someone else already had the same thought and created an alternative. A good example is [Moment.js][] and it's [many alternatives][you-dont-need-momentjs].
+あなたが過度に大きいと思われるライブラリを見つけた場合、Googleの周りは、他の誰かがすでに同じ考えを持っていたと代替案を作成している可能性があります。 良い例は [Moment.js][] で、 [多くの代替案][you-dont-need-momentjs] です。
 
-But keep in mind: **The best dependency is no dependency**, meaning that you should always prefer language builtins over 3rd party packages.
+しかし、注意してください: **依存関係はありません**。つまり、サードパーティのパッケージよりも常に言語の組み込みを好む必要があります。
 
-### Optimize Images
+### 画像の最適化
 
-According to the [Http Archive][], images are the [biggest contributor to website weight][http archive report, image bytes]. So if your app includes images or icons, make sure to optimize them!
+[Http Archive][]によると、画像は [ウェブサイトの重量][http archive report, image bytes] の最大の貢献者です。 そのため、アプリに画像やアイコンが含まれている場合は、それらを最適化してください!
 
 You can choose between a variety of manual options ([GIMP][], [Photoshop][], [Squoosh][]) or plugins for your favorite frontend build tools ([vite-imagetools][], [vite-plugin-imagemin][], [image-minimizer-webpack-plugin][]).
 
-Do note that the `imagemin` library most of the plugins use is [officially unmaintained][imagemin is unmaintained].
+ほとんどのプラグインで使用されている `imagemin` ライブラリは [公式にメンテナンスされていない][imagemin is unmaintained] であることに注意してください。
 
-#### Use Modern Image Formats
+#### 最新の画像フォーマットを使用
 
-Formats such as `webp` or `avif` offer size reductions of **up to 95%** compared to jpeg while maintaining excellent visual accuracy. You can use tools such as [Squoosh][] to try different formats on your images.
+`webp` や `avif` などの形式は、優れた視覚的精度を維持しながら、jpegと比較して、 **最大 95%** のサイズ削減を提供します。 [Squosh][] などのツールを使用して、 画像で異なる形式を試すことができます。
 
-#### Size Images Accordingly
+#### それに応じたサイズの画像
 
-No one appreciates you shipping the 6K raw image with your app, so make sure to size your image accordingly. Images that appear large on-screen should be sized larger than images that take up less screen space.
+6K生画像をアプリで出荷することを誰も認めてくれませんので、それに応じて画像のサイズを確認してください。 画面上で大きく表示される画像は、画面スペースが少ない画像よりも大きくする必要があります。
 
-#### Don't Use Responsive Images
+#### レスポンシブ画像を使用しない
 
-In a Web Environment, you are supposed to use [Responsive Images][] to load the correct image size for each user dynamically. Since you are not dynamically distributing images over the web, using Responsive Images only needlessly bloats your app with redundant copies.
+Web 環境では、 [レスポンシブ画像][] を使用して、ユーザーごとに正しい画像サイズを動的に読み込むことになっています。 レスポンシブイメージを使用すると、ウェブ上で画像を動的に配信することはできませんので、不必要にアプリケーションを冗長コピーで膨らませるだけです。
 
-#### Remove Metadata
+#### メタデータを削除
 
-Images that were taken straight from a camera or stock photo side often include metadata about the camera and lens model or photographer. Not only are those wasted bytes, but metadata properties can also hold potentially sensitive information such as the time, day, and location of the photo.
+カメラやストック写真側から直接撮影した画像には、カメラやレンズモデルや写真家に関するメタデータが含まれることが多い。 これらの無駄なバイトだけでなく、メタデータ プロパティも時刻などの機密情報を保持できます。 日と写真の場所だ
 
-### Remove Unnecessary Custom Fonts
+### 不要なカスタムフォントを削除
 
-Consider not shipping custom fonts with your app and relying on system fonts instead. If you must ship custom fonts, make sure they are in modern, optimized formats such as `woff2`.
+カスタムフォントをアプリで出荷しないことを検討し、代わりにシステムフォントに依存しています。 カスタムフォントを出荷する必要がある場合は、 `woff2` など、最新の最適化されたフォーマットであることを確認してください。
 
-Fonts can be pretty big, so using the fonts already included in the Operating System reduces the footprint of your app. It also avoids FOUT (Flash of Unstyled Text) and makes your app feel more "native" since it uses the same font as all other apps.
+フォントはかなり大きくなる可能性があるため、オペレーティングシステムに既に含まれているフォントを使用すると、アプリケーションのフットプリントが削減されます。 また、FOUT(スタイルなしテキストのフラッシュ)を回避し、他のすべてのアプリと同じフォントを使用しているため、アプリがネイティブに感じられるようになります。
 
-If you must include custom fonts, make sure you include them in modern formats such as `woff2` as those tend to be much smaller than legacy formats.
+カスタムフォントを含める必要がある場合。 `woff2` のような現代的なフォーマットに含めることを確認してください。従来のフォーマットよりもはるかに小さくなる傾向があります。
 
-Use so-called **"System Font Stacks"** in your CSS. There are a number of variations, but here are 3 basic ones to get you started:
+CSSでいわゆる **"システムフォントスタック"** を使用します。 バリエーションは 数ありますが、ここでは基本的なものを3つ紹介します。
 
 **Sans-Serif**
 
@@ -117,17 +117,17 @@ font-family: Iowan Old Style, Apple Garamond, Baskerville, Times New Roman, Droi
 **Monospace**
 
 ```css
-font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation
-    Mono, monospace;
+font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Console, Liberation
+    Mono, mono, monospace;
 ```
 
 ### Allowlist Config
 
-You can reduce the size of your app by only enabling the Tauri API features you need in the `allowlist` config.
+`allowlist` の設定で必要な Tauri API 機能のみを有効にすることで、アプリのサイズを縮小できます。
 
-The `allowlist` config determines what API features to enable; disabled features will **not be compiled into your app**. This is an easy way of shedding some extra weight.
+`allowlist` の設定により、どのAPI機能を有効にするかを決定します。無効化された機能は **アプリにコンパイルされません**。 これは、いくつかの余分な重量を流す簡単な方法です。
 
-An example from a typical `tauri.conf.json`:
+典型的な `tauri.conf.json` の例:
 
 ```json
 {
@@ -148,106 +148,106 @@ An example from a typical `tauri.conf.json`:
 }
 ```
 
-### Rust Build-Time Optimizations
+### Rust Build-Time 最適化
 
-Configure your cargo project to take advantage of Rusts size optimization features. [Why is a rust executable large ?][] provides an excellent explanation of why this matters and an in-depth walkthrough. At the same time, [Minimizing Rust Binary Size][] is more up-to-date and has a couple of extra recommendations.
+Rust のサイズ最適化機能を活用するためにカーゴプロジェクトを構成します。 [錆びが大きいのはなぜですか?][] は、なぜこれが重要なのか、詳細な歩行を説明する優れた説明を提供します。 同時に、 [Rust Binary Size の最小化][] はより最新であり、いくつかの追加の推奨事項があります。
 
-Rust is notorious for producing large binaries, but you can instruct the compiler to optimize the final executable's size.
+Rust は大規模なバイナリを生成することで有名ですが、最終的な実行ファイルのサイズを最適化するようコンパイラーに指示することができます。
 
-Cargo exposes several options that determine how the compiler generates your binary. The "recommended" options for Tauri apps are these:
+Cargo はコンパイラがバイナリを生成する方法を決定するいくつかのオプションを公開します。 おうりアプリの「推奨」オプションは次のとおりです。
 
 ```toml
 [profile.release]
-panic = "abort" # Strip expensive panic clean-up logic
-codegen-units = 1 # Compile crates one after another so the compiler can optimize better
-lto = true # Enables link to optimizations
-opt-level = "s" # Optimize for binary size
+pane = "abort" # Strip高価なパニッククリーンアップロジック
+codegen-units = 1 # コンパイラがより良い
+lto = true # 最適化へのリンクを有効にする
+opt-level = "s" # バイナリサイズの最適化
 ```
 
 :::note
-There is also `opt-level = "z"` available to reduce the resulting binary size. `"s"` and `"z"` can sometimes be smaller than the other, so test it with your application!
+バイナリサイズを小さくするために `opt-level = "z"` があります。 `"s"` と `"z"` は時々他より小さくなることがありますので、アプリケーションでテストしてみてください！
 
-We've seen smaller binary sizes from `"s"` for Tauri example applications, but real-world applications can always differ.
+Tauriのサンプルアプリケーションでは、 `"s"` のバイナリサイズが小さくなっていますが、実際のアプリケーションは常に異なる場合があります。
 :::
 
-For a detailed explanation of each option and a bunch more, refer to the [Cargo books Profiles section][cargo profiles].
+各オプションの詳細と詳細については、 [Cargo books Profiles][cargo profiles] を参照してください。
 
-#### Disable Tauri's Asset Compression
+#### 牡牛座の資産圧縮を無効にする
 
-By default, Tauri uses Brotli to compress assets in the final binary. Brotli embeds a large (~170KiB) lookup table to achieve great results, but if the resources you embed are smaller than this or compress poorly, the resulting binary may be bigger than any savings.
+デフォルトでは、牡牛座は最終バイナリで資産を圧縮するためにBrotliを使用します。 Brotliは素晴らしい結果を達成するために大きな(~170KiB)ルックアップテーブルを埋め込んでいます。 しかし、埋め込んだリソースがこれより小さく圧縮されていない場合、結果のバイナリはどの節約よりも大きくなる可能性があります。
 
-Compression can be disabled by setting `default-features` to `false` and specifying everything except the `compression` feature:
+`default-features` を `false` に設定し、 `圧縮` 機能以外のすべてを指定することで、圧縮を無効にできます。
 
 ```toml
 [dependencies]
 tauri = { version = "...", features = ["objc-exception", "wry"], default-features = false }
 ```
 
-#### Unstable Rust Compression Features
+#### 不安定なRust圧縮機能
 
-:::caution
-The following suggestions are all unstable features and require a nightly toolchain. See the [Unstable Features][cargo unstable features] documentation for more information on what this involves.
+:::注意
+以下の提案はすべて不安定な機能であり、毎晩ツールチェーンを必要とします。 この関与の詳細については、 [不安定な機能][cargo unstable features] のドキュメントを参照してください。
 :::
 
-The following methods involve using unstable compiler features and require the rust nightly toolchain. If you don't have the nightly toolchain + `rust-src` nightly component added, try the following:
+以下のメソッドは、不安定なコンパイラ機能を使用し、夜間の rust ツールチェーンが必要です。 nightly toolchain + `rust-src` ナイトリーコンポーネントが追加されていない場合は、以下を試してみてください:
 
 ```shell
 rustup toolchain install nightly
 rustup component add rust-src --toolchain nightly
 ```
 
-The Rust Standard Library comes precompiled. This means Rust is faster to install, but also that the compiler can't optimize the Standard Library. You can apply the optimization options for the rest of your binary + dependencies to the std with an unstable flag. This flag requires specifying your target, so know the target triple you are targeting.
+Rust Standard Libraryは事前にコンパイルされています。 これは、Rust をインストールする方が高速であることを意味しますが、コンパイラーは Standard Library を最適化できないことを意味します。 残りのバイナリ + 依存関係の最適化オプションを std に不安定なフラグで適用できます。 このフラグはターゲットを指定する必要があります。ターゲットのトリプルを確認してください。
 
 ```shell
-cargo +nightly build --release -Z build-std --target x86_64-unknown-linux-gnu
+cargo +nightly build --release -Z build-std -target x86_64-unknown-linux-gnu
 ```
 
-If you are using `panic = "abort"` in your release profile optimizations, you need to make sure the `panic_abort` crate is compiled with std. Additionally, an extra std feature can further reduce the binary size. The following applies to both:
+If you are using `panic = "abort"` in your release profile optimizations, you need to make sure the `panic_abort` crate is compiled with std. さらに、std 機能を追加すると、バイナリサイズをさらに小さくすることができます。 以下は両方に適用されます：
 
 ```shell
 cargo +nightly build --release -Z build-std=std,panic_abort -Z build-std-features=panic_immediate_abort --target x86_64-unknown-linux-gnu
 ```
 
-See the unstable documentation for more details about [`-Z build-std`][cargo build-std] and [`-Z build-std-features`][cargo build-std-features].
+[`-Z build-std`][cargo build-std] と [`-Z build-std-features`][cargo build-std-features] の詳細については、不安定なドキュメントを参照してください。
 
-### Stripping
+### 剥離中
 
-Use strip utilities to remove debug symbols from your compiled app.
+ストリップユーティリティを使用して、コンパイル済みアプリからデバッグシンボルを削除します。
 
-Your compiled app includes so-called "Debug Symbols" that include function and variable names. Your end-users will probably not care about Debug Symbols, so this is a pretty surefire way to save some bytes!
+コンパイルされたアプリケーションには、関数名と変数名を含むいわゆる「デバッグシンボル」が含まれています。 あなたのエンドユーザーはおそらくDebug Symbolsを気にしないでしょう。ですから、これはバイト数を節約するにはかなり確実な方法です！
 
-The easiest way is to use the famous `strip` utility to remove this debugging information.
+最も簡単な方法は、有名な `ストリップ` ユーティリティを使用して、このデバッグ情報を削除することです。
 
 ```shell
-strip target/release/my_application
+ストリップ対象/リリース/my_application
 ```
 
-See your local `strip` manpage for more information and flags that can be used to specify what information gets stripped out from the binary.
+バイナリからどの情報が取り除かれるかを指定するために使用できる詳細情報やフラグについては、ローカル `ストリップ` のマニュアルを参照してください。
 
 :::info
 
-Rust 1.59 now has a builtin version of `strip`! It can be enabled by adding the following to your `Cargo.toml`:
+Rust 1.59 は `ストリップ` の内蔵バージョンになりました! カーゴ.toml `に以下のように追加することで`を有効にすることができます:
 
 ```toml
 [profile.release]
-strip = true  # Automatically strip symbols from the binary.
+ストリップ = true # バイナリからシンボルを自動的に除去します。
 ```
 
 :::
 
 ### UPX
 
-UPX, **Ultimate Packer for eXecutables**, is a dinosaur amongst the binary packers. This 23-year old, well-maintained piece of kit is GPL-v2 licensed with a pretty liberal usage declaration. Our understanding of the licensing is that you can use it for any purposes (commercial or otherwise) without needing to change your license unless you modify the source code of UPX.
+UPX, **eXecutables**のための究極のパッカー, バイナリパッカーの中の恐竜です. この23年間にわたる整備済みのキットはGPL-v2で、かなりリベラルな使用宣言が付いています。 ライセンスについての当社の理解は、UPXのソースコードを変更しない限り、ライセンスを変更することなく(商用またはそれ以外の)あらゆる目的に使用できることです。
 
-Maybe your target audience has very slow internet, or your app needs to fit on a tiny USB stick, and all the above steps haven't resulted in the savings you need. Fear not, as we have one last trick up our sleeves:
+ターゲットオーディエンスはインターネットが非常に遅いか、アプリが小さなUSBスティックに収まる必要があるかもしれません。 上記のすべてのステップはあなたが必要とする貯蓄をもたらしませんでした 恐れないでください、私たちはスリーブを1つ最後のトリックを持っています:
 
-[UPX][] compresses your binary and creates a self-extracting executable that decompresses itself at runtime.
+[UPX][] はバイナリを圧縮し、実行時に自分自身を解凍する自己解凍実行ファイルを作成します。
 
 :::caution
 You should know that this technique might flag your binary as a virus on Windows and macOS - so use at your own discretion, and as always, validate with [Frida][] and do real distribution testing!
 :::
 
-#### Usage on macOS
+#### macOSでの使い方
 
 <!-- Add additional platforms -->
 
@@ -287,9 +287,10 @@ UPX 3.95        Markus Oberhumer, Laszlo Molnar & John Reiser   Aug 26th 2018
 [vite-plugin-imagemin]: https://github.com/vbenjs/vite-plugin-imagemin
 [image-minimizer-webpack-plugin]: https://github.com/webpack-contrib/image-minimizer-webpack-plugin
 [Squoosh]: https://squoosh.app
-[Responsive Images]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images
-[Why is a rust executable large ?]: https://lifthrasiir.github.io/rustlog/why-is-a-rust-executable-large.html
-[Minimizing Rust Binary Size]: https://github.com/johnthagen/min-sized-rust
+[Squosh]: https://squoosh.app
+[レスポンシブ画像]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images
+[錆びが大きいのはなぜですか?]: https://lifthrasiir.github.io/rustlog/why-is-a-rust-executable-large.html
+[Rust Binary Size の最小化]: https://github.com/johnthagen/min-sized-rust
 [cargo unstable features]: https://doc.rust-lang.org/cargo/reference/unstable.html#unstable-features
 [cargo profiles]: https://doc.rust-lang.org/cargo/reference/profiles.html
 [cargo build-std]: https://doc.rust-lang.org/cargo/reference/unstable.html#build-std
