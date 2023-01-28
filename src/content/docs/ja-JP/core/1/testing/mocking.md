@@ -1,24 +1,24 @@
 # Mocking Tauri APIs
 
-When writing your frontend tests, having a "fake" Tauri environment to simulate windows or intercept IPC calls is common, so-called _mocking_. The [`@tauri-apps/api/mocks`][] module provides some helpful tools to make this easier for you:
+フロントエンドのテストを書くとき、Windowsをシミュレートするための「偽の」牡牛座環境やIPC呼び出しを傍受することが一般的で、いわゆる _モック_ が一般的です。 [`@tauri-apps/api/moks`][] モジュールはこれを簡単にするための便利なツールを提供します。
 
-:::caution
+:::注意
 
-Remember to clear mocks after each test run to undo mock state changes between runs! See [`clearMocks()`][] docs for more info.
+実行間のモック状態の変更を元に戻すには、テスト実行後にモックをクリアすることを忘れないでください! 詳細は [`clearMocks()`][] ドキュメントを参照してください。
 
 :::
 
-## IPC Requests
+## IPCリクエスト
 
-Most commonly, you want to intercept IPC requests; this can be helpful in a variety of situations:
+最も一般的には、IPC要求を傍受する必要があります。これは、以下のような状況で役立ちます。
 
-- Ensure the correct backend calls are made
-- Simulate different results from backend functions
+- 正しいバックエンド通話が行われていることを確認します
+- バックエンド関数の異なる結果をシミュレートする
 
-Tauri provides the mockIPC function to intercept IPC requests. You can find more about the specific API in detail [here][<code>mockipc()</code>].
+牡牛座はIPCリクエストを傍受するためのモックIPC機能を提供します。 特定の API の詳細については、 [ここ][<code>mockipc()</code>] を参照してください。
 
 :::note
-The following examples use [Vitest][], but you can use any other frontend testing library such as jest.
+以下の例は [Vitest][]を使用しますが、jestのような他のフロントエンドテストライブラリを使用できます。
 :::
 
 ```js
@@ -51,7 +51,7 @@ test("invoke simple", async () => {
 })
 ```
 
-Sometimes you want to track more information about an IPC call; how many times was the command invoked? Was it invoked at all? You can use [`mockIPC()`][] with other spying and mocking tools to test this:
+IPC呼び出しの詳細を追跡したい場合もあります。このコマンドは何回実行されましたか? それは全く呼び出されたのでしょうか? [`mockIPC()`][] を他のスパイやモックツールと一緒に使ってテストできます。
 
 ```js
 import { beforeAll, expect, test, vi } from "vitest";
@@ -87,7 +87,7 @@ test("invoke", async () => {
 })
 ```
 
-To mock IPC requests to a sidecar or shell command you need to grab the ID of the event handler when `spawn()` or `execute()` is called and use this ID to emit events the backend would send back:
+サイドカーまたはシェルコマンドへのIPCリクエストをモックするには、 `spawn()` または `execute()` が呼び出されたときにイベントハンドラのIDを取得し、バックエンドが返送するイベントを発行するためにこの ID を使用する必要があります。
 
 ```js
 mockIPC(async (cmd, args) => {
@@ -115,11 +115,11 @@ mockIPC(async (cmd, args) => {
 
 ## Windows
 
-Sometimes you have window-specific code (a splash screen window, for example), so you need to simulate different windows. You can use the [`mockWindows()`][] method to create fake window labels. The first string identifies the "current" window (i.e., the window your JavaScript believes itself in), and all other strings are treated as additional windows.
+ウィンドウ固有のコード(例えばスプラッシュスクリーンウィンドウ)がある場合があるので、別のウィンドウをシミュレートする必要があります。 [`mockWindows()`][] メソッドを使用して偽のウィンドウラベルを作成できます。 最初の文字列は「現在」ウィンドウ(つまり、JavaScript が信じているウィンドウ)を識別し、その他の文字列はすべて追加のウィンドウとして扱われます。
 
 :::note
 
-[`mockWindows()`][] only fakes the existence of windows but no window properties. To simulate window properties, you need to intercept the correct calls using [`mockIPC()`][]
+[`mockWindows()`][] は windows の存在を偽造するだけで、window プロパティはありません。 ウィンドウプロパティをシミュレートするには、 [`mockIPC()`][] を使用して正しい呼び出しを傍受する必要があります。
 
 :::
 
@@ -149,7 +149,7 @@ test('invoke', async () => {
 })
 ```
 
-[`@tauri-apps/api/mocks`]: ../../api/js/mocks.md
+[`@tauri-apps/api/moks`]: ../../api/js/mocks.md
 [<code>mockipc()</code>]: ../../api/js/mocks.md#mockipc
 [`mockIPC()`]: ../../api/js/mocks.md#mockipc
 [`mockWindows()`]: ../../api/js/mocks.md#mockwindows
