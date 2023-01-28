@@ -1,36 +1,36 @@
-# Continuous Integration
+# Integración continua
 
-Utilizing Linux and some programs to create a fake display, it is possible to run [WebDriver][] tests with [`tauri-driver`][] on your CI. The following example uses the [WebdriverIO][] example we [previously built together][] and GitHub Actions.
+Utilizando Linux y algunos programas para crear una pantalla falsa, es posible ejecutar [pruebas de WebDriver][] con [`tauri-driver`][] en su CI. El siguiente ejemplo utiliza el ejemplo [WebdriverIO][] que hemos creado previamente [][] y Acciones de GitHub.
 
-This means the following assumptions:
+Esto significa los siguientes supuestos:
 
-1. The Tauri application is in the repository root and the binary builds when running `cargo build --release`.
-2. The [WebDriverIO][] test runner is in the `webdriver/webdriverio` directory and runs when `yarn test` is used in that directory.
+1. La aplicación Tauri está en la raíz del repositorio y las construcciones binarias cuando se ejecuta `carga build --release`.
+2. El gestor de pruebas [WebDriverIO][] está en el directorio `webdriver/webdriverio` y se ejecuta cuando `yarn test` se utiliza en ese directorio .
 
-The following is a commented GitHub Actions workflow file at `.github/workflows/webdriver.yml`
+Lo siguiente es un archivo de flujo de trabajo de GitHub Actions comentado en `.github/workflows/webdriver.yml`
 
 ```yaml
-# run this action when the repository is pushed to
-on: [push]
+# ejecutar esta acción cuando el repositorio se envía a
+en: [push]
 
-# the name of our workflow
+# el nombre de nuestro workflow
 name: WebDriver
 
 jobs:
-  # a single job named test
+  # un solo trabajo llamado prueba
   test:
-    # the display name of the test job
+    # el nombre mostrado del trabajo
     name: WebDriverIO Test Runner
 
-    # we want to run on the latest linux environment
+    # queremos ejecutar en el último entorno linux
     runs-on: ubuntu-latest
 
-    # the steps our job runs **in order**
-    steps:
-      # checkout the code on the workflow runner
-      - uses: actions/checkout@v2
+    # los pasos que nuestro trabajo ejecuta **en orden**
+    pasos:
+      # checkout del código del gestor de flujo de trabajo
+      - usos: actions/checkout@v2
 
-      # install system dependencies that Tauri needs to compile on Linux.
+      # instala dependencias del sistema que Tauri necesita compilar en Linux.
       # note the extra dependencies for `tauri-driver` to run which are: `webkit2gtk-driver` and `xvfb`
       - name: Tauri dependencies
         run: >-
@@ -73,7 +73,7 @@ jobs:
         working-directory: webdriver/webdriverio
 
       # install the latest version of `tauri-driver`.
-      # note: the tauri-driver version is independent of any other Tauri versions
+      # nota: la versión tauri-driver es independiente de cualquier otra versión de Tauri
       - name: Install tauri-driver
         uses: actions-rs/cargo@v1
         with:
@@ -81,15 +81,16 @@ jobs:
           args: tauri-driver
 
       # run the WebdriverIO test suite.
-      # we run it through `xvfb-run` (the dependency we installed earlier) to have a fake
-      # display server which allows our application to run headless without any changes to the code
-      - name: WebdriverIO
+      # lo ejecutamos a través de `xvfb-run` (la dependencia que instalamos anteriormente) para tener un falso
+      # servidor de visualización que permite a nuestra aplicación correr sin cabeceras sin ningún cambio en el código
+      - nombre: WebdriverIO
         run: xvfb-run yarn test
         working-directory: webdriver/webdriverio
 ```
 
-[WebDriver]: https://www.w3.org/TR/webdriver/
+[pruebas de WebDriver]: https://www.w3.org/TR/webdriver/
 [`tauri-driver`]: https://crates.io/crates/tauri-driver
 [WebdriverIO]: https://webdriver.io/
 [WebDriverIO]: https://webdriver.io/
-[previously built together]: ./example/webdriverio.md
+[4]: ./example/webdriverio.md
+[5]: ./example/webdriverio.md
