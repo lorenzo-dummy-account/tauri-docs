@@ -2,69 +2,69 @@
 sidebar_position: 2
 ---
 
-import Command from '@theme/Command'
+importa comando da '@theme/Command'
 
 # Windows Installer
 
-Tauri applications for Windows are distributed as Microsoft Installers (`.msi` files). The Tauri CLI bundles your application binary and additional resources. Please note that `.msi` installers can **only be created on Windows** as cross-compilation doesn't work yet. This guide provides information about available customization options for the installer.
+Le applicazioni Tauri per Windows sono distribuite come Microsoft Installers ( file`.msi`. Il Tauri CLI raggruppa le tue applicazioni binarie e risorse aggiuntive. Si prega di notare che gli installatori `.msi` possono **essere creati solo su Windows** poiché la cross-compilation non funziona ancora. Questa guida fornisce informazioni sulle opzioni di personalizzazione disponibili per l'installatore.
 
-To build and bundle your Tauri application into a single executable simply run the following command:
+Per costruire e raggruppare la tua applicazione Tauri in un singolo eseguibile esegui semplicemente il seguente comando:
 
 <Command name="build" shell="powershell"/>
 
-It will build your Frontend, compile the Rust binary, collect all external binaries and resources and finally produce neat platform-specific bundles and installers.
+Costruirà il tuo Frontend, compilerà il binario Rust, raccoglierà tutti i binari e le risorse esterni e infine produrrà pacchetti e installatori specifici per piattaforme pulite.
 
-## Building for 32-bit or ARM
+## Edificio per 32-bit o ARM
 
-The Tauri CLI compiles your executable using your machine's architecture by default. Assuming that you're developing on a 64-bit machine, the CLI will produce 64-bit applications.
+Il Tauri CLI compila il tuo eseguibile usando l'architettura della tua macchina per impostazione predefinita. Supponendo che si stia sviluppando su una macchina a 64 bit, il CLI produrrà applicazioni a 64 bit.
 
-If you need to support **32-bit** machines, you can compile your application with a **different** [Rust target][platform support] using the `--target` flag:
+Se hai bisogno di supportare **macchine a 32 bit** , puoi compilare la tua applicazione con un **diverso** [Rust target][platform support] utilizzando il `--target` flag:
 
 ```powershell
 tauri build --target i686-pc-windows-msvc
 ```
 
-By default, Rust only installs toolchains for your machine's target, so you need to install the 32-bit Windows toolchain first: `rustup target add i686-pc-windows-msvc`.
+Per impostazione predefinita, Rust installa solo le toolchain per il target della macchina, quindi è necessario installare prima la toolchain di Windows a 32 bit: `rustup target add i686-pc-windows-msvc`.
 
-If you need to build for **ARM64** you first need to install additional build tools. To do this, open `Visual Studio Installer`, click on "Modify", and in the "Individual Components" tab install the "C++ ARM64 build tools". At the time of writing, the exact name in VS2022 is `MSVC v143 - VS 2022 C++ ARM64 build tools (Latest)`.  
-Now you can add the rust target with `rustup target add aarch64-pc-windows-msvc` and then use the above-mentioned method to compile your app:
+Se hai bisogno di costruire per **ARM64** devi prima installare strumenti di build aggiuntivi. Per fare questo, apri `Visual Studio Installer`, clicca su "Modifica" e nella scheda "Individual Components" installa gli "C++ ARM64 build tools". Al momento della scrittura, il nome esatto in VS2022 è `MSVC v143 - VS 2022 C++ ARM64 build tools (Latest)`.  
+Ora puoi aggiungere il target di ruggine con `il target di ruggine aggiungi aarch64-pc-windows-msvc` e quindi usare il metodo sopra menzionato per compilare la tua app:
 
 ```powershell
 tauri build --target aarc64-pc-windows-msvc
 ```
 
-## Supporting Windows 7
+## Supporto Per Windows 7
 
-By default, the Microsoft Installer does not work on Windows 7 because it needs to download the Webview2 bootstrapper if not installed (which might fail if TLS 1.2 is not enabled in the operating system). Tauri includes an option to embed the Webview2 bootstrapper (see the [Embedding the Webview2 Bootstrapper](#embedded-bootstrapper) section below).
+Per impostazione predefinita, Microsoft Installer non funziona su Windows 7 perché ha bisogno di scaricare il bootstrapper Webview2 se non installato (che potrebbe fallire se TLS 1. non è abilitato nel sistema operativo). Tauri include un'opzione per incorporare il bootstrapper Webview2 (vedere la sezione [Incorporare il Webview2 Bootstrapper](#embedded-bootstrapper) sotto).
 
-Additionally, to use the Notification API in Windows 7, you need to enable the `windows7-compat` Cargo feature:
+Inoltre, per utilizzare l'API di notifica in Windows 7, è necessario abilitare la funzione `windows7-compat` Cargo funzione:
 
 ```toml title="Cargo.toml"
 [dependencies]
 tauri = { version = "1", features = [ "windows7-compat" ] }
 ```
 
-## Webview2 Installation Options
+## Opzioni Di Installazione Webview2
 
-The Windows Installer by default downloads the Webview2 bootstrapper and executes it if the runtime is not installed. Alternatively, you can embed the bootstrapper, embed the offline installer, or use a fixed Webview2 runtime version. See the following table for a comparison between these methods:
+Il Windows Installer per impostazione predefinita scarica il Webview2 bootstrapper e lo esegue se il runtime non è installato. In alternativa, è possibile incorporare il bootstrapper, incorporare l'installatore offline, o utilizzare una versione di runtime Webview2 fissa. Cfr. la tabella seguente per un confronto tra questi metodi:
 
-| Installation Method                                | Requires Internet Connection? | Additional Installer Size | Notes                                                                                                        |
-|:-------------------------------------------------- |:----------------------------- |:------------------------- |:------------------------------------------------------------------------------------------------------------ |
-| [`downloadBootstrapper`](#downloaded-bootstrapper) | Yes                           | 0MB                       | `Default` <br /> Results in a smaller installer size, but is not recommended for Windows 7 deployment. |
-| [`embedBootstrapper`](#embedded-bootstrapper)      | Yes                           | ~1.8MB                    | Better support on Windows 7.                                                                                 |
-| [`offlineInstaller`](#offline-installer)           | No                            | ~127MB                    | Embeds Webview2 installer. Recommended for offline environments                                              |
-| [`fixedVersion`](#fixed-version)                   | No                            | ~180MB                    | Embeds a fixed Webview2 version                                                                              |
-| [`skip`](#skipping-installation)                   | No                            | 0MB                       | ⚠️ Not recommended <br /> Does not install the Webview2 as part of the Windows Installer.              |
+| Metodo Di Installazione                            | Richiede Connessione Internet? | Dimensione Aggiuntiva Dell'Installatore | Note                                                                                                                                       |
+|:-------------------------------------------------- |:------------------------------ |:--------------------------------------- |:------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`downloadBootstrapper`](#downloaded-bootstrapper) | Sì                             | 0MB                                     | `Predefinito` <br /> Risultati in un programma di installazione più piccolo, ma non è raccomandato per l'installazione di Windows 7. |
+| [`embedBootstrapper`](#embedded-bootstrapper)      | Sì                             | ~1,8MB                                  | Migliore supporto su Windows 7.                                                                                                            |
+| [`offlineInstaller`](#offline-installer)           | No                             | ~127MB                                  | Incorpora il programma di installazione Webview2. Consigliato per ambienti offline                                                         |
+| [`fixedVersion`](#fixed-version)                   | No                             | ~180MB                                  | Incorpora una versione fissa di Webview2                                                                                                   |
+| [`salta`](#skipping-installation)                  | No                             | 0MB                                     | ⚠️ Non raccomandato <br /> Non installa Webview2 come parte dell'Installatore di Windows.                                            |
 
 :::info
 
-On Windows 10 (April 2018 release or later) and Windows 11, the Webview2 runtime is distributed as part of the operating system.
+Su Windows 10 (aprile 2018 o successivo) e Windows 11, il runtime Webview2 è distribuito come parte del sistema operativo.
 
 :::
 
-### Downloaded Bootstrapper
+### Bootstrapper Scaricato
 
-This is the default setting for building the Windows Installer. It downloads the bootstrapper and run it. Requires internet connection but results in a smaller installer size. This is not recommended if you're going to be distributing to Windows 7.
+Questa è l'impostazione predefinita per costruire l'Installatore di Windows. Scarica il bootstrapper ed eseguirlo. Richiede la connessione internet ma si traduce in una dimensione di installazione più piccola. Questo non è raccomandato se si sta per essere distribuzione a Windows 7.
 
 ```json title="tauri.config.json"
 {
@@ -82,7 +82,7 @@ This is the default setting for building the Windows Installer. It downloads the
 
 ### Embedded Bootstrapper
 
-To embed the Webview2 Bootstrapper, set the [webviewInstallMode][] to `embedBootstrapper`. This increases the installer size by around 1.8MB, but increases compatibility with Windows 7 systems.
+Per incorporare il Webview2 Bootstrapper, impostare la [webviewInstallMode][] su `embedBootstrapper`. Ciò aumenta la dimensione del programma di installazione di circa 1,8MB, ma aumenta la compatibilità con i sistemi Windows 7.
 
 ```json title="tauri.config.json"
 {
@@ -98,9 +98,9 @@ To embed the Webview2 Bootstrapper, set the [webviewInstallMode][] to `embedBoot
 }
 ```
 
-### Offline Installer
+### Installatore Offline
 
-To embed the Webview2 Bootstrapper, set the [webviewInstallMode][] to `offlineInstaller`. This increases the installer size by around 127MB, but allows your application to be installed even if an internet connection is not available.
+Per incorporare il Webview2 Bootstrapper, impostare la [webviewInstallMode][] a `offlineInstaller`. Questo aumenta la dimensione del programma di installazione di circa 127MB, ma consente di installare la tua applicazione anche se non è disponibile una connessione internet.
 
 ```json title="tauri.config.json"
 {
@@ -116,22 +116,22 @@ To embed the Webview2 Bootstrapper, set the [webviewInstallMode][] to `offlineIn
 }
 ```
 
-### Fixed Version
+### Versione Fissa
 
-Using the runtime provided by the system is great for security as the webview vulnerability patches are managed by Windows. If you want to control the Webview2 distribution on each of your applications (either to manage the release patches yourself or distribute applications on environments where an internet connection might not be available) Tauri can bundle the runtime files for you.
+Utilizzando il runtime fornito dal sistema è grande per la sicurezza in quanto le patch di vulnerabilità della vista web sono gestite da Windows. Se si desidera controllare la distribuzione Webview2 su ciascuna delle applicazioni (sia per gestire le patch di rilascio da soli o distribuire applicazioni in ambienti in cui una connessione internet potrebbe non essere disponibile) Tauri può raggruppare i file runtime per voi.
 
-:::caution
-Distributing a fixed Webview2 Runtime version increases the Windows Installer by around 180MB.
+:::cautela
+Distribuire una versione fissa di Webview2 Runtime aumenta il Windows Installer di circa 180MB.
 :::
 
-1. Download the Webview2 fixed version runtime from [Microsoft's website][download-webview2-runtime]. In this example, the downloaded filename is `Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50.x64.cab`
-2. Extract the file to the core folder:
+1. Scarica il Webview2 versione fissa runtime da [Microsoft sito][download-webview2-runtime]. In questo esempio, il nome del file scaricato è `Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50.x64.cab`
+2. Estrae il file nella cartella principale:
 
 ```powershell
-Expand .\Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50.x64.cab -F:* ./src-tauri
+Espandi .\Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50.x64.cab -F:* ./src-tauri
 ```
 
-3. Configure the Webview2 runtime path in `tauri.conf.json`:
+3. Configurare il percorso di runtime Webview2 in `tauri.conf.json`:
 
 ```json title="tauri.config.json"
 {
@@ -140,7 +140,7 @@ Expand .\Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50.x64.cab -F:* ./src-
       "windows": {
         "webviewInstallMode": {
           "type": "fixedRuntime",
-          "path": "./Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50.x64/"
+          "percorso": ". Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50. 64/"
         }
       }
     }
@@ -148,14 +148,14 @@ Expand .\Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50.x64.cab -F:* ./src-
 }
 ```
 
-4. Run `tauri build` to produce the Windows Installer with the fixed Webview2 runtime.
+4. Esegui `tauri build` per produrre Windows Installer con la runtime fissa Webview2.
 
-### Skipping Installation
+### Installazione Salto
 
-You can remove the Webview2 Runtime download check from the installer by setting [webviewInstallMode][] to `skip`. Your application WILL NOT work if the user does not have the runtime installed.
+Puoi rimuovere il controllo di download Webview2 Runtime dall'installer impostando [webviewInstallMode][] a `skip`. La tua applicazione NON funzionerà se l'utente non ha installato il runtime.
 
 :::warning
-Your application WILL NOT work if the user does not have the runtime installed and won't attempt to install it.
+La tua applicazione NON funzionerà se l'utente non ha il runtime installato e non tenterà di installarlo.
 :::
 
 ```json title="tauri.config.json"
@@ -172,39 +172,39 @@ Your application WILL NOT work if the user does not have the runtime installed a
 }
 ```
 
-## Customizing the Installer
+## Personalizzazione dell'installatore
 
-The Windows Installer package is built using the [WiX Toolset v3][]. Currently, you can change it by using a custom WiX source code (an XML file with a `.wxs` file extension) or through WiX fragments.
+Il pacchetto Windows Installer è costruito utilizzando il [WiX Toolset v3][]. Attualmente, è possibile modificarlo utilizzando un codice sorgente WiX personalizzato (un file XML con un `. xs` estensione del file) o attraverso frammenti WiX.
 
-### Replacing the Installer Code with a Custom WiX File
+### Sostituire il codice di installazione con un file WiX personalizzato
 
-The Windows Installer XML defined by Tauri is configured to work for the common use case of simple webview-based applications (you can find it [here][default wix template]). It uses [handlebars][] so the Tauri CLI can brand your installer according to your `tauri.conf.json` definition. If you need a completely different installer, a custom template file can be configured on [`tauri.bundle.windows.wix.template`][].
+Il Windows Installer XML definito da Tauri è configurato per funzionare per il caso di uso comune di semplici applicazioni webview-based (puoi trovarlo [qui][default wix template]). Utilizza [manubrio][] in modo che il Tauri CLI possa marcare il tuo installatore secondo la tua definizione `tauri.conf.json`. Se hai bisogno di un programma di installazione completamente diverso, un file di template personalizzato può essere configurato su [`tauri.bundle.windows.wix.template`][].
 
-### Extending the Installer with WiX Fragments
+### Estendere il programma di installazione con frammenti WiX
 
-A [WiX fragment][] is a container where you can configure almost everything offered by WiX. In this example, we will define a fragment that writes two registry entries:
+Un frammento [WiX][] è un contenitore dove puoi configurare quasi tutto quello che WiX. In questo esempio, definiremo un frammento che scrive due voci del registro:
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1. " encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
-    <!-- these registry entries should be installed
-         to the target user's machine -->
+    <! - queste voci del Registro di sistema dovrebbero essere installate
+         sulla macchina dell'utente di destinazione -->
     <DirectoryRef Id="TARGETDIR">
-      <!-- groups together the registry entries to be installed -->
-      <!-- Note the unique `Id` we provide here -->
+      <! - raggruppa le voci del Registro di sistema da installare -->
+      <! - Nota l'esclusivo `Id` che forniamo qui -->
       <Component Id="MyFragmentRegistryEntries" Guid="*">
-        <!-- the registry key will be under
+        <! - la chiave del registro sarà sotto
              HKEY_CURRENT_USER\Software\MyCompany\MyApplicationName -->
-        <!-- Tauri uses the second portion of the
-             bundle identifier as the `MyCompany` name
-             (e.g. `tauri-apps` in `com.tauri-apps.test`)  -->
+        <! - Tauri utilizza la seconda parte dell'identificatore del pacchetto
+             come nome `MyCompany`
+             (e. . `tauri-apps` in `com.tauri-apps. est`) -->
         <RegistryKey
           Root="HKCU"
           Key="Software\MyCompany\MyApplicationName"
           Action="createAndRemoveOnUninstall"
         >
-          <!-- values to persist on the registry -->
+          <! - valori che persistono nel registro di sistema -->
           <RegistryValue
             Type="integer"
             Name="SomeIntegerValue"
@@ -221,7 +221,7 @@ A [WiX fragment][] is a container where you can configure almost everything offe
 
 <!-- Would be good to include here WHERE we recommend to save it -->
 
-Save the fragment file with the `.wxs` extension somewhere in your project and reference it on `tauri.conf.json`:
+Salva il file di frammento con l'estensione `.wxs` da qualche parte nel tuo progetto e fai riferimento a `tauri.conf.json`:
 
 ```json
 {
@@ -229,7 +229,7 @@ Save the fragment file with the `.wxs` extension somewhere in your project and r
     "bundle": {
       "windows": {
         "wix": {
-          "fragmentPaths": ["./path/to/registry.wxs"],
+          "fragmentPaths": [". percorso/per/registro. xs"],
           "componentRefs": ["MyFragmentRegistryEntries"]
         }
       }
@@ -238,15 +238,15 @@ Save the fragment file with the `.wxs` extension somewhere in your project and r
 }
 ```
 
-Note that `ComponentGroup`, `Component`, `FeatureGroup`, `Feature` and `Merge` element ids must be referenced on the `wix` object of `tauri.conf.json` on the `componentGroupRefs`, `componentRefs`, `featureGroupRefs`, `featureRefs` and `mergeRefs` respectively to be included in the installer.
+Nota che `ComponentGroup`, `Component`, `FeatureGroup`, `Caratteristica` e `Unisci` id elemento deve essere referenziato sull'oggetto `wix` di `tauri. onf.json` su `componentGroupRefs`, `componentRefs`, `featureGroupRefs`, `funzionalitàRefs` e `mergeRefs` rispettivamente da includere nell'installatore.
 
-## Internationalization
+## Internazionalizzazione
 
-The Windows Installer is built using the `en-US` language by default. Internationalization (i18n) can be configured using the [`tauri.bundle.windows.wix.language`][] property, defining the languages Tauri should build an installer against. You can find the language names to use in the Language-Culture column on [Microsoft's website][localizing the error and actiontext tables].
+Il Windows Installer è costruito utilizzando la lingua `en-US` per impostazione predefinita. L'internazionalizzazione (i18n) può essere configurata usando la proprietà [`tauri.bundle.windows.wix.language`][] , definendo le lingue contro cui Tauri dovrebbe costruire un installer. Puoi trovare i nomi delle lingue da usare nella colonna Language-Culture sul sito web di [Microsoft][localizing the error and actiontext tables].
 
-### Compiling an Installer for a Single Language
+### Compilare un installatore per una lingua singola
 
-To create a single installer targeting a specific language, set the `language` value to a string:
+Per creare un singolo programma di installazione mirato a una lingua specifica, imposta il valore `language` a una stringa:
 
 ```json
 {
@@ -262,9 +262,9 @@ To create a single installer targeting a specific language, set the `language` v
 }
 ```
 
-### Compiling an Installer for Each Language in a List
+### Compilare un installatore per ogni lingua in un elenco
 
-To compile an installer targeting a list of languages, use an array. A specific installer for each language will be created, with the language key as a suffix:
+Per compilare un programma di installazione che punta un elenco di lingue, usa un array. Verrà creato un programma di installazione specifico per ogni lingua, con la chiave della lingua come suffisso:
 
 ```json
 {
@@ -280,9 +280,9 @@ To compile an installer targeting a list of languages, use an array. A specific 
 }
 ```
 
-### Configuring the Installer for Each Language
+### Configurare l'installatore per ogni lingua
 
-A configuration object can be defined for each language to configure localization strings:
+Un oggetto di configurazione può essere definito per ogni lingua per configurare le stringhe di localizzazione:
 
 ```json
 {
@@ -293,7 +293,7 @@ A configuration object can be defined for each language to configure localizatio
           "language": {
             "en-US": null,
             "pt-BR": {
-              "localePath": "./wix/locales/pt-BR.wxl"
+              "localePath": ". wix/locales/pt-BR. xl"
             }
           }
         }
@@ -303,42 +303,42 @@ A configuration object can be defined for each language to configure localizatio
 }
 ```
 
-The `localePath` property defines the path to a language file, a XML configuring the language culture:
+La proprietà `localePath` definisce il percorso di un file di lingua, un XML che configura la cultura della lingua:
 
 ```xml
 <WixLocalization
   Culture="en-US"
   xmlns="http://schemas.microsoft.com/wix/2006/localization"
 >
-  <String Id="LaunchApp"> Launch MyApplicationName </String>
+  <String Id="LaunchApp"> Lancia MyApplicationName </String>
   <String Id="DowngradeErrorMessage">
-    A newer version of MyApplicationName is already installed.
+    Una nuova versione di MyApplicationName è già installata.
   </String>
   <String Id="PathEnvVarFeature">
-    Add the install location of the MyApplicationName executable to
-    the PATH system environment variable. This allows the
-    MyApplicationName executable to be called from any location.
+    Aggiungi la posizione di installazione dell'eseguibile MyApplicationName per
+    la variabile di ambiente del sistema PATH. Questo consente di chiamare l'eseguibile
+    MyApplicationName da qualsiasi posizione.
   </String>
   <String Id="InstallAppFeature">
-    Installs MyApplicationName.
+    Installa MyApplicationName.
   </String>
 </WixLocalization>
 ```
 
 :::note
-The `WixLocalization` element's `Culture` field must match the configured language.
+Il campo `WixLocalization` dell'elemento `Cultura` deve corrispondere alla lingua configurata.
 :::
 
-Currently, Tauri references the following locale strings: `LaunchApp`, `DowngradeErrorMessage`, `PathEnvVarFeature` and `InstallAppFeature`. You can define your own strings and reference them on your custom template or fragments with `"!(loc.TheStringId)"`. See the [WiX localization documentation][] for more information.
+Attualmente, Tauri fa riferimento alle seguenti stringhe locali: `LaunchApp`, `DowngradeErrorMessage`, `PathEnvVarFeature` e `InstallAppFeature`. Puoi definire le tue stringhe e riferirle sul tuo modello o frammenti personalizzati con `"!(loc.TheStringId)"`. Vedi la documentazione [di localizzazione WiX][] per maggiori informazioni.
 
 [platform support]: https://doc.rust-lang.org/nightly/rustc/platform-support.html
 [webviewInstallMode]: ../../api/config.md#webviewinstallmode
 [download-webview2-runtime]: https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section
 [WiX Toolset v3]: https://wixtoolset.org/documentation/manual/v3/
 [default wix template]: https://github.com/tauri-apps/tauri/blob/dev/tooling/bundler/src/bundle/windows/templates/main.wxs
-[handlebars]: https://docs.rs/handlebars/latest/handlebars/
+[manubrio]: https://docs.rs/handlebars/latest/handlebars/
 [`tauri.bundle.windows.wix.template`]: ../../api/config.md#wixconfig.template
-[WiX fragment]: https://wixtoolset.org/documentation/manual/v3/xsd/wix/fragment.html
+[WiX]: https://wixtoolset.org/documentation/manual/v3/xsd/wix/fragment.html
 [`tauri.bundle.windows.wix.language`]: ../../api/config.md#wixconfig.language
-[WiX localization documentation]: https://wixtoolset.org/documentation/manual/v3/howtos/ui_and_localization/make_installer_localizable.html
+[di localizzazione WiX]: https://wixtoolset.org/documentation/manual/v3/howtos/ui_and_localization/make_installer_localizable.html
 [localizing the error and actiontext tables]: https://docs.microsoft.com/en-us/windows/win32/msi/localizing-the-error-and-actiontext-tables
