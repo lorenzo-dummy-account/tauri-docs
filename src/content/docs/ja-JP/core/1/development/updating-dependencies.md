@@ -5,11 +5,11 @@ sidebar_position: 3
 import Tabs from '@theme/Tabs'
 import TabItem from '@theme/TabItem'
 
-# Updating Dependencies
+# 依存関係の更新
 
-## Update npm Packages
+## npm パッケージを更新
 
-If you are using the `tauri` package:
+`tauri` パッケージを使用している場合:
 
 <Tabs groupId="package-manager">
   <TabItem value="npm">
@@ -42,7 +42,7 @@ pnpm update @tauri-apps/cli @tauri-apps/api --latest
   </TabItem>
 </Tabs>
 
-You can also detect what the latest version of Tauri is on the command line, using:
+また、コマンドラインで Tauri の最新バージョンを検出できます。
 
 <Tabs groupId="package-manager">
   <TabItem value="npm">
@@ -62,13 +62,13 @@ yarn outdated @tauri-apps/cli
   <TabItem value="pnpm">
 
 ```shell
-pnpm outdated @tauri-apps/cli
+pnpm 時代遅れの @tauri-apps/cli
 ```
 
   </TabItem>
 </Tabs>
 
-Alternatively, if you are using the `vue-cli-plugin-tauri` approach:
+あるいは、 `vue-cli-plugin-tauri` アプローチを使用している場合:
 
 <Tabs groupId="package-manager">
   <TabItem value="npm">
@@ -101,11 +101,11 @@ pnpm update vue-cli-plugin-tauri --latest
   </TabItem>
 </Tabs>
 
-## Update Cargo Packages
+## 貨物パッケージの更新
 
 You can check for outdated packages with [`cargo outdated`][] or on the crates.io pages: [tauri][] / [tauri-build][].
 
-Go to `src-tauri/Cargo.toml` and change `tauri` and `tauri-build` to
+`src-tauri/Cargo.toml` に移動し、 `tauri` と `tauri-build` に変更します。
 
 ```toml
 [build-dependencies]
@@ -115,16 +115,16 @@ tauri-build = "%version%"
 tauri = { version = "%version%" }
 ```
 
-where `%version%` is the corresponding version number from above. <!-- TODO: (You can just use the `MAJOR.MINOR`) version, like `0.9`. -->
+`%version%` が上からの対応するバージョン番号です。 <!-- TODO: (You can just use the `MAJOR.MINOR`) version, like `0.9`. -->
 
-Then do the following:
+次に、次の操作を行います。
 
 ```shell
 cd src-tauri
 cargo update
 ```
 
-Alternatively, you can run the `cargo upgrade` command provided by [cargo-edit][] which does all of this automatically.
+あるいは、 `cargo-edit` によって提供される [cargo-edit][] コマンドを自動的に実行することもできます。
 
 [`cargo outdated`]: https://github.com/kbknapp/cargo-outdated
 [tauri]: https://crates.io/crates/tauri/versions
