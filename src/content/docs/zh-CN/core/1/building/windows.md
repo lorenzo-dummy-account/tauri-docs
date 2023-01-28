@@ -2,69 +2,69 @@
 sidebar_position: 2
 ---
 
-import Command from '@theme/Command'
+从 '@theme/Command' 导入命令
 
-# Windows Installer
+# Windows 安装程序
 
-Tauri applications for Windows are distributed as Microsoft Installers (`.msi` files). The Tauri CLI bundles your application binary and additional resources. Please note that `.msi` installers can **only be created on Windows** as cross-compilation doesn't work yet. This guide provides information about available customization options for the installer.
+Windows 的Tauri应用程序以Microsoft Installers (`.msi` 文件)分发。 Tauri CLI 捆绑您的应用程序的二进制和附加资源。 请注意， `.msi` 安装程序可以 **只能在 Windows** 上创建，因为交叉编译尚不可用。 本指南提供了有关安装程序可用的自定义选项的信息。
 
-To build and bundle your Tauri application into a single executable simply run the following command:
+要构建和捆绑您的 Tauri应用程序到一个单一可执行程序，只需运行以下命令：
 
 <Command name="build" shell="powershell"/>
 
-It will build your Frontend, compile the Rust binary, collect all external binaries and resources and finally produce neat platform-specific bundles and installers.
+它将构建你的前端，编译Rust 二进制文件，收集所有外部二进制文件和资源，并最终生成专门针对平台的捆绑和安装器。
 
-## Building for 32-bit or ARM
+## 构建32位或 ARM
 
-The Tauri CLI compiles your executable using your machine's architecture by default. Assuming that you're developing on a 64-bit machine, the CLI will produce 64-bit applications.
+默认情况下，Tauri CLI 使用您的机器架构编译您的可执行程序。 假定您正在研发64位机器，CLI将生成64位应用程序。
 
 If you need to support **32-bit** machines, you can compile your application with a **different** [Rust target][platform support] using the `--target` flag:
 
 ```powershell
-tauri build --target i686-pc-windows-msvc
+tauri build--target i686-pc-windows-msvc
 ```
 
-By default, Rust only installs toolchains for your machine's target, so you need to install the 32-bit Windows toolchain first: `rustup target add i686-pc-windows-msvc`.
+默认情况下，只为您的机器的目标安装工具链。 所以您需要先安装32位Windows工具链： `扩展目标添加 i686-pc-windows-msvc`。
 
-If you need to build for **ARM64** you first need to install additional build tools. To do this, open `Visual Studio Installer`, click on "Modify", and in the "Individual Components" tab install the "C++ ARM64 build tools". At the time of writing, the exact name in VS2022 is `MSVC v143 - VS 2022 C++ ARM64 build tools (Latest)`.  
-Now you can add the rust target with `rustup target add aarch64-pc-windows-msvc` and then use the above-mentioned method to compile your app:
+如果你需要构建 **ARM64** 你首先需要安装额外的构建工具。 要做到这一点，请打开 `Visual Studio Installer`, 点击"Modify", 并在“个别组件”选项卡中安装"C++ ARM64 build工具"。 在编写本报告时，VS2022的准确名称是 `MSVC v143 - VS 2022 C++ ARM64 构建工具(Latet)`。  
+现在您可以用 `扩展目标添加 aarch64-pc-winds-msvc` 然后使用上述方法编译您的应用：
 
 ```powershell
-tauri build --target aarc64-pc-windows-msvc
+tauri build--tark aarc64-pc-windows-msvc
 ```
 
-## Supporting Windows 7
+## 支持 Windows 7
 
-By default, the Microsoft Installer does not work on Windows 7 because it needs to download the Webview2 bootstrapper if not installed (which might fail if TLS 1.2 is not enabled in the operating system). Tauri includes an option to embed the Webview2 bootstrapper (see the [Embedding the Webview2 Bootstrapper](#embedded-bootstrapper) section below).
+默认， Microsoft Installer 无法在 Windows 7 上工作，因为如果未安装，它需要下载 Webview2 bootstraper (如果安装了 TLS 1 可能会失败)。 未在操作系统中启用)。 Tauri包含一个嵌入Webview2 引导器的选项(见下面 [嵌入Webview2 Bootstraper](#embedded-bootstrapper) 部分)。
 
-Additionally, to use the Notification API in Windows 7, you need to enable the `windows7-compat` Cargo feature:
+此外，要在 Windows 7 中使用通知 API ，您需要启用 `windows7-compat` 货运功能：
 
 ```toml title="Cargo.toml"
 [dependencies]
-tauri = { version = "1", features = [ "windows7-compat" ] }
+tauri = Power version = "1", feats = [ "windows7-compat" ] }
 ```
 
-## Webview2 Installation Options
+## Webview2 安装选项
 
-The Windows Installer by default downloads the Webview2 bootstrapper and executes it if the runtime is not installed. Alternatively, you can embed the bootstrapper, embed the offline installer, or use a fixed Webview2 runtime version. See the following table for a comparison between these methods:
+Windows 安装程序默认下载Webview2 bootstraper 并在未安装运行时执行它。 或者，您可以嵌入bootstraper，嵌入离线安装器，或使用固定的 Webview2 运行时版本。 这些方法之间的比较见下表：
 
-| Installation Method                                | Requires Internet Connection? | Additional Installer Size | Notes                                                                                                        |
-|:-------------------------------------------------- |:----------------------------- |:------------------------- |:------------------------------------------------------------------------------------------------------------ |
-| [`downloadBootstrapper`](#downloaded-bootstrapper) | Yes                           | 0MB                       | `Default` <br /> Results in a smaller installer size, but is not recommended for Windows 7 deployment. |
-| [`embedBootstrapper`](#embedded-bootstrapper)      | Yes                           | ~1.8MB                    | Better support on Windows 7.                                                                                 |
-| [`offlineInstaller`](#offline-installer)           | No                            | ~127MB                    | Embeds Webview2 installer. Recommended for offline environments                                              |
-| [`fixedVersion`](#fixed-version)                   | No                            | ~180MB                    | Embeds a fixed Webview2 version                                                                              |
-| [`skip`](#skipping-installation)                   | No                            | 0MB                       | ⚠️ Not recommended <br /> Does not install the Webview2 as part of the Windows Installer.              |
+| 安装方法                                          | 需要互联网连接？ | 附加安装程序大小 | 注                                                     |
+|:--------------------------------------------- |:-------- |:-------- |:----------------------------------------------------- |
+| [`下载引导器`](#downloaded-bootstrapper)           | 否        | 0MB      | `默认` <br /> 结果的安装程序较小，但不推荐到 Windows 7 的部署。      |
+| [`embedBootstrapper`](#embedded-bootstrapper) | 否        | ~1.8MB   | 在 Windows 7 上更好的支持。                                   |
+| [`离线安装程序`](#offline-installer)                | 否        | ~127MB   | 嵌入 Webview2 安装程序。 推荐离线环境                              |
+| [`固定版本`](#fixed-version)                      | 否        | ~180MB   | 嵌入固定的 Webview2 版本                                     |
+| [`跳过`](#skipping-installation)                | 否        | 0MB      | ⚠️ 不建议 <br /> 不将 Webview2 安装为 Windows 安装程序的一部分。 |
 
 :::info
 
-On Windows 10 (April 2018 release or later) and Windows 11, the Webview2 runtime is distributed as part of the operating system.
+在 Windows 10 (2018年4月发行版)和Windows 11, Webview2 运行时间作为操作系统的一部分分发。
 
 :::
 
-### Downloaded Bootstrapper
+### 已下载的引导器
 
-This is the default setting for building the Windows Installer. It downloads the bootstrapper and run it. Requires internet connection but results in a smaller installer size. This is not recommended if you're going to be distributing to Windows 7.
+这是构建Windows 安装程序的默认设置。 它下载引导器并运行它。 需要互联网连接，但是安装程序大小较小。 如果您将要向Windows 7分发，则不推荐这样做。
 
 ```json title="tauri.config.json"
 {
@@ -82,7 +82,7 @@ This is the default setting for building the Windows Installer. It downloads the
 
 ### Embedded Bootstrapper
 
-To embed the Webview2 Bootstrapper, set the [webviewInstallMode][] to `embedBootstrapper`. This increases the installer size by around 1.8MB, but increases compatibility with Windows 7 systems.
+要嵌入Webview2 Bootstraper，请将 [webviewInstall模式][] 设置为 `embedBootstraper`。 这会增加大约1.8兆字节的安装程序大小，但会增加与 Windows 7 系统的兼容性。
 
 ```json title="tauri.config.json"
 {
@@ -98,9 +98,9 @@ To embed the Webview2 Bootstrapper, set the [webviewInstallMode][] to `embedBoot
 }
 ```
 
-### Offline Installer
+### 离线安装程序
 
-To embed the Webview2 Bootstrapper, set the [webviewInstallMode][] to `offlineInstaller`. This increases the installer size by around 127MB, but allows your application to be installed even if an internet connection is not available.
+要嵌入Webview2 Bootstraper，请将 [webviewInstall模式][] 设置为 `离线安装程序`。 这会增加大约127MB的安装程序大小，但允许安装您的应用程序，即使互联网连接不可用。
 
 ```json title="tauri.config.json"
 {
@@ -116,31 +116,31 @@ To embed the Webview2 Bootstrapper, set the [webviewInstallMode][] to `offlineIn
 }
 ```
 
-### Fixed Version
+### 固定版本
 
-Using the runtime provided by the system is great for security as the webview vulnerability patches are managed by Windows. If you want to control the Webview2 distribution on each of your applications (either to manage the release patches yourself or distribute applications on environments where an internet connection might not be available) Tauri can bundle the runtime files for you.
+使用系统提供的运行时间对于安全来说非常重要，因为Web 视图的脆弱性补丁是由 Windows 管理的。 如果您想要控制您每个应用程序上的 Webview2 发布(要么管理您自己的发布补丁，要么在网络连接可能不可用的环境中发布应用程序)，Tauri可以为您捆绑运行时文件。
 
-:::caution
-Distributing a fixed Webview2 Runtime version increases the Windows Installer by around 180MB.
+:::谨慎
+发布固定的 Webview2 运行时版本会增加 Windows 安装程序约180MB。
 :::
 
-1. Download the Webview2 fixed version runtime from [Microsoft's website][download-webview2-runtime]. In this example, the downloaded filename is `Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50.x64.cab`
-2. Extract the file to the core folder:
+1. 从 [Microsoft 网站][download-webview2-runtime] 下载Webview2 固定版本运行时间。 在此示例中，下载的文件名是 `Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50.x64.cab`
+2. 提取文件到核心文件夹：
 
 ```powershell
-Expand .\Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50.x64.cab -F:* ./src-tauri
+展开.\Microsoft.WebView2.FixedVersionRuntime.98.0.1108.x64.cab -F：* ./src-tauri
 ```
 
-3. Configure the Webview2 runtime path in `tauri.conf.json`:
+3. 配置 `tauri.conf.json` 的 Webview2 运行路径：
 
 ```json title="tauri.config.json"
-{
-  "tauri": {
-    "bundle": {
-      "windows": {
-        "webviewInstallMode": {
-          "type": "fixedRuntime",
-          "path": "./Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50.x64/"
+主席:
+  "tauri":
+    "bundle": format@@
+      "windows":
+        "webviewInstallMode":
+          "type": "field",
+          "路径": ". Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50。 64/"
         }
       }
     }
@@ -148,41 +148,41 @@ Expand .\Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50.x64.cab -F:* ./src-
 }
 ```
 
-4. Run `tauri build` to produce the Windows Installer with the fixed Webview2 runtime.
+4. 运行 `tauribuild` 来生成固定的 Webview2 运行时间的 Windows 安装程序。
 
-### Skipping Installation
+### 跳过安装
 
-You can remove the Webview2 Runtime download check from the installer by setting [webviewInstallMode][] to `skip`. Your application WILL NOT work if the user does not have the runtime installed.
+您可以通过设置 [webviewInstall模式][] 到 `跳过` ，从安装程序中下载检查。 如果用户没有安装运行时间，您的应用程序将无法工作。
 
-:::warning
-Your application WILL NOT work if the user does not have the runtime installed and won't attempt to install it.
+:::警告
+如果用户没有安装运行时间并且不会尝试安装它，您的应用程序将无法工作。
 :::
 
 ```json title="tauri.config.json"
-{
-  "tauri": {
-    "bundle": {
-      "windows": {
-        "webviewInstallMode": {
+主席:
+  "tauri":
+    "bundle": format@@
+      "windows":
+        "webviewInstallMode":
           "type": "skip"
         }
       }
-    }
+
   }
 }
 ```
 
-## Customizing the Installer
+## 自定义安装程序
 
-The Windows Installer package is built using the [WiX Toolset v3][]. Currently, you can change it by using a custom WiX source code (an XML file with a `.wxs` file extension) or through WiX fragments.
+Windows 安装程序包是使用 [WiX 工具集 v3][] 构建的。 目前，您可以通过自定义WiX源代码来更改它(一个带有 `的XML文件)。 xs` 文件扩展名或通过 WiX 片段。
 
-### Replacing the Installer Code with a Custom WiX File
+### 用自定义WiX文件替换安装程序代码
 
-The Windows Installer XML defined by Tauri is configured to work for the common use case of simple webview-based applications (you can find it [here][default wix template]). It uses [handlebars][] so the Tauri CLI can brand your installer according to your `tauri.conf.json` definition. If you need a completely different installer, a custom template file can be configured on [`tauri.bundle.windows.wix.template`][].
+由 Tauri定义的 Windows Installer XML 被配置为适用于简单的 web 视图应用程序的常见使用案例(您可以在这里找到 [][default wix template])。 它使用 [个手提栏][] ，所以Tauri CLI 可以根据您 `tauri.conf.json` 定义来品牌您的安装程序。 如果您需要一个完全不同的安装程序，可以在 [`tauri.bundle.windows.wix.template`][] 上配置一个自定义模板文件。
 
-### Extending the Installer with WiX Fragments
+### 用WiX片段扩展安装程序
 
-A [WiX fragment][] is a container where you can configure almost everything offered by WiX. In this example, we will define a fragment that writes two registry entries:
+一个 [WiX 片段][] 是一个容器，您可以在容器中配置WiX提供的几乎所有的东西。 在这个示例中，我们将定义一个片段，写入两个注册表条目：
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -221,32 +221,33 @@ A [WiX fragment][] is a container where you can configure almost everything offe
 
 <!-- Would be good to include here WHERE we recommend to save it -->
 
-Save the fragment file with the `.wxs` extension somewhere in your project and reference it on `tauri.conf.json`:
+在您的项目中的某个地方使用 `.wxs` 扩展保存片段文件，并在 `tauri.conf.json` 中引用它：
 
 ```json
-{
-  "tauri": {
-    "bundle": {
-      "windows": {
-        "wix": {
-          "fragmentPaths": ["./path/to/registry.wxs"],
+主席:
+  "tauri":
+    "bundle": format@@
+      "windows":
+        "wix":
+          "fragmentPaths": [". 路径/到/注册。 xs"],
           "componentRefs": ["MyFragmentRegistryEntries"]
         }
       }
     }
   }
-}
+ } 
+ }
 ```
 
-Note that `ComponentGroup`, `Component`, `FeatureGroup`, `Feature` and `Merge` element ids must be referenced on the `wix` object of `tauri.conf.json` on the `componentGroupRefs`, `componentRefs`, `featureGroupRefs`, `featureRefs` and `mergeRefs` respectively to be included in the installer.
+注意 `组件组`, `组件`, `特征组`, `功能` 和 `合并` 元素id必须在 `wix` 对象 `tauri. onf.json` 关于 `components GroupRefs`, `componentRefs`, `featureGroupRefs`, `featureRefs` 和 `合并Refs` 将分别包含在安装程序中。
 
 ## Internationalization
 
-The Windows Installer is built using the `en-US` language by default. Internationalization (i18n) can be configured using the [`tauri.bundle.windows.wix.language`][] property, defining the languages Tauri should build an installer against. You can find the language names to use in the Language-Culture column on [Microsoft's website][localizing the error and actiontext tables].
+Windows 安装程序默认使用 `-US` 语言构建。 可以使用 [`tauri.bundle.windows.wix.language`][] 属性，定义语言Tauri 应该构建一个安装程序。 您可以在 [微软网站][localizing the error and actiontext tables] 上找到语言文化列中使用的语言名称。
 
-### Compiling an Installer for a Single Language
+### 为单一语言编译安装程序
 
-To create a single installer targeting a specific language, set the `language` value to a string:
+要创建一个针对特定语言的单个安装程序，请将 `语言` 值设置为字符串：
 
 ```json
 {
@@ -262,9 +263,9 @@ To create a single installer targeting a specific language, set the `language` v
 }
 ```
 
-### Compiling an Installer for Each Language in a List
+### 在列表中编译每种语言的安装程序
 
-To compile an installer targeting a list of languages, use an array. A specific installer for each language will be created, with the language key as a suffix:
+要编译针对语言列表的安装程序，请使用数组。 将为每种语言创建一个特定的安装程序，语言键作为后缀：
 
 ```json
 {
@@ -280,9 +281,9 @@ To compile an installer targeting a list of languages, use an array. A specific 
 }
 ```
 
-### Configuring the Installer for Each Language
+### 配置每种语言的安装程序
 
-A configuration object can be defined for each language to configure localization strings:
+可以为每种语言定义配置本地化字符串的配置对象：
 
 ```json
 {
@@ -303,42 +304,43 @@ A configuration object can be defined for each language to configure localizatio
 }
 ```
 
-The `localePath` property defines the path to a language file, a XML configuring the language culture:
+`localePath` 属性定义了语言文件的路径，一个 XML 配置语言文化：
 
 ```xml
 <WixLocalization
   Culture="en-US"
   xmlns="http://schemas.microsoft.com/wix/2006/localization"
 >
-  <String Id="LaunchApp"> Launch MyApplicationName </String>
+  <String Id="LaunchApp"> 启动 MyApplicationname </String>
   <String Id="DowngradeErrorMessage">
-    A newer version of MyApplicationName is already installed.
+    新版本的 MyApplicationName 已经安装。
   </String>
   <String Id="PathEnvVarFeature">
-    Add the install location of the MyApplicationName executable to
-    the PATH system environment variable. This allows the
-    MyApplicationName executable to be called from any location.
+    将 MyApplicationName 可执行文件的安装位置添加到
+    的 PATH 系统环境变量。 这允许从任何位置调用
+    MyApplicationName 可执行文件。
   </String>
   <String Id="InstallAppFeature">
-    Installs MyApplicationName.
+    安装了 MyApplicationName
   </String>
 </WixLocalization>
 ```
 
 :::note
-The `WixLocalization` element's `Culture` field must match the configured language.
+`WixLocalization` 元素的 `Culture` 字段必须匹配配置的语言。
 :::
 
-Currently, Tauri references the following locale strings: `LaunchApp`, `DowngradeErrorMessage`, `PathEnvVarFeature` and `InstallAppFeature`. You can define your own strings and reference them on your custom template or fragments with `"!(loc.TheStringId)"`. See the [WiX localization documentation][] for more information.
+目前，Tauri引用了以下区域字符串： `LaunchApp`, `DowngradeErrorMessage`, `PathEnvVarFeature` 和 `InstallApp功能` 您可以定义您自己的字符串并在您的自定义模板或片段上引用它们， `"!(foc.TheStringId)"`。 查看 [WiX 本地化文档][] 获取更多信息。
 
 [platform support]: https://doc.rust-lang.org/nightly/rustc/platform-support.html
-[webviewInstallMode]: ../../api/config.md#webviewinstallmode
+[webviewInstall模式]: ../../api/config.md#webviewinstallmode
 [download-webview2-runtime]: https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section
-[WiX Toolset v3]: https://wixtoolset.org/documentation/manual/v3/
+[WiX 工具集 v3]: https://wixtoolset.org/documentation/manual/v3/
 [default wix template]: https://github.com/tauri-apps/tauri/blob/dev/tooling/bundler/src/bundle/windows/templates/main.wxs
-[handlebars]: https://docs.rs/handlebars/latest/handlebars/
+[default wix template]: https://github.com/tauri-apps/tauri/blob/dev/tooling/bundler/src/bundle/windows/templates/main.wxs
+[个手提栏]: https://docs.rs/handlebars/latest/handlebars/
 [`tauri.bundle.windows.wix.template`]: ../../api/config.md#wixconfig.template
-[WiX fragment]: https://wixtoolset.org/documentation/manual/v3/xsd/wix/fragment.html
+[WiX 片段]: https://wixtoolset.org/documentation/manual/v3/xsd/wix/fragment.html
 [`tauri.bundle.windows.wix.language`]: ../../api/config.md#wixconfig.language
-[WiX localization documentation]: https://wixtoolset.org/documentation/manual/v3/howtos/ui_and_localization/make_installer_localizable.html
+[WiX 本地化文档]: https://wixtoolset.org/documentation/manual/v3/howtos/ui_and_localization/make_installer_localizable.html
 [localizing the error and actiontext tables]: https://docs.microsoft.com/en-us/windows/win32/msi/localizing-the-error-and-actiontext-tables
