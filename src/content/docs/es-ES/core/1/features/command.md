@@ -18,7 +18,7 @@ You will have to provide a list of your commands to the builder function like so
 ```rust
 // Also in main.rs
 fn main() {
-  tauri::Builder::default()
+  tauri:: Builder::default()
     // This is where you pass in your commands
     .invoke_handler(tauri::generate_handler![my_custom_command])
     .run(tauri::generate_context!())
@@ -53,7 +53,7 @@ fn my_custom_command(invoke_message: String) {
 Arguments should be passed as a JSON object with camelCase keys:
 
 ```js
-invoke('my_custom_command', { invokeMessage: 'Hello!' })
+invoke('my_custom_command', { invokeMessage: })
 ```
 
 Arguments can be of any type, as long as they implement [`serde::Deserialize`][].
@@ -130,7 +130,7 @@ Commands can access the `Window` instance that invoked the message:
 
 ```rust
 #[tauri::command]
-async fn my_custom_command(window: tauri::Window) {
+async fn my_custom_command(window: tauri:: Window) {
   println!("Window: {}", window.label());
 }
 ```
@@ -141,9 +141,9 @@ Commands can access an `AppHandle` instance:
 
 ```rust
 #[tauri::command]
-async fn my_custom_command(app_handle: tauri::AppHandle) {
+async fn my_custom_command(app_handle: tauri:: AppHandle) {
   let app_dir = app_handle.path_resolver().app_dir();
-  use tauri::GlobalShortcutManager;
+  use tauri:: GlobalShortcutManager;
   app_handle.global_shortcut_manager().register("CTRL + U", move || {});
 }
 ```
@@ -156,12 +156,12 @@ Tauri can manage state using the `manage` function on `tauri::Builder`. The stat
 struct MyState(String);
 
 #[tauri::command]
-fn my_custom_command(state: tauri::State<MyState>) {
+fn my_custom_command(state: tauri:: State<MyState>) {
   assert_eq!(state.0 == "some state value", true);
 }
 
 fn main() {
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .manage(MyState("some state value".into()))
     .invoke_handler(tauri::generate_handler![my_custom_command])
     .run(tauri::generate_context!())
@@ -184,7 +184,7 @@ fn cmd_b() -> String {
 }
 
 fn main() {
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .invoke_handler(tauri::generate_handler![cmd_a, cmd_b])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -211,9 +211,9 @@ async fn some_other_function() -> Option<String> {
 
 #[tauri::command]
 async fn my_custom_command(
-  window: tauri::Window,
+  window: tauri:: Window,
   number: usize,
-  database: tauri::State<'_, Database>,
+  database: tauri:: State<'_, Database>,
 ) -> Result<CustomResponse, String> {
   println!("Called from {}", window.label());
   let result: Option<String> = some_other_function().await;
@@ -228,7 +228,7 @@ async fn my_custom_command(
 }
 
 fn main() {
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .manage(Database {})
     .invoke_handler(tauri::generate_handler![my_custom_command])
     .run(tauri::generate_context!())
