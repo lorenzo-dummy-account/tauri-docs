@@ -2,24 +2,24 @@
 sidebar_position: 1
 ---
 
-import Command from '@theme/Command'
+从 '@theme/Command' 导入命令
 
-# App Publishing
+# 应用发布
 
-### 1. Build Your Web App
+### 1. 构建您的Web App
 
-Now that you are ready to package your project, you need to run your framework's or bundler's build command (assuming you're using one, of course).
+既然你已经准备好打包你的项目，你需要运行你的框架或捆绑的构建命令(假设你正在使用一个当然)。
 
 :::note
 
-Every framework has its publishing tooling. It is outside of the scope of this document to treat them all or keep them up to date.
+每个框架都有它的发布工具。 不在本文件的范围内处理所有这些问题，或使它们跟上最新情况。
 
 :::
 
-### 2. Bundle your application with Tauri
+### 2. 将您的应用程序绑定到Tauri
 
 <Command name="build" />
 
-This command embeds your web assets into a single binary with your Rust code. The binary itself will be located in `src-tauri/target/release/[app name]`, and installers will be located in `src-tauri/target/release/bundle/`.
+此命令将您的网页资源嵌入到一个带有你的Rust 代码的二进制文件中。 二进制本身将位于 `src-tauri/target/release/[应用名称]`, 安装程序将位于 `src-tauri/target/release/bundle/`.
 
-Like the `tauri dev` command, the first time you run this, it takes some time to collect the Rust crates and build everything - but on subsequent runs, it only needs to rebuild your app's code, which is much quicker.
+喜欢 `tauri dev` 命令，这是你第一次运行这个命令。 收集稀有箱子和构建一切都需要一些时间――除了随后运行之外， 它只需要重建您的应用代码，这个代码要快得多。
