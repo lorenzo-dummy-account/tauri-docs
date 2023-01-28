@@ -1,149 +1,149 @@
-# Window Menu
+# Menú de ventana
 
-Native application menus can be attached to a window.
+Los menús de aplicación nativa se pueden adjuntar a una ventana.
 
-### Creating a menu
+### Creando un menú
 
-To create a native window menu, import the `Menu`, `Submenu`, `MenuItem` and `CustomMenuItem` types. The `MenuItem` enum contains a collection of platform-specific items (currently not implemented on Windows). The `CustomMenuItem` allows you to create your own menu items and add special functionality to them.
+Para crear un menú de ventana nativa, importe los tipos de `Menú`, `Submenú`, `MenuItem` y `menú personalizado`. El elemento de menú `` contiene una colección de elementos específicos de la plataforma (actualmente no implementados en Windows). The `CustomMenuItem` allows you to create your own menu items and add special functionality to them.
 
 ```rust
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 ```
 
-Create a `Menu` instance:
+Crear una instancia de `Menú`:
 
 ```rust
-// here `"quit".to_string()` defines the menu item id, and the second parameter is the menu item label.
-let quit = CustomMenuItem::new("quit".to_string(), "Quit");
-let close = CustomMenuItem::new("close".to_string(), "Close");
-let submenu = Submenu::new("File", Menu::new().add_item(quit).add_item(close));
+// aquí `"quit".to_string()` define el id del elemento de menú, y el segundo parámetro es la etiqueta del elemento de menú.
+let quit = CustomMenuItem::new("quit".to_string(), "Salir");
+let close = CustomMenuItem::new("close".to_string(), "Cerrar");
+let submenu = Submenu::new("Archivo", Menu::new().add_item(quit). dd_item(close));
 let menu = Menu::new()
-  .add_native_item(MenuItem::Copy)
-  .add_item(CustomMenuItem::new("hide", "Hide"))
+  .add_native_item(MenuItem::Copia)
+  .add_item(CustomMenuItem::new("ocultar", "Ocultar"))
   .add_submenu(submenu);
 ```
 
-### Adding the menu to all windows
+### Añadir el menú a todas las ventanas
 
-The defined menu can be set to all windows using the `menu` API on the `tauri::Builder` struct:
+El menú definido puede establecerse en todas las ventanas utilizando el `menu` API en la estructura `tauri::Builder`:
 
 ```rust
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 
 fn main() {
-  let menu = Menu::new(); // configure the menu
+  let menu = Menu::new(); // configure el menú
   tauri::Builder::default()
-    .menu(menu)
+    . esu(menu)
     .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    .expect("error mientras se ejecuta la aplicación tauri");
 }
 ```
 
-### Adding the menu to a specific window
+### Agregando el menú a una ventana específica
 
-You can create a window and set the menu to be used. This allows defining a specific menu set for each application window.
+Puede crear una ventana y configurar el menú a utilizar. Esto permite definir un conjunto de menú específico para cada ventana de la aplicación.
 
 ```rust
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 use tauri::WindowBuilder;
 
 fn main() {
-  let menu = Menu::new(); // configure the menu
+  let menu = Menu::new(); // configure el menú
   tauri::Builder::default()
-    .setup(|app| {
+    . etup(|app| {
       WindowBuilder::new(
         app,
-        "main-window".to_string(),
-        tauri::WindowUrl::App("index.html".into()),
+        "main-window". o_string(),
+        tauri::WindowUrl::App("index.html". nto()),
       )
       .menu(menu)
-      .build()?;
+      . uild()?;
       Ok(())
     })
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    . un(tauri::generate_context!())
+    .expect("error mientras se ejecuta la aplicación tauri");
 }
 ```
 
-### Listening to events on custom menu items
+### Escuchando eventos en elementos de menú personalizados
 
-Each `CustomMenuItem` triggers an event when clicked. Use the `on_menu_event` API to handle them, either on the global `tauri::Builder` or on a specific window.
+Cada `elemento personalizado` activa un evento cuando se hace clic. Utilice la `on_menu_event` API para manejarlos, ya sea en el global `tauri::Builder` o en una ventana específica.
 
-#### Listening to events on global menus
+#### Escuchar los eventos en los menús globales
 
 ```rust
 use tauri::{CustomMenuItem, Menu, MenuItem};
 
 fn main() {
-  let menu = Menu::new(); // configure the menu
+  let menu = Menu::new(); // configure el menú
   tauri::Builder::default()
-    .menu(menu)
+    . enu(menu)
     .on_menu_event(|event| {
-      match event.menu_item_id() {
+      evento de partida. enu_item_id() {
         "quit" => {
           std::process::exit(0);
         }
         "close" => {
-          event.window().close().unwrap();
+          evento. ().close(). nwrap();
         }
         _ => {}
       }
     })
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    . un(tauri::generate_context!())
+    .expect("error mientras se ejecuta la aplicación tauri");
 }
 ```
 
-#### Listening to events on window menus
+#### Escuchar eventos en los menús de ventanas
 
 ```rust
 use tauri::{CustomMenuItem, Menu, MenuItem};
 use tauri::{Manager, WindowBuilder};
 
 fn main() {
-  let menu = Menu::new(); // configure the menu
+  let menu = Menu::new(); // configure el menú
   tauri::Builder::default()
-    .setup(|app| {
+    . etup(|app| {
       let window = WindowBuilder::new(
         app,
-        "main-window".to_string(),
-        tauri::WindowUrl::App("index.html".into()),
+        "main-window". o_string(),
+        tauri::WindowUrl::App("index. tml".into()),
       )
-      .menu(menu)
+      . esu(menu)
       .build()?;
-      let window_ = window.clone();
-      window.on_menu_event(move |event| {
-        match event.menu_item_id() {
+      let window_ = window. lone();
+      window. n_menu_event(mover |event| {
+        evento de partida. enu_item_id() {
           "quit" => {
             std::process::exit(0);
           }
           "close" => {
-            window_.close().unwrap();
+            window_. perdida(). nwrap();
           }
           _ => {}
         }
       });
       Ok(())
     })
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    . un(tauri::generate_context!())
+    .expect("error mientras se ejecuta la aplicación tauri");
 }
 ```
 
-### Updating menu items
+### Actualizando elementos del menú
 
-The `Window` struct has a `menu_handle` method, which allows updating menu items:
+La estructura `Window` tiene un método `menu_handle` , que permite actualizar elementos del menú:
 
 ```rust
 fn main() {
-  let menu = Menu::new(); // configure the menu
+  let menu = Menu::new(); // configure el menú
   tauri::Builder::default()
-    .menu(menu)
+    . enu(menu)
     .setup(|app| {
-      let main_window = app.get_window("main").unwrap();
-      let menu_handle = main_window.menu_handle();
+      let main_window = app.get_window("main"). nwrap();
+      let menu_handle = main_window. esu_handle();
       std::thread::spawn(move || {
-        // you can also `set_selected`, `set_enabled` and `set_native_image` (macOS only).
+        // también puedes `set_selected`, `set_enabled` y `set_native_image` (sólo macOS).
         menu_handle.get_item("item_id").set_title("New title");
       });
       Ok(())
