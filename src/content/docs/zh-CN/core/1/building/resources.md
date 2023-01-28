@@ -2,17 +2,17 @@
 sidebar_position: 8
 ---
 
-# Embedding Additional Files
+# 嵌入附加文件
 
-You may need to include additional files in your application bundle that aren't part of your frontend (your `distDir`) directly or which are too big to be inlined into the binary. We call these files `resources`.
+您可能需要在应用程序包中添加不属于您前端一部分的附加文件 (您的 `distrir`)，或者这些文件过大，无法嵌入到二进制程序中。 我们调用这些文件 `资源`。
 
-To bundle the files of your choice, you can add the `resources` property to the `tauri > bundle` object in your `tauri.conf.json` file.
+将您选择的文件捆绑起来。 您可以在您的 `tauri中添加 <code>资源` 属性到 `tauri > 捆包` 对象。 onf.json</code> 文件。
 
-See more about tauri.conf.json configuration [here][tauri.bundle].
+在这里查看更多关于 tauri.conf.json 配置 [的][tauri.bundle]。
 
-`resources` expects a list of strings targeting files either with absolute or relative paths. It supports glob patterns in case you need to include multiple files from a directory.
+`资源` 需要一个针对具有绝对路径或相对路径的字符串列表。 它支持手势模式，以防您需要从目录中包含多个文件。
 
-Here is a sample to illustrate the configuration. This is not a complete `tauri.conf.json` file:
+下面是一个示例来说明配置。 这不是完整的 `tauri.conf.json` 文件：
 
 ```json title=tauri.conf.json
 {
@@ -35,13 +35,13 @@ Here is a sample to illustrate the configuration. This is not a complete `tauri.
 
 :::note
 
-Absolute paths and paths containing parent components (`../`) can only be allowed via `"$RESOURCE/*"`. Relative paths like `"path/to/file.txt"` can be allowed explicitly via `"$RESOURCE/path/to/file.txt"`.
+包含父组件的绝对路径和路径(`../`) 只能通过 `"$RESOURCE/*"` 被允许。 相对路径如 `"path/to/file.txt"` 可以通过 `明确允许。"$RESOURCE/path/to/file.txt"`.
 
 :::
 
-## Accessing files in JavaScript
+## 正在访问JavaScript文件
 
-In this example we want to bundle additional i18n json files that look like this:
+在这个示例中，我们想要捆绑看起来像这样的 i18n json 文件：
 
 ```json title=de.json
 {
@@ -50,59 +50,59 @@ In this example we want to bundle additional i18n json files that look like this
 }
 ```
 
-In this case, we store these files in a `lang` directory next to the `tauri.conf.json`. For this we add `"lang/*"` to `resources` and `$RESOURCE/lang/*` to the fs scope as shown above.
+在这种情况下，我们将这些文件存储在 `tauri.conf.json` 旁边的 `lang` 目录中。 我们为此添加 `"lang/*"` 到 `resources` 和 `$RESOURCE/lang/*` 到上面所示的fs 范围。
 
-Note that you must configure the allowlist to enable `path > all` and the [`fs` APIs][] you need, in this example `fs > readTextFile`.
+请注意，您必须配置允许列表才能启用 `路径 > 所有` 和 [`fs` APIs][] 您所需。 在此示例 `fs > readTextFile`
 
 ```javascript
-import { resolveResource } from '@tauri-apps/api/path'
-// alternatively, use `window.__TAURI__.path.resolveResource`
-import { readTextFile } from '@tauri-apps/api/fs'
-// alternatively, use `window.__TAURI__.fs.readTextFile`
+从 '@tauri-apps/api/path' 导入 { resolveResource }
+// 或者使用 `window.__TAURI__路径。 esolveResource`
+从 '@tauri-apps/api/fs' 导入 { readTextFile }
+// 或者使用 `window.__TAURI__.fs.readTextFile`
 
-// `lang/de.json` is the value specified on `tauri.conf.json > tauri > bundle > resources`
-const resourcePath = await resolveResource('lang/de.json')
-const langDe = JSON.parse(await readTextFile(resourcePath))
+// `lang/de.json` 是`tauri指定的值。 onf.json > tauri > bundle > resources`
+const resourcePath = reass resolveResource('lang/de.json')
+const langDe = JSON. arse(等待readTextFile(resourcePath))
 
-console.log(langDe.hello) // This will print 'Guten Tag!' to the devtools console
+console.log(langDe.hello) // 这将打印'Guten Tag!' 到 devtools 控制台
 ```
 
-## Accessing files in Rust
+## 正在访问Rust 文件
 
-This is based on the example above. On the Rust side you need an instance of the [`PathResolver`][] which you can get from [`App`][] and [`AppHandle`][]:
+这是基于上面的例子。 在红方您需要一个实例的 [`路径解析器`][] 您可以从 [`应用程序`][] 和 [`应用程序处理`][]
 
 ```rust
 tauri::Builder::default()
-  .setup(|app| {
+  .setup(|app|
     let resource_path = app.path_resolver()
-      .resolve_resource("lang/de.json")
-      .expect("failed to resolve resource");
+      .resolve_resource("lang/de). 儿子")
+      xpect("未能解析资源");
 
-    let file = std::fs::File::open(&resource_path).unwrap();
-    let lang_de: serde_json::Value = serde_json::from_reader(file).unwrap();
+    let file = std::fs::File::open(&resource_path). nwrapp();
+    let lang_de: serde_json::Value = serde_json::from_reader(file)unwrawrapp();
 
-    println!("{}", lang_de.get("hello").unwrap()); // This will print 'Guten Tag!' to the terminal
+    println!("{}", lang_de. et("hello").unwrapp()); // 这将把'Guten Tag!' 打印到终端
 
     Ok(())
-  })
+})
 ```
 
 ```rust
 #[tauri::command]
-fn hello(handle: tauri::AppHandle) -> String {
-   let resource_path = handle.path_resolver()
+fn hello(hand: tauri:::AppHandle) -> String P,
+   let resource_path = handle. ath_resolver()
       .resolve_resource("lang/de.json")
-      .expect("failed to resolve resource");
+      xpect("未能解析资源");
 
-    let file = std::fs::File::open(&resource_path).unwrap();
-    let lang_de: serde_json::Value = serde_json::from_reader(file).unwrap();
+    let file = std::fs::File::open(&resource_path). nwrapp();
+    let lang_de: serde_json::Value = serde_json::from_reader(file).unwrawraw();
 
-    lang_de.get("hello").unwrap()
+    lang_de.get("hello").unwrawri()
 }
 ```
 
 [tauri.bundle]: ../../api/config.md#tauri.bundle
 [`fs` APIs]: ../../api/js/fs/
-[`PathResolver`]: https://docs.rs/tauri/latest/tauri/struct.PathResolver.html
-[`App`]: https://docs.rs/tauri/latest/tauri/struct.App.html
-[`AppHandle`]: https://docs.rs/tauri/latest/tauri/struct.AppHandle.html
+[`路径解析器`]: https://docs.rs/tauri/latest/tauri/struct.PathResolver.html
+[`应用程序`]: https://docs.rs/tauri/latest/tauri/struct.App.html
+[`应用程序处理`]: https://docs.rs/tauri/latest/tauri/struct.AppHandle.html
