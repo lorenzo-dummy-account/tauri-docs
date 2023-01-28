@@ -1,44 +1,44 @@
 ---
-sidebar_label: Linux Code Signing
+sidebar_label: Linux 代码签名
 sidebar_position: 3
 ---
 
-# Code Signing Linux packages
+# 代码签名 Linux 软件包
 
-This guide provides information on code signing for Linux packages.
+本指南提供关于Linux软件包代码签名的信息。
 
-## Requirements
+## B. 所需经费
 
-- gpg or gpg2
+- gpg 或 gpg2
 
-A key for signing must be prepared. A new one can be generated using:
+必须准备签署的钥匙。 可以使用以下方式生成一个新的：
 
 ```shell
-gpg2 --full-gen-key
+gpg2 --fullgen-key
 ```
 
-Please refer to the gpg or gpg2 documentation for additional information. You should take additional care to backup your private and public keys in a secure location.
+详情请参阅gpg或gpg2文件。 您应该更多地注意在安全的位置备份您的私钥和公钥。
 
-## Signing for AppImages
+## 正在签名 AppImages
 
-You can embed a signature in the AppImage by setting the following environment variables:
+您可以通过设置以下环境变量在应用图像中嵌入签名：
 
-- **SIGN**: set to `1` to sign the AppImage.
-- **SIGN_KEY**: optional variable to use a specific GPG Key ID for signing.
-- **APPIMAGETOOL_SIGN_PASSPHRASE**: the signing key password. If unset, gpg shows a dialog so you can input it. You must set this when running automated tasks.
+- **SIGN**: 设置为 `1` 以在应用图像上签字。
+- **SIGN_Key**: 可选变量使用特定的 GPG 密钥ID进行签名。
+- **APPIMAGETOOL_SIGN_PASSPHRASE**: 签名密钥密码。 如果未设置，gpg 会显示对话框以便您可以输入它。 您必须在运行自动化任务时设置此项。
 
-You can display the signature embedded in the AppImage by running the following command:
+您可以通过运行以下命令在应用程序图像中显示嵌入的签名：
 
 ```shell
 ./src-tauri/target/release/bundle/appimage/$APPNAME_$VERSION_amd64.AppImage --appimage-signature
 ```
 
-Note that you need to change the $APPNAME and $VERSION values with the correct ones based on your configuration.
+请注意，您需要根据您的配置使用正确的 $APPNAME 和 $VERSION 值。
 
-:::caution The signature is not verified
+:::谨慎.签名未验证
 
-AppImage does not validate the signature, so you can't rely on it to check whether the file has been tampered with or not. To validate the signature, you must provide an external tool for your users. See [the official AppImage documentation][] for additional information.
+AppImage 无法验证签名，所以您不能依靠它来检查文件是否被篡改。 要验证签名，您必须为您的用户提供一个外部工具。 欲了解更多信息，请参阅 [官方的 AppImage 文档][]。
 
 :::
 
-[the official AppImage documentation]: https://docs.appimage.org/packaging-guide/optional/signatures.html
+[官方的 AppImage 文档]: https://docs.appimage.org/packaging-guide/optional/signatures.html
