@@ -1,44 +1,44 @@
 ---
-sidebar_label: Linux Code Signing
+sidebar_label: Linuxコード署名
 sidebar_position: 3
 ---
 
-# Code Signing Linux packages
+# コード署名 Linux パッケージ
 
-This guide provides information on code signing for Linux packages.
+このガイドでは、Linux パッケージのコード署名に関する情報を提供します。
 
-## Requirements
+## 要件
 
-- gpg or gpg2
+- gpg または gpg2
 
-A key for signing must be prepared. A new one can be generated using:
+署名のための鍵を準備する必要があります。 新しいものを生成するには、次を使用します。
 
 ```shell
 gpg2 --full-gen-key
 ```
 
-Please refer to the gpg or gpg2 documentation for additional information. You should take additional care to backup your private and public keys in a secure location.
+詳細については、gpg または gpg2 のドキュメントを参照してください。 秘密鍵と公開鍵を安全な場所にバックアップするために、追加の注意を払う必要があります。
 
-## Signing for AppImages
+## AppImagesのサインイン中
 
-You can embed a signature in the AppImage by setting the following environment variables:
+以下の環境変数を設定することで、AppImage に署名を埋め込むことができます。
 
-- **SIGN**: set to `1` to sign the AppImage.
-- **SIGN_KEY**: optional variable to use a specific GPG Key ID for signing.
-- **APPIMAGETOOL_SIGN_PASSPHRASE**: the signing key password. If unset, gpg shows a dialog so you can input it. You must set this when running automated tasks.
+- **SIGN**: AppImageに署名するには `1` に設定します。
+- **SIGN_KEY**: 署名に特定のGPGキーIDを使用する任意の変数。
+- **APPIMAGETOOL_SIGN_PASSPRASE**: 署名キーパスワード。 設定されていない場合、gpg にダイアログが表示され、入力できるようになります。 自動化されたタスクを実行するときにこれを設定する必要があります。
 
-You can display the signature embedded in the AppImage by running the following command:
+次のコマンドを実行することで、AppImageに埋め込まれた署名を表示できます。
 
 ```shell
 ./src-tauri/target/release/bundle/appimage/$APPNAME_$VERSION_amd64.AppImage --appimage-signature
 ```
 
-Note that you need to change the $APPNAME and $VERSION values with the correct ones based on your configuration.
+設定に基づいて、 $APPNAME と $VERSION の値を正しい値で変更する必要があることに注意してください。
 
-:::caution The signature is not verified
+:::注意 この署名は検証されていません
 
-AppImage does not validate the signature, so you can't rely on it to check whether the file has been tampered with or not. To validate the signature, you must provide an external tool for your users. See [the official AppImage documentation][] for additional information.
+AppImageは署名を検証しないので、ファイルが改ざんされているかどうかを確認するのに依存することはできません。 署名を検証するには、ユーザに外部ツールを提供する必要があります。 詳細については、 [公式の AppImage ドキュメント][] を参照してください。
 
 :::
 
-[the official AppImage documentation]: https://docs.appimage.org/packaging-guide/optional/signatures.html
+[公式の AppImage ドキュメント]: https://docs.appimage.org/packaging-guide/optional/signatures.html
