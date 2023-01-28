@@ -1,127 +1,127 @@
-# Events
+# Eventos
 
-The Tauri event system is a multi-producer multi-consumer communication primitive that allows message passing between the frontend and the backend. It is analogous to the command system, but a payload type check must be written on the event handler and it simplifies communication from the backend to the frontend, working like a channel.
+El sistema de eventos Tauri es un sistema multiproductor primitivo de comunicación multiconsumidor que permite pasar mensajes entre el frontend y el backend. Es análogo al sistema de comandos, pero una comprobación de tipo de carga debe ser escrita en el controlador de eventos y simplifica la comunicación desde el backend hasta el frontend, trabajando como un canal.
 
-A Tauri application can listen and emit global and window-specific events. Usage from the frontend and the backend is described below.
+Una aplicación Tauri puede escuchar y emitir eventos globales y específicos para la ventana. Uso desde el frontend y el backend se describe a continuación.
 
 ## Frontend
 
-The event system is accessible on the frontend on the `event` and `window` modules of the `@tauri-apps/api` package.
+El sistema de eventos es accesible en el frontend en los módulos `event` y `window` del paquete `@tauri-apps/api`.
 
-### Global events
+### Eventos globales
 
-To use the global event channel, import the `event` module and use the `emit` and `listen` functions:
+Para utilizar el canal global de eventos, importe el módulo `event` y utilice las funciones `emit` y `listen`:
 
 ```js
-import { emit, listen } from '@tauri-apps/api/event'
+importar { emit, listen } de '@tauri-apps/api/event'
 
-// listen to the `click` event and get a function to remove the event listener
-// there's also a `once` function that subscribes to an event and automatically unsubscribes the listener on the first event
+// escuchar el evento `clic` y obtener una función para eliminar el listener del evento
+// también hay una función `una vez` que se suscribe a un evento y automáticamente anula la la suscripción del oyente en el primer evento
 const unlisten = await listen('click', (event) => {
-  // event.event is the event name (useful if you want to use a single callback fn for multiple event types)
-  // event.payload is the payload object
+  // evento. vent es el nombre del evento (útil si desea usar un fn de callback único para varios tipos de eventos)
+  // evento. ayload es el objeto de carga útil
 })
 
-// emits the `click` event with the object payload
+// emite el evento `click` con la carga útil del objeto
 emit('click', {
-  theMessage: 'Tauri is awesome!',
+  theMessage: '¡Tauri es increíble! ,
 })
 ```
 
-### Window-specific events
+### Eventos específicos de la ventana
 
-Window-specific events are exposed on the `window` module.
+Los eventos específicos de la ventana están expuestos en el módulo `window`.
 
 ```js
-import { appWindow, WebviewWindow } from '@tauri-apps/api/window'
+importar { appWindow, WebviewWindow } desde '@tauri-apps/api/window'
 
-// emit an event that are only visible to the current window
+// emitir un evento que solo son visibles para la ventana actual
 appWindow.emit('event', { message: 'Tauri is awesome!' })
 
-// create a new webview window and emit an event only to that window
+// crea una nueva ventana de webview y emite un evento sólo a esa ventana
 const webview = new WebviewWindow('window')
 webview.emit('event')
 ```
 
 ## Backend
 
-On the backend, the global event channel is exposed on the `App` struct, and window-specific events can be emitted using the `Window` trait.
+En el backend, el canal global de eventos está expuesto en la estructura `App` , y los eventos específicos de la ventana pueden ser emitidos usando el rasgo `Window`.
 
-### Global events
+### Eventos globales
 
 ```rust
-use tauri::Manager;
+usa tauri::Manager;
 
-// the payload type must implement `Serialize` and `Clone`.
-#[derive(Clone, serde::Serialize)]
+// el tipo de carga útil debe implementar `Serialize` y `Clone`.
+#[derivado(Clone, serde::Serialize)]
 struct Payload {
   message: String,
 }
 
 fn main() {
   tauri::Builder::default()
-    .setup(|app| {
-      // listen to the `event-name` (emitted on any window)
-      let id = app.listen_global("event-name", |event| {
-        println!("got event-name with payload {:?}", event.payload());
+    . etup(|app| {
+      // escuchar el `event-name` (emitido en cualquier ventana)
+      let id = app. isten_global("event-name", |event| {
+        println!("got event-name with payload {:?}", event. ayload());
       });
-      // unlisten to the event using the `id` returned on the `listen_global` function
-      // an `once_global` API is also exposed on the `App` struct
-      app.unlisten(id);
+      // anula la escucha del evento usando el `id` devuelto en la función `listen_global`
+      // una API `once_global` también está expuesta en la estructura `App`
+      app. nlisten(id);
 
-      // emit the `event-name` event to all webview windows on the frontend
-      app.emit_all("event-name", Payload { message: "Tauri is awesome!".into() }).unwrap();
+      // emite el evento `event-name` a todas las ventanas de la vista web en el frontend
+      app. mit_all("event-name", Payload { message: "Tauri is awesome!".into() }). nwrap();
       Ok(())
     })
-    .run(tauri::generate_context!())
-    .expect("failed to run app");
+    . un(tauri::generate_context!())
+    .expect("error al ejecutar la aplicación");
 }
 ```
 
-### Window-specific events
+### Eventos específicos de la ventana
 
-To use the window-specific event channel, a `Window` object can be obtained on a command handler or with the `get_window` function:
+Para usar el canal de eventos específico de la ventana, se puede obtener un objeto `Window` en un manejador de comandos o con la función `get_window`:
 
 ```rust
 use tauri::{Manager, Window};
 
-// the payload type must implement `Serialize` and `Clone`.
+// el tipo de carga útil debe implementar `Serialize` y `Clone`.
 #[derive(Clone, serde::Serialize)]
 struct Payload {
   message: String,
 }
 
-// init a background process on the command, and emit periodic events only to the window that used the command
+// init a background process on the command, y emite eventos periódicos sólo a la ventana que usó el comando
 #[tauri::command]
 fn init_process(window: Window) {
   std::thread::spawn(move || {
     loop {
-      window.emit("event-name", Payload { message: "Tauri is awesome!".into() }).unwrap();
+      window. mit("event-name", Payload { message: "Tauri is awesome!".into() }). nwrap();
     }
   });
 }
 
 fn main() {
   tauri::Builder::default()
-    .setup(|app| {
-      // `main` here is the window label; it is defined on the window creation or under `tauri.conf.json`
-      // the default value is `main`. note that it must be unique
-      let main_window = app.get_window("main").unwrap();
+    . etup(|app| {
+      // `main` aquí está la etiqueta de ventana; se define en la creación de la ventana o bajo `tauri. onf.json`
+      // el valor por defecto es `main`. ten en cuenta que debe ser único
+      let main_window = app.get_window("main"). nwrap();
 
-      // listen to the `event-name` (emitted on the `main` window)
-      let id = main_window.listen("event-name", |event| {
-        println!("got window event-name with payload {:?}", event.payload());
+      // escucha el `event-name` (emitido en la ventana `main`)
+      let id = main_window. isten("event-name", |event| {
+        println!("got window event-name with payload {:?}", event. ayload());
       });
-      // unlisten to the event using the `id` returned on the `listen` function
-      // an `once` API is also exposed on the `Window` struct
-      main_window.unlisten(id);
+      // anule la escucha del evento usando el `id` devuelto en la función `listen`
+      // una API `once` también está expuesta en la estructura `Window` struct
+      main_window. nlisten(id);
 
-      // emit the `event-name` event to the `main` window
-      main_window.emit("event-name", Payload { message: "Tauri is awesome!".into() }).unwrap();
+      // emite el evento `event-name` a la ventana `main`
+      main_window. mit("event-name", Payload { message: "Tauri is awesome!".into() }). nwrap();
       Ok(())
     })
-    .invoke_handler(tauri::generate_handler![init_process])
-    .run(tauri::generate_context!())
+    . nvoke_handler(tauri::generate_handler![init_process])
+    . un(tauri::generate_context!())
     .expect("failed to run app");
 }
 ```
