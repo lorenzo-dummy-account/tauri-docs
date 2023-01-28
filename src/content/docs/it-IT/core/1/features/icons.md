@@ -1,67 +1,67 @@
-import Command from '@theme/Command'
+importa comando da '@theme/Command'
 
-# Icons
+# Icone
 
-Tauri ships with a default iconset based on its logo. This is NOT what you want when you ship your application. To remedy this common situation, Tauri provides the `icon` command that will take an input file (`"./app-icon.png"` by default) and create all the icons needed for the various platforms.
+Tauri è dotato di un iconset predefinito basato sul suo logo. Questo non è quello che vuoi quando spedisci la tua applicazione. Per rimediare a questa situazione comune, Tauri fornisce il comando `icon` che prenderà un file di input (`". app-icon.png"` per impostazione predefinita) e creare tutte le icone necessarie per le varie piattaforme.
 
-:::info Note on filetypes
+:::info Nota sui tipi di file
 
 - `icon.icns` = macOS
 - `icon.ico` = Windows
 - `*.png` = Linux
-- `Square*Logo.png` & `StoreLogo.png` = Currently unused but intended for AppX/MS Store targets.
+- `Square*Logo.png` & `StoreLogo.png` = Attualmente inutilizzato ma destinato agli obiettivi AppX/MS Store.
 
-Note that icon types may be used on platforms other than those listed above (especially `png`). Therefore we recommend including all icons even if you intend to only build for a subset of platforms.
+Si noti che i tipi di icone possono essere utilizzati su piattaforme diverse da quelle sopra elencate (specialmente `png`). Pertanto consigliamo di includere tutte le icone anche se si intende costruire solo per un sottoinsieme di piattaforme.
 
 :::
 
-## Command Usage
+## Utilizzo Dei Comandi
 
-Starting with `@tauri-apps/cli` / `tauri-cli` version 1.1 the `icon` subcommand is part of the main cli:
+A partire da `@tauri-apps/cli` / `tauri-cli` versione 1.1 il sottocomando `icon` fa parte del client principale:
 
 <Command name="icon" />
 
 ```console
 > cargo tauri icon --help
-cargo-tauri-icon 1.1.0
+cargo-tauri-icon 1.1.
 
-Generates various icons for all major platforms
+Genera varie icone per tutte le principali piattaforme
 
 USAGE:
     cargo tauri icon [OPTIONS] [INPUT]
 
 ARGS:
-    <INPUT>    Path to the source icon (png, 1240x1240px with transparency) [default: ./app-icon.png]
+    <INPUT>    Percorso all'icona sorgente (png, 1240x1240px con trasparenza) [default: . app-icon. ng]
 
-OPTIONS:
-    -h, --help               Print help information
-    -o, --output <OUTPUT>    Output directory. Default: 'icons' directory next to the tauri.conf.json file
-    -v, --verbose            Enables verbose logging
-    -V, --version            Print version information
+OPZIONI:
+    -h, --help Stampa informazioni di aiuto
+    -o, --output <OUTPUT>    Directory di output. Default: directory 'icons' accanto al file tauri.conf.json
+    -v, --verbose Abilita la registrazione dettagliata
+    -V, --version Stampa informazioni di versione
 ```
 
-By default, the icons will be placed in your `src-tauri/icons` folder where they will automatically be included in your built app. If you want to source your icons from a different location, you can edit this part of the `tauri.conf.json` file:
+Per impostazione predefinita, le icone saranno posizionate nella cartella `src-tauri/icone` dove saranno automaticamente incluse nella tua app integrata. Se si desidera generare le icone da una posizione diversa, è possibile modificare questa parte del file `tauri.conf.json`:
 
 ```json
 {
   "tauri": {
     "bundle": {
       "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
+        "icons/32x32. ng",
+        "icone/128x128. ng",
         "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
+        "icons/icon. cns",
+        "icone/icona. co"
       ]
     }
   }
 }
 ```
 
-## Creating the icons manually
+## Creazione manuale delle icone
 
-If you prefer to build these icons yourself (if you want to have a simpler design for small sizes or because you don't want to depend on the CLI's internal image resizing), the required layer sizes and names for the [`icns`][] file are described [in the Tauri repo][] and the [`ico`][] file must include layers for 16, 24, 32, 48, 64 and 256 pixels. For an optimal display of the ICO image _in development_, the 32px layer should be the first layer.
+Se preferisci costruire queste icone da solo (se vuoi avere un design più semplice per piccole dimensioni o perché non vuoi dipendere dal ridimensionamento dell'immagine interna del CLI), le dimensioni e i nomi dei livelli richiesti per il file [`icns`][] sono descritti [nel repo Tauri][] e il file [`ico`][] deve includere livelli per 16, 24, 32, 48, 64 e 256 pixel. Per una visualizzazione ottimale dell'immagine ICO _in sviluppo_, il livello 32px dovrebbe essere il primo livello.
 
-[in the Tauri repo]: https://github.com/tauri-apps/tauri/blob/dev/tooling/cli/src/helpers/icns.json
+[nel repo Tauri]: https://github.com/tauri-apps/tauri/blob/dev/tooling/cli/src/helpers/icns.json
 [`icns`]: https://en.wikipedia.org/wiki/Apple_Icon_Image_format
 [`ico`]: https://en.wikipedia.org/wiki/ICO_(file_format)
