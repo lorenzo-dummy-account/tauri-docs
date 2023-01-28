@@ -1,10 +1,10 @@
 # Calling Rust from the frontend pero en español
 
-Tauri provides a simple yet powerful `command` system for calling Rust functions from your web app. Commands can accept arguments and return values. They can also return errors and be `async`.
+Tauri proporciona un sistema de `command` simple pero poderoso para llamar a las funciones de Rust desde su aplicación web. Los comandos pueden aceptar argumentos y devolver valores. También pueden devolver errores y ser `async` .
 
-## Basic Example
+## Ejemplo básico
 
-Commands are defined in your `src-tauri/src/main.rs` file. To create a command, just add a function and annotate it with `#[tauri::command]`:
+Los comandos se definen en su archivo `src-tauri/src/main.rs` . Para crear un comando, simplemente agregue una función y anótela con `#[tauri::command]` :
 
 ```rust
 #[tauri::command]
@@ -13,7 +13,7 @@ fn my_custom_command() {
 }
 ```
 
-You will have to provide a list of your commands to the builder function like so:
+Tendrá que proporcionar una lista de sus comandos a la función de construcción de la siguiente manera:
 
 ```rust
 // Also in main.rs
@@ -26,7 +26,7 @@ fn main() {
 }
 ```
 
-Now, you can invoke the command from your JS code:
+Ahora, puede invocar el comando desde su código JS:
 
 ```js
 // When using the Tauri API npm package:
@@ -39,9 +39,9 @@ const invoke = window.__TAURI__.invoke
 invoke('my_custom_command')
 ```
 
-## Passing Arguments
+## pasar argumentos
 
-Your command handlers can take arguments:
+Sus controladores de comandos pueden tomar argumentos:
 
 ```rust
 #[tauri::command]
@@ -50,17 +50,17 @@ fn my_custom_command(invoke_message: String) {
 }
 ```
 
-Arguments should be passed as a JSON object with camelCase keys:
+Los argumentos deben pasarse como un objeto JSON con claves camelCase:
 
 ```js
 invoke('my_custom_command', { invokeMessage: 'Hello!' })
 ```
 
-Arguments can be of any type, as long as they implement [`serde::Deserialize`](https://docs.serde.rs/serde/trait.Deserialize.html).
+Los argumentos pueden ser de cualquier tipo, siempre que implementen [`serde::Deserialize`] .
 
-## Returning Data
+## Devolviendo datos
 
-Command handlers can return data as well:
+Los controladores de comandos también pueden devolver datos:
 
 ```rust
 #[tauri::command]
@@ -69,17 +69,17 @@ fn my_custom_command() -> String {
 }
 ```
 
-The `invoke` function returns a promise that resolves with the returned value:
+La función de `invoke` devuelve una promesa que se resuelve con el valor devuelto:
 
 ```js
 invoke('my_custom_command').then((message) => console.log(message))
 ```
 
-Returned data can be of any type, as long as it implements [`serde::Serialize`](https://docs.serde.rs/serde/trait.Serialize.html).
+Los datos devueltos pueden ser de cualquier tipo, siempre que implemente [`serde::Serialize`] .
 
-## Error Handling
+## Manejo de errores
 
-If your handler could fail and needs to be able to return an error, have the function return a `Result`:
+Si su controlador puede fallar y necesita poder devolver un error, haga que la función devuelva un `Result` :
 
 ```rust
 #[tauri::command]
@@ -91,7 +91,7 @@ fn my_custom_command() -> Result<String, String> {
 }
 ```
 
-If the command returns an error, the promise will reject, otherwise, it resolves:
+Si el comando devuelve un error, la promesa se rechazará, de lo contrario, se resuelve:
 
 ```js
 invoke('my_custom_command')
@@ -99,15 +99,15 @@ invoke('my_custom_command')
   .catch((error) => console.error(error))
 ```
 
-## Async Commands
+## Comandos asíncronos
 
-:::note
+:::Nota
 
-Async commands are executed on a separate thread using [`async_runtime::spawn`](https://docs.rs/tauri/1/tauri/async_runtime/fn.spawn.html). Commands without the *async* keyword are executed on the main thread unless defined with *#[tauri::command(async)]*.
+Los comandos asíncronos se ejecutan en un hilo separado usando [`async_runtime::spawn`] . Los comandos sin la palabra clave *async* se ejecutan en el subproceso principal a menos que se definan con *#[tauri::command(async)]* .
 
 :::
 
-If your command needs to run asynchronously, simply declare it as `async`:
+Si su comando necesita ejecutarse de forma asíncrona, simplemente declárelo como `async` :
 
 ```rust
 #[tauri::command]
@@ -118,15 +118,15 @@ async fn my_custom_command() {
 }
 ```
 
-Since invoking the command from JS already returns a promise, it works just like any other command:
+Dado que invocar el comando de JS ya devuelve una promesa, funciona como cualquier otro comando:
 
 ```js
 invoke('my_custom_command').then(() => console.log('Completed!'))
 ```
 
-## Accessing the Window in Commands
+## Accediendo a la Ventana en Comandos
 
-Commands can access the `Window` instance that invoked the message:
+Los comandos pueden acceder a la instancia de `Window` que invocó el mensaje:
 
 ```rust
 #[tauri::command]
@@ -135,9 +135,9 @@ async fn my_custom_command(window: tauri::Window) {
 }
 ```
 
-## Accessing an AppHandle in Commands
+## Acceso a un identificador de aplicación en los comandos
 
-Commands can access an `AppHandle` instance:
+Los comandos pueden acceder a una instancia de `AppHandle` :
 
 ```rust
 #[tauri::command]
@@ -148,9 +148,9 @@ async fn my_custom_command(app_handle: tauri::AppHandle) {
 }
 ```
 
-## Accessing managed state
+## Accediendo al estado administrado
 
-Tauri can manage state using the `manage` function on `tauri::Builder`. The state can be accessed on a command using `tauri::State`:
+Tauri puede administrar el estado usando la función de `manage` en `tauri::Builder` . Se puede acceder al estado en un comando usando `tauri::State` :
 
 ```rust
 struct MyState(String);
@@ -169,9 +169,9 @@ fn main() {
 }
 ```
 
-## Creating Multiple Commands
+## Creación de varios comandos
 
-The `tauri::generate_handler!` macro takes an array of commands. To register multiple commands, you cannot call invoke_handler multiple times. Only the last call will be used. You must pass each command to a single call of `tauri::generate_handler!`.
+El `tauri::generate_handler!` macro toma una serie de comandos. Para registrar varios comandos, no puede llamar a invoque_handler varias veces. Solo se utilizará la última llamada. ¡Debes pasar cada comando a una sola llamada de `tauri::generate_handler!` .
 
 ```rust
 #[tauri::command]
@@ -191,9 +191,9 @@ fn main() {
 }
 ```
 
-## Complete Example
+## Ejemplo completo
 
-Any or all of the above features can be combined:
+Cualquiera o todas las características anteriores se pueden combinar:
 
 ```rust
 
@@ -247,3 +247,8 @@ invoke('my_custom_command', {
   )
   .catch((e) => console.error(e))
 ```
+
+
+[`async_runtime::spawn`]: https://docs.rs/tauri/1/tauri/async_runtime/fn.spawn.html
+[`serde::Serialize`]: https://docs.serde.rs/serde/trait.Serialize.html
+[`serde::Deserialize`]: https://docs.serde.rs/serde/trait.Deserialize.html
