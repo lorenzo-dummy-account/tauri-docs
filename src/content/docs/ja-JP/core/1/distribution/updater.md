@@ -2,13 +2,13 @@
 sidebar_position: 5
 ---
 
-# Updater
+# アップデータ
 
-## Configuration
+## 設定
 
-Once you have your Tauri project ready, you need to configure the updater.
+牡牛座プロジェクトの準備ができたら、アップデータを設定する必要があります。
 
-Add this in tauri.conf.json
+これを tauri.conf.json に追加
 
 ```json
 "updater": {
@@ -21,37 +21,37 @@ Add this in tauri.conf.json
 }
 ```
 
-The required keys are "active", "endpoints" and "pubkey"; others are optional.
+必須キーは "active", "endpoints" および "pubkey" です。他のキーはオプションです。
 
-"active" must be a boolean. By default, it's set to false.
+"active"はブール値でなければなりません。 デフォルトでは、falseに設定されています。
 
-"endpoints" must be an array. The string `{{target}}` and `{{current_version}}` are automatically replaced in the URL allowing you to determine [server-side](#update-server-json-format) if an update is available. If multiple endpoints are specified, the updater will fallback if a server is not responding within the pre-defined timeout.
+"endpoints" は配列でなければなりません。 文字列 `{{target}}` と `{{current_version}}` は自動的にURLに置き換えられ、更新が利用可能な場合、 [サーバーサイド](#update-server-json-format) を判断できます。 複数のエンドポイントが指定された場合、サーバーが事前に定義されたタイムアウト内に応答しない場合、updaterはフォールバックされます。
 
-"dialog" if present must be a boolean. By default, it's set to true. If enabled, [events](#events) are turned off as the updater handles everything. If you need the custom events, you MUST turn off the built-in dialog.
+存在する場合は "dialog" は boolean でなければなりません。 デフォルトでは、true に設定されています。 有効にすると、 [イベント](#events) がすべてを更新する際にオフになります。 カスタムイベントが必要な場合は、組み込みダイアログをオフにしなければなりません。
 
-"pubkey" must be a valid public-key generated with Tauri CLI. See [Signing updates](#signing-updates).
+"pubkey" は Tauri CLI で生成された有効な公開鍵でなければなりません。 [更新の署名](#signing-updates) を参照してください。
 
-### Update Requests
+### リクエストの更新
 
-Tauri is indifferent to the request the client application provides for update checking.
+牡牛座は、クライアントアプリケーションが更新チェックのために提供する要求に無関心です。
 
-`Accept: application/json` is added to the request headers because Tauri is responsible for parsing the response.
+`Accept: application/json` がリクエストヘッダに追加されました。
 
-For the requirements imposed on the responses and the body format of an update, response see [Server Support](#server-support).
+レスポンスと本文の更新形式に課せられた要件については、レスポンスは [サーバーサポート](#server-support) を参照してください。
 
-Your update request must _at least_ include a version identifier so that the server can determine whether an update for this specific version is required.
+サーバーがこの特定のバージョンの更新が必要かどうかを判断できるように、更新リクエストは _少なくとも_ バージョン識別子を含める必要があります。
 
-It may also include other identifying criteria, such as operating system version, to allow the server to deliver as fine-grained an update as you would like.
+オペレーティングシステムのバージョンなど、他の識別基準も含まれる場合があります。 必要に応じてサーバーが更新を細かく配信できるようにします。
 
-How you include the version identifier, or other criteria is specific to the server from which you request updates. A common approach is to use query parameters, [Configuration](#configuration) shows an example.
+どのようにバージョン識別子を含めるか、またはその他の条件は、更新を要求するサーバーに固有です。 一般的なアプローチはクエリパラメータを使用することです。 [Configuration](#configuration) は例を示しています。
 
-### Built-in dialog
+### ビルトインダイアログ
 
-By default, the updater uses a built-in dialog API from Tauri.
+デフォルトでは、アップデータはTauriから組み込みのダイアログAPIを使用します。
 
-![New Update](https://i.imgur.com/UMilB5A.png)
+![新しいアップデート](https://i.imgur.com/UMilB5A.png)
 
-The dialog release notes are represented by the update `note` provided by the [server](#server-support). If the user accepts, the update is downloaded and installed. Afterward, the user is prompted to restart the application.
+ダイアログリリースノートは、 `サーバ` によって提供される更新 [ノート](#server-support) によって表されます。 ユーザーが承認すると、アップデートがダウンロードされ、インストールされます。 その後、ユーザーはアプリケーションを再起動するように求められます。
 
 ### Javascript API
 
@@ -75,19 +75,19 @@ try {
 }
 ```
 
-### Events
+### イベント
 
-:::caution
+:::注意
 
-You need to _disable the built-in dialog_ in your [tauri configuration](#configuration); Otherwise, events aren't emitted.
+_tauri設定_ で組み込みダイアログ [を](#configuration)無効にする必要があります。無効にしないと、イベントは発生しません。
 
 :::
 
-To know when an update is ready to be installed, you can subscribe to these events:
+アップデートがいつインストールされるかを知るには、以下のイベントを購読できます。
 
-#### Initialize updater and check if a new version is available
+#### アップデータを初期化し、新しいバージョンが利用可能かどうかを確認します
 
-##### If a new version is available, the event `tauri://update-available` is emitted.
+##### 新しいバージョンが利用可能な場合は、イベント `tauri://update-available` が発行されます。
 
 Event: `tauri://update`
 
@@ -104,16 +104,16 @@ import { emit } from '@tauri-apps/api/event'
 emit('tauri://update')
 ```
 
-#### Listen to the New Update Available event
+#### 新しいアップデート利用可能なイベントを再生
 
-Event: `tauri://update-available`
+イベント: `tauri://update-available`
 
-Emitted data:
+発生データ:
 
 ```
-version    Version announced by the server
-date       Date announced by the server
-body       Note announced by the server
+バージョン サーバが発表したバージョン
+日付 サーバが発表した日付
+body Notes
 ```
 
 #### Rust
@@ -133,9 +133,9 @@ listen('tauri://update-available', function (res) {
 })
 ```
 
-#### Emit Install and Download events
+#### イベントのインストールとダウンロード
 
-You need to emit this event to initialize the download and listen to the [install progress](#listen-install-progress).
+ダウンロードを初期化し、 [インストールの進行状況](#listen-install-progress)をリッスンするには、このイベントを発行する必要があります。
 
 Event: `tauri://update-install`
 
@@ -152,20 +152,20 @@ import { emit } from '@tauri-apps/api/event'
 emit('tauri://update-install')
 ```
 
-#### Listen to the Install Progress
+#### インストールの進行状況を聞く
 
 Event: `tauri://update-status`
 
-Emitted data:
+発生データ:
 
 ```
 status    [ERROR/PENDING/DONE]
 error     String/null
 ```
 
-PENDING is emitted when the download is started and DONE when the installation is complete. You can then ask to restart the application.
+ダウンロードを開始し、インストールが完了すると、ペンディングが発行されます。 その後、アプリケーションを再起動するように求めることができます。
 
-ERROR is emitted when there is an error with the updater. We suggest listening to this event even if the dialog is enabled.
+アップデータでエラーが発生した場合、エラーが発生します。 ダイアログが有効になっている場合でも、このイベントを聴くことをお勧めします。
 
 #### Rust
 
@@ -184,17 +184,17 @@ listen('tauri://update-status', function (res) {
 })
 ```
 
-## Server Support
+## サーバーサポート
 
-Your server should determine whether an update is required based on the [Update Request](#update-requests) your client issues.
+サーバーはクライアントの問題 [更新リクエスト](#update-requests) に基づいて更新が必要かどうかを判断する必要があります。
 
-If an update is required, your server should respond with a status code of [200 OK][] and include the [update JSON](#update-server-json-format) in the body.
+アップデートが必要な場合。 サーバはステータスコード [200 OK][] で応答し、 [更新 JSON](#update-server-json-format) を本文に含める必要があります。
 
-If no update is required your server must respond with a status code of [204 No Content][].
+アップデートが必要ない場合、サーバはステータスコード [204 No Content][]で応答する必要があります。
 
-### Update Server JSON Format
+### サーバー JSON フォーマットの更新
 
-When an update is available, Tauri expects the following schema in response to the update request provided:
+アップデートが利用可能な場合、提供された更新リクエストに応じて以下のスキーマを期待します:
 
 ```json
 {
@@ -206,15 +206,15 @@ When an update is available, Tauri expects the following schema in response to t
 }
 ```
 
-The required keys are "url", "version" and "signature"; the others are optional.
+必須キーは "url", "version" と "signature" です; 他はオプションです。
 
-"pub_date" if present must be formatted according to [RFC 3339][date and time on the internet: timestamps].
+"pub_date" が存在する場合は [RFC 3339][date and time on the internet: timestamps] に従ってフォーマットされなければなりません。
 
-"signature" is the content of the `.sig` file which was generated by Tauri's CLI. See [Signing Updates](#signing-updates) for instructions on how to set up the required keys.
+「署名」は、牡牛座のCLIによって生成された `.sig` ファイルの内容です。 必要なキーの設定方法については、 [Signing Updates](#signing-updates) を参照してください。
 
-### Update File JSON Format
+### ファイルJSON形式の更新
 
-The alternate update technique uses a plain JSON file, storing your update metadata on S3, gist, or another static file store. Tauri checks against the version field, and if the version of the running process is smaller than the reported one of the JSON and the platform is available, it triggers an update. The format of this file is detailed below:
+別の更新方法では、プレーンな JSON ファイルを使用し、S3、gist、または別の静的ファイルストアに更新メタデータを保存します。 牡牛座はバージョンフィールドに対してチェックします。 実行中のプロセスのバージョンが報告された JSON のいずれかより小さく、プラットフォームが利用可能である場合。 アップデートを引き起こすんだ このファイルの形式は以下の通りです:
 
 ```json
 {
@@ -244,41 +244,41 @@ The alternate update technique uses a plain JSON file, storing your update metad
 
 Note that each platform key is in the `OS-ARCH` format, where `OS` is one of `linux`, `darwin` or `windows`, and `ARCH` is one of `x86_64`, `aarch64`, `i686` or `armv7`.
 
-## Bundler (Artifacts)
+## バンドル (アーティファクト)
 
-The Tauri bundler automatically generates update artifacts if the updater is enabled in `tauri.conf.json` Your update artifacts are automatically signed if the bundler can locate your private and public keys.
+`tauri.confでアップデータが有効になっている場合、Tauriバンドラは自動的に更新アーティファクトを生成します。 son <code>` バンドラーがプライベートキーと公開キーを見つけることができれば、更新アーティファクトは自動的に署名されます。
 
-The signature is the content of the generated `.sig` file. The signature can be uploaded to GitHub safely or made public if your private key is secure.
+署名は生成された `.sig` ファイルの内容です。 署名は安全にGitHubにアップロードするか、秘密鍵が安全であれば公開されます。
 
-You can see how it's [bundled with the CI][artifacts updater workflow] and a [sample tauri.conf.json][].
+CI [と][artifacts updater workflow] sample tauri.conf.json [にバンドルされている][] をご覧いただけます。
 
 ### macOS
 
-On macOS, we create a .tar.gz from the whole application. (.app)
+macOS では、アプリケーション全体から .tar.gz を作成します。 (.app)
 
 ```
 target/release/bundle
-└── macos
-    └── app.app
+├── macos
+    ├── app.app
     └── app.app.tar.gz (update bundle)
     └── app.app.tar.gz.sig
 ```
 
 ### Windows
 
-On Windows, we create a .zip from the MSI; when downloaded and validated, we run the MSI install.
+Windows では、MSIから.zipを作成します。ダウンロードと検証を行うと、MSIインストールが実行されます。
 
 ```
 target/release/bundle
-└── msi
-    └── app.x64.msi
-    └── app.x64.msi.zip (update bundle)
+├── msi
+    ├── app.x64.msi
+    └── app.x64.msi.zip (更新バンドル)
     └── app.x64.msi.zip.sig
 ```
 
 ### Linux
 
-On Linux, we create a .tar.gz from the AppImage.
+Linuxでは、AppImageから.tar.gzを作成します。
 
 ```
 target/release/bundle
@@ -288,23 +288,23 @@ target/release/bundle
     └── app.AppImage.tar.gz.sig
 ```
 
-## Signing updates
+## アップデートの署名
 
-We offer a built-in signature to ensure your update is safe to be installed.
+アップデートが安全にインストールされるように、内蔵の署名を提供しています。
 
-To sign your updates, you need two things.
+アップデートに署名するには、2つのことが必要です。
 
-The _Public-key_ (pubkey) should be added inside your `tauri.conf.json` to validate the update archive before installing.
+_公開キー_ (pubkey) は、インストールする前に更新アーカイブを検証するために `tauri.conf.json` 内に追加する必要があります。
 
-The _Private key_ (privkey) is used to sign your update and should NEVER be shared with anyone. Also, if you lost this key, you'll NOT be able to publish a new update to the current user base. It's crucial to save it in a safe place, and you can always access it.
+_Private key_ (privkey) は更新に署名するために使用され、決して誰とも共有しないでください。 また、このキーを紛失した場合、現在のユーザーベースに新しいアップデートを公開することはできません。 安全な場所に保存することが重要で、いつでもアクセスできます。
 
-To generate your keys, you need to use the Tauri CLI:
+キーを生成するには、Tauri CLIを使用する必要があります:
 
 ```shell
 tauri signer generate -w ~/.tauri/myapp.key
 ```
 
-You have multiple options available
+利用可能な複数のオプションがあります
 
 ```
 Generate keypair to sign files
@@ -328,4 +328,4 @@ Environment variables used to sign with the Tauri `bundler`:<br/> If they are se
 [204 No Content]: http://tools.ietf.org/html/rfc2616#section-10.2.5
 [date and time on the internet: timestamps]: https://datatracker.ietf.org/doc/html/rfc3339#section-5.8
 [artifacts updater workflow]: https://github.com/tauri-apps/tauri/blob/5b6c7bb6ee3661f5a42917ce04a89d94f905c949/.github/workflows/artifacts-updater.yml#L44
-[sample tauri.conf.json]: https://github.com/tauri-apps/tauri/blob/5b6c7bb6ee3661f5a42917ce04a89d94f905c949/examples/updater/src-tauri/tauri.conf.json#L52
+[にバンドルされている]: https://github.com/tauri-apps/tauri/blob/5b6c7bb6ee3661f5a42917ce04a89d94f905c949/examples/updater/src-tauri/tauri.conf.json#L52
