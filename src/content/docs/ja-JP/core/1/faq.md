@@ -1,17 +1,17 @@
 ---
-title: Frequently Asked Questions
+title: よく寄せられる質問
 sidebar_position: 10
-description: Fixes for common issues
+description: 一般的な問題の修正
 ---
 
-## How can I use unpublished Tauri changes?
+## 未公開の牡牛座の変更をどのように使用できますか?
 
-To use Tauri from GitHub (bleeding edge version) you need to change your `Cargo.toml` file and update your CLI and API.
+GitHubからおうりを使用するには、 `Cargo.toml` ファイルを変更し、CLIとAPIを更新する必要があります。
 
 <details>
-  <summary>Pulling the Rust crate from source</summary>
+  <summary>ソースからRust木枠を引き抜くこと</summary>
 
-Append this to your `Cargo.toml` file:
+これを `Cargo.toml` ファイルに追加します。
 
 ```toml title=Cargo.toml
 [patch.crates-io]
@@ -19,20 +19,20 @@ tauri = { git = "https://github.com/tauri-apps/tauri", branch = "dev" }
 tauri-build = { git = "https://github.com/tauri-apps/tauri", branch = "dev" }
 ```
 
-This will force all your dependencies to use `tauri` and `tauri-build` from Git instead of crates.io.
+これにより、すべての依存関係が crates.io の代わりに `tauri` と `tauri-build` を使用するようになります。
 
 </details>
 
 <details>
-  <summary>Using the Tauri CLI from source</summary>
+  <summary>ソースから Tauri CLI を使用する</summary>
 
-If you are using the Cargo CLI, you can install it directly from GitHub:
+Cargo CLI を使用している場合は、GitHub から直接インストールできます。
 
 ```shell
 cargo install --git https://github.com/tauri-apps/tauri --branch dev tauri-cli
 ```
 
-If you are using the `@tauri-apps/cli` package, you will need to clone the repo and build it:
+`@tauri-apps/cli` パッケージを使用している場合は、リポジトリをクローンしてビルドする必要があります。
 
 ```shell
 git clone https://github.com/tauri-apps/tauri
@@ -42,27 +42,27 @@ yarn
 yarn build
 ```
 
-To use it, run directly with node:
+それを使用するには、ノードで直接実行します:
 
 ```shell
 node /path/to/tauri/tooling/cli/node/tauri.js dev
 node /path/to/tauri/tooling/cli/node/tauri.js build
 ```
 
-Alternatively, you can run your app with Cargo directly:
+または、Cargoでアプリを直接実行することもできます。
 
 ```shell
 cd src-tauri
 cargo run --no-default-features # instead of tauri dev
-cargo build # instead of tauri build - won't bundle your app though
+cargo build # instead of tauri build - won't bundle your app
 ```
 
 </details>
 
 <details>
-  <summary>Using the Tauri API from source</summary>
+  <summary>ソースから Tauri API を使用する</summary>
 
-It is recommended to also use the Tauri API package from source when using the Tauri crate from GitHub (though it might not be needed). To build it from source, run the following script:
+GitHubからおうりクレートを使用する場合は、ソースからおうりAPIパッケージを使用することをお勧めします(不要かもしれませんが)。 ソースからビルドするには、次のスクリプトを実行します。
 
 ```shell
 git clone https://github.com/tauri-apps/tauri
@@ -72,7 +72,7 @@ yarn
 yarn build
 ```
 
-Now you can link it using yarn:
+Yarnを使ってリンクできるようになりました:
 
 ```shell
 cd dist
@@ -81,7 +81,7 @@ cd /path/to/your/project
 yarn link @tauri-apps/api
 ```
 
-Or you can change your package.json to point to the dist folder directly:
+または、package.jsonをdistフォルダを直接指すように変更することもできます。
 
 ```json title=package.json
 {
@@ -93,34 +93,34 @@ Or you can change your package.json to point to the dist folder directly:
 
 </details>
 
-## Should I use Node or Cargo? {#node-or-cargo}
+## ノードまたは貨物を使用する必要がありますか? {#node-or-cargo}
 
-Even though installing the CLI through Cargo is the preferred option, it has to compile the whole binary from scratch when you install it. If you're in a CI environment or on a very slow machine you're better off choosing another installation method.
+Cargo 経由で CLI をインストールするのが好ましいオプションですが、インストール時には最初からバイナリ全体をコンパイルする必要があります。 CI 環境または非常に低速のマシンにいる場合は、別のインストール方法を選択することをお勧めします。
 
-As the CLI is written in Rust, it is naturally available through [crates.io][] and installable with Cargo.
+CLI は Rust で書かれているので、 [crates.io][] を通して自然に利用でき、Cargo でインストールできます。
 
-We also compile the CLI as a native Node.js addon and distribute it [via npm][]. This has several advantages compared to the Cargo installation method:
+We also compile the CLI as a native Node.js addon and distribute it [via npm][]. Cargo のインストール方法に比べて、いくつかの利点があります。
 
-1. The CLI is pre-compiled, leading to much faster install times
-2. You can pin a specific version in your package.json file
-3. If you develop custom tooling around Tauri, you can import the CLI as a regular JavaScript module
-4. You can install the CLI using a JavaScript manager
+1. CLI は事前にコンパイルされているため、インストール時間が大幅に短縮されます。
+2. package.json ファイルに特定のバージョンをピン留めできます。
+3. 牡牛座の周りにカスタムツールを開発する場合は、CLI を通常の JavaScript モジュールとしてインポートできます。
+4. JavaScript マネージャーを使用して CLI をインストールできます。
 
-## Recommended Browserlist
+## おすすめのブラウザリスト
 
-We recommend using `es2021`, `last 3 Chrome versions`, and `safari13` for your browserlist and build targets. Tauri leverages the OS's native rendering engine (WebKit on macOS, WebView2 on Windows and WebKitGTK on Linux).
+`es2021`, `最新の 3 Chrome バージョン`, および `Safari13` をブラウザリストに使用し、ターゲットを構築することをお勧めします。 TauriはOSのネイティブレンダリングエンジン(macOSのWebKit、WindowsのWebView2、LinuxのWebKitGTK)を活用しています。
 
-## Build Conflict with Homebrew on Linux
+## Linux 上で Homebrew との競合を構築します
 
-Homebrew on Linux includes its own `pkg-config` (a utility to find libraries on the system). This can cause conflicts when installing the same `pkg-config` package for Tauri (usually installed through the package manager like `apt`). When you try to build a Tauri app it will try to invoke `pkg-config` and will end up invoking the one from Homebrew. If Homebrew wasn't used to install Tauri's dependencies, this can cause errors.
+Linux の Homebrew には `pkg-config` (システム上のライブラリを見つけるためのユーティリティ) があります。 これは、同じ `pkg-config` パッケージをインストールするときに競合を引き起こす可能性があります (通常、 `apt` のようなパッケージマネージャを介してインストールされます)。 Tauriアプリを構築しようとすると、 `pkg-config` を起動しようとし、Homebrewから起動します。 Homebrewが牡牛座の依存関係をインストールするために使用されていない場合、エラーが発生する可能性があります。
 
-Errors will _usually_ contain messages along the lines of `error: failed to run custom build command for X` - `Package Y was not found in the pkg-config search path.`. Note that you may see similar errors if the required dependencies are not installed at all.
+Errors will _usually_ contain messages along the lines of `error: failed to run custom build command for X` - `Package Y was not found in the pkg-config search path.`. 必要な依存関係がまったくインストールされていない場合、同様のエラーが表示されることに注意してください。
 
-There are two solutions to this issue:
+この問題には2つの解決策があります:
 
-1. [Uninstall Homebrew][]
-2. Set the `PKG_CONFIG_PATH` environment variable to point to the correct `pkg-config` before building a Tauri app
+1. [Homebrew をアンインストール][]
+2. Tauriアプリを構築する前に、 `PKG_CONFIG_PATH` 環境変数を正しい `pkg-config` を指すように設定します。
 
 [crates.io]: https://crates.io/crates/tauri-cli
 [via npm]: https://www.npmjs.com/package/@tauri-apps/cli
-[Uninstall Homebrew]: https://docs.brew.sh/FAQ#how-do-i-uninstall-homebrew
+[Homebrew をアンインストール]: https://docs.brew.sh/FAQ#how-do-i-uninstall-homebrew
