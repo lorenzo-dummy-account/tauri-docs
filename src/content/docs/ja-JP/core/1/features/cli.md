@@ -1,10 +1,10 @@
-# Making Your Own CLI
+# あなた自身のCLIを作る
 
-Tauri enables your app to have a CLI through [clap](https://github.com/clap-rs/clap), a robust command line argument parser. With a simple CLI definition in your `tauri.conf.json` file, you can define your interface and read its argument matches map on JavaScript and/or Rust.
+牡牛座は、堅牢なコマンドライン引数パーサである [clap](https://github.com/clap-rs/clap)を通じて、アプリケーションがCLIを持つことを可能にします。 With a simple CLI definition in your `tauri.conf.json` file, you can define your interface and read its argument matches map on JavaScript and/or Rust.
 
-## Base Configuration
+## 基本設定
 
-Under `tauri.conf.json`, you have the following structure to configure the interface:
+`tauri.conf.json`では、インターフェイスを構成するために次の構造を持っています。
 
 ```json title=src-tauri/tauri.conf.json
 {
@@ -29,17 +29,17 @@ Under `tauri.conf.json`, you have the following structure to configure the inter
 
 :::note
 
-All JSON configurations here are just samples, many other fields have been omitted for the sake of clarity.
+ここでのJSON設定はすべてサンプルですが、明確にするために他の多くのフィールドが省略されています。
 
 :::
 
-## Adding Arguments
+## 引数の追加
 
-The `args` array represents the list of arguments accepted by its command or subcommand. You can find more details about the way to configure them [here][tauri config].
+`args` 配列は、コマンドまたはサブコマンドで受け入れられる引数のリストを表します。 設定方法の詳細については、こちら [][tauri config] をご覧ください。
 
-### Positional Arguments
+### 位置引数
 
-A positional argument is identified by its position in the list of arguments. With the following configuration:
+位置引数は、引数のリスト内の位置によって識別されます。 以下の設定で:
 
 ```json tauri.conf.json
 {
@@ -60,9 +60,9 @@ A positional argument is identified by its position in the list of arguments. Wi
 
 Users can run your app as `./app tauri.txt dest.txt` and the arg matches map will define `source` as `"tauri.txt"` and `destination` as `"dest.txt"`.
 
-### Named Arguments
+### 名前付き引数
 
-A named argument is a (key, value) pair where the key identifies the value. With the following configuration:
+名前付き引数は、キーが値を識別する(キー、値)ペアです。 以下の設定で:
 
 ```json tauri.conf.json
 {
@@ -80,30 +80,30 @@ A named argument is a (key, value) pair where the key identifies the value. With
 
 Users can run your app as `./app --type foo bar`, `./app -t foo -t bar` or `./app --type=foo,bar` and the arg matches map will define `type` as `["foo", "bar"]`.
 
-### Flag Arguments
+### フラグ引数
 
-A flag argument is a standalone key whose presence or absence provides information to your application. With the following configuration:
+flag 引数は、アプリケーションに情報を提供するスタンドアロンキーです。 以下の設定で:
 
 ```json tauri.conf.json
 {
   "args": [
     "name": "verbose",
     "short": "v",
-    "multipleOccurrences": true
+    "multipleOcurrences": true
   ]
 }
 ```
 
 Users can run your app as `./app -v -v -v`, `./app --verbose --verbose --verbose` or `./app -vvv` and the arg matches map will define `verbose` as `true`, with `occurrences = 3`.
 
-## Subcommands
+## サブコマンド
 
-Some CLI applications has additional interfaces as subcommands. For instance, the `git` CLI has `git branch`, `git commit` and `git push`. You can define additional nested interfaces with the `subcommands` array:
+一部の CLI アプリケーションにはサブコマンドとして追加のインターフェイスがあります。 例えば、 `git` CLI には `git ブランチ`、 `git commit` と `git push` があります。 `サブコマンド` 配列を使用して、追加のネストされたインターフェイスを定義できます。
 
 ```json tauri.conf.json
 {
   "cli": {
-    ...
+...
     "subcommands": {
       "branch": {
         "args": []
@@ -116,9 +116,9 @@ Some CLI applications has additional interfaces as subcommands. For instance, th
 }
 ```
 
-Its configuration is the same as the root application configuration, with the `description`, `longDescription`, `args`, etc.
+設定は `説明`, `longDescription`, `args`などのルートアプリケーション設定と同じです。
 
-## Reading the matches
+## 試合を読むこと
 
 ### Rust
 
@@ -152,8 +152,12 @@ getMatches().then((matches) => {
 })
 ```
 
-## Complete documentation
+## 完全なドキュメント
 
-You can find more about the CLI configuration [here][tauri config].
+CLI の構成 [については、こちら][tauri config] をご覧ください。
+
+[tauri config]: ../../api/config.md#tauri
+
+[tauri config]: ../../api/config.md#tauri
 
 [tauri config]: ../../api/config.md#tauri
