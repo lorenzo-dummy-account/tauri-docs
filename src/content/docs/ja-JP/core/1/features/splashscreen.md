@@ -1,10 +1,10 @@
-# Splashscreen
+# スプラッシュ画面
 
-If your webpage could take some time to load, or if you need to run an initialization procedure in Rust before displaying your main window, a splashscreen could improve the loading experience for the user.
+Webページの読み込みに時間がかかる場合、またはメインウィンドウを表示する前に Rust で初期化手順を実行する必要がある場合。 スプラッシュスクリーンはユーザーの読み込み体験を向上させます
 
-### Setup
+### セットアップ
 
-First, create a `splashscreen.html` in your `distDir` that contains the HTML code for a splashscreen. Then, update your `tauri.conf.json` like so:
+まず、スプラッシュスクリーン用の HTML コードを含む `distDir` に `splashscreen.html` を作成します。 次に、 `tauri.conf.json` を以下のように更新します。
 
 ```diff
 "windows": [
@@ -27,16 +27,16 @@ First, create a `splashscreen.html` in your `distDir` that contains the HTML cod
 ]
 ```
 
-Now, your main window will be hidden and the splashscreen window will show when your app is launched. Next, you'll need a way to close the splashscreen and show the main window when your app is ready. How you do this depends on what you are waiting for before closing the splashscreen.
+これで、メインウィンドウが非表示になり、アプリの起動時にスプラッシュスクリーンウィンドウが表示されます。 次に、アプリの準備が整ったら、スプラッシュスクリーンを閉じてメインウィンドウを表示する方法が必要です。 これを行う方法は、スプラッシュスクリーンを閉じる前に待っているものに依存します。
 
-### Waiting for Webpage
+### ウェブページを待っています
 
-If you are waiting for your web code, you'll want to create a `close_splashscreen` [command](command).
+ウェブコードを待っている場合は、 `close_splashscreen` [コマンド](command) を作成します。
 
 ```rust src-tauri/main.rs
 use tauri::Manager;
 // Create the command:
-// This command must be async so that it doesn't run on the main thread.
+// This command must be async so that it don't run on the main thread.
 #[tauri::command]
 async fn close_splashscreen(window: tauri::Window) {
   // Close splashscreen
@@ -58,7 +58,7 @@ fn main() {
 
 ```
 
-Then, you can call it from your JS:
+次に、JSから呼び出すことができます:
 
 ```js
 // With the Tauri API npm package:
@@ -73,9 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 ```
 
-### Waiting for Rust
+### Rust を待っています
 
-If you are waiting for Rust code to run, put it in the `setup` function handler so you have access to the `App` instance:
+Rust コードの実行を待っている場合 `セットアップ` 関数ハンドラに入れて、 `App` インスタンスにアクセスできるようにします。
 
 ```rust src-tauri/main.rs
 use tauri::Manager;
