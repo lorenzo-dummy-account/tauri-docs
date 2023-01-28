@@ -4,22 +4,22 @@ sidebar_position: 1
 
 import Command from '@theme/Command'
 
-# App Publishing
+# アプリの公開
 
-### 1. Build Your Web App
+### 1. ウェブアプリを構築
 
-Now that you are ready to package your project, you need to run your framework's or bundler's build command (assuming you're using one, of course).
+これで、プロジェクトをパッケージ化する準備が整ったので、フレームワークまたはバンドラのビルドコマンドを実行する必要があります(もちろん、使用している場合)。
 
 :::note
 
-Every framework has its publishing tooling. It is outside of the scope of this document to treat them all or keep them up to date.
+すべてのフレームワークには、公開ツールがあります。 この文書の範囲外で、すべてを扱ったり、最新の情報を保持したりすることができます。
 
 :::
 
-### 2. Bundle your application with Tauri
+### 2. アプリケーションをおうりでバンドルしましょう
 
 <Command name="build" />
 
-This command embeds your web assets into a single binary with your Rust code. The binary itself will be located in `src-tauri/target/release/[app name]`, and installers will be located in `src-tauri/target/release/bundle/`.
+このコマンドは、ウェブアセットを Rust コードと共に単一のバイナリに埋め込みます。 バイナリ自体は `src-tauri/target/release/[app name]`に置かれ、インストーラは `src-tauri/target/release/bundle/` に置かれます。
 
-Like the `tauri dev` command, the first time you run this, it takes some time to collect the Rust crates and build everything - but on subsequent runs, it only needs to rebuild your app's code, which is much quicker.
+`tauri dev` コマンドのように、初めてこれを実行したときと同じです。 Rust の木枠を集めてすべてを作るのに時間がかかりますが、その後の作業では、しばらく時間がかかります。 アプリのコードを再構築すればもっと速くなります
