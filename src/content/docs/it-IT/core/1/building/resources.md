@@ -2,25 +2,25 @@
 sidebar_position: 8
 ---
 
-# Embedding Additional Files
+# Incorporare File Aggiuntivi
 
-You may need to include additional files in your application bundle that aren't part of your frontend (your `distDir`) directly or which are too big to be inlined into the binary. We call these files `resources`.
+Potrebbe essere necessario includere file aggiuntivi nel pacchetto di applicazioni che non fanno parte del frontend (il tuo `distDir`) direttamente o che sono troppo grandi per essere inseriti nel binario. Chiamiamo questi file `risorse`.
 
-To bundle the files of your choice, you can add the `resources` property to the `tauri > bundle` object in your `tauri.conf.json` file.
+Per raggruppare i file a tua scelta, puoi aggiungere la proprietà `resources` al `tauri > bundle` object nel tuo `tauri. onf.json` file.
 
-See more about tauri.conf.json configuration [here][tauri.bundle].
+Scopri di più sulla configurazione di tauri.conf.json [qui][tauri.bundle].
 
-`resources` expects a list of strings targeting files either with absolute or relative paths. It supports glob patterns in case you need to include multiple files from a directory.
+`resources` expected a list of strings targeting files with absolute or relative paths. Supporta modelli globo nel caso in cui sia necessario includere più file da una directory.
 
-Here is a sample to illustrate the configuration. This is not a complete `tauri.conf.json` file:
+Ecco un esempio per illustrare la configurazione. Questo non è un file completo `tauri.conf.json`:
 
 ```json title=tauri.conf.json
 {
   "tauri": {
     "bundle": {
       "resources": [
-        "/absolute/path/to/textfile.txt",
-        "relative/path/to/jsonfile.json",
+        "/absolute/path/to/textfile. xt",
+        "relative/path/to/jsonfile. son",
         "resources/*"
       ]
     },
@@ -35,13 +35,13 @@ Here is a sample to illustrate the configuration. This is not a complete `tauri.
 
 :::note
 
-Absolute paths and paths containing parent components (`../`) can only be allowed via `"$RESOURCE/*"`. Relative paths like `"path/to/file.txt"` can be allowed explicitly via `"$RESOURCE/path/to/file.txt"`.
+Percorsi assoluti e percorsi contenenti componenti genitore (`../`) possono essere ammessi solo tramite `"$RESOURCE/*"`. Percorsi relativi come `"path/to/file.txt"` possono essere permessi esplicitamente tramite `"$RESOURCE/path/to/file.txt"`.
 
 :::
 
-## Accessing files in JavaScript
+## Accesso ai file in JavaScript
 
-In this example we want to bundle additional i18n json files that look like this:
+In questo esempio vogliamo raggruppare ulteriori file i18n json che assomigliano a questo:
 
 ```json title=de.json
 {
@@ -50,51 +50,51 @@ In this example we want to bundle additional i18n json files that look like this
 }
 ```
 
-In this case, we store these files in a `lang` directory next to the `tauri.conf.json`. For this we add `"lang/*"` to `resources` and `$RESOURCE/lang/*` to the fs scope as shown above.
+In questo caso, memorizziamo questi file in una directory `lang` accanto al `tauri.conf.json`. Per questo aggiungiamo `"lang/*"` a `risorse` e `$RESOURCE/lang/*` al campo fs come mostrato sopra.
 
-Note that you must configure the allowlist to enable `path > all` and the [`fs` APIs][] you need, in this example `fs > readTextFile`.
+Nota che devi configurare la lista permessi per abilitare `path > tutte le` e le API [`fs`][] di cui hai bisogno, in questo esempio `fs > readTextFile`.
 
 ```javascript
 import { resolveResource } from '@tauri-apps/api/path'
-// alternatively, use `window.__TAURI__.path.resolveResource`
+// alternativamente, use `window.__TAURI__.path. esolveResource`
 import { readTextFile } from '@tauri-apps/api/fs'
-// alternatively, use `window.__TAURI__.fs.readTextFile`
+// alternativamente, use `window.__TAURI__.fs.readTextFile`
 
-// `lang/de.json` is the value specified on `tauri.conf.json > tauri > bundle > resources`
+// `lang/de.json` is the value specified on `tauri. onf.json > tauri > bundle > resources`
 const resourcePath = await resolveResource('lang/de.json')
-const langDe = JSON.parse(await readTextFile(resourcePath))
+const langDe = JSON. arse(await readTextFile(resourcePath))
 
-console.log(langDe.hello) // This will print 'Guten Tag!' to the devtools console
+console.log(langDe.hello) // Questo stamperà 'Guten Tag!' sulla console devtools
 ```
 
-## Accessing files in Rust
+## Accesso ai file in Rust
 
-This is based on the example above. On the Rust side you need an instance of the [`PathResolver`][] which you can get from [`App`][] and [`AppHandle`][]:
+Questo è basato sull'esempio di cui sopra. Sul lato Rust hai bisogno di un'istanza del [`PathResolver`][] che puoi ottenere da [`App`][] e [`AppHandle`][]:
 
 ```rust
 tauri::Builder::default()
-  .setup(|app| {
+  .setup(<unk> app<unk> {
     let resource_path = app.path_resolver()
-      .resolve_resource("lang/de.json")
-      .expect("failed to resolve resource");
+      .resolve_resource("lang/de. son")
+      . xpect("failed to resolve resource");
 
-    let file = std::fs::File::open(&resource_path).unwrap();
+    let file = std::fs::File::open(&resource_path). nwrap();
     let lang_de: serde_json::Value = serde_json::from_reader(file).unwrap();
 
-    println!("{}", lang_de.get("hello").unwrap()); // This will print 'Guten Tag!' to the terminal
+    println!("{}", lang_de. et("hello").unwrap()); // Questo stamperà 'Guten Tag!' al terminale
 
-    Ok(())
-  })
+    Ok())
+})
 ```
 
 ```rust
 #[tauri::command]
 fn hello(handle: tauri::AppHandle) -> String {
-   let resource_path = handle.path_resolver()
+   let resource_path = handle. ath_resolver()
       .resolve_resource("lang/de.json")
-      .expect("failed to resolve resource");
+      . xpect("failed to resolve resource");
 
-    let file = std::fs::File::open(&resource_path).unwrap();
+    let file = std::fs::File::open(&resource_path). nwrap();
     let lang_de: serde_json::Value = serde_json::from_reader(file).unwrap();
 
     lang_de.get("hello").unwrap()
@@ -102,7 +102,7 @@ fn hello(handle: tauri::AppHandle) -> String {
 ```
 
 [tauri.bundle]: ../../api/config.md#tauri.bundle
-[`fs` APIs]: ../../api/js/fs/
+[`fs`]: ../../api/js/fs/
 [`PathResolver`]: https://docs.rs/tauri/latest/tauri/struct.PathResolver.html
 [`App`]: https://docs.rs/tauri/latest/tauri/struct.App.html
 [`AppHandle`]: https://docs.rs/tauri/latest/tauri/struct.AppHandle.html
