@@ -19,8 +19,7 @@ Under `tauri.conf.json`, you have the following structure to configure the inter
         "subcommand-name": {
           // configures a subcommand that is accessible
           // with `./app subcommand-name --arg1 --arg2 --etc`
-          // configuration as above, with "description", "args", etc.
-        }
+          // configuration as above, with "description", "args", etc. }
       }
     }
   }
@@ -124,7 +123,7 @@ Its configuration is the same as the root application configuration, with the `d
 
 ```rust
 fn main() {
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .setup(|app| {
       match app.get_cli_matches() {
         // `matches` here is a Struct with { args, subcommand }.
