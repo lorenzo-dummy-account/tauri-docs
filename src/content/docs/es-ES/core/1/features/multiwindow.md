@@ -48,15 +48,15 @@ The [App][] instance can be obtained in the setup hook or after a call to [Build
 ```rust Using the setup hook
 tauri::Builder::default()
   .setup(|app| {
-    let docs_window = tauri::WindowBuilder::new(
+    let docs_window = tauri:: WindowBuilder::new(
       app,
       "external", /* the unique window label */
-      tauri::WindowUrl::External("https://tauri.app/".parse().unwrap())
+      tauri:: WindowUrl::External("https://tauri.app/".parse().unwrap())
     ).build()?;
-    let local_window = tauri::WindowBuilder::new(
+    let local_window = tauri:: WindowBuilder::new(
       app,
       "local",
-      tauri::WindowUrl::App("index.html".into())
+      tauri:: WindowUrl::App("index.html".into())
     ).build()?;
     Ok(())
   })
@@ -65,20 +65,20 @@ tauri::Builder::default()
 Using the setup hook ensures static windows and Tauri plugins are initialized. Alternatively, you can create a window after building the [App][]:
 
 ```rust Using the built app
-let app = tauri::Builder::default()
+let app = tauri:: Builder::default()
   .build(tauri::generate_context!())
   .expect("error while building tauri application");
 
-let docs_window = tauri::WindowBuilder::new(
+let docs_window = tauri:: WindowBuilder::new(
   &app,
   "external", /* the unique window label */
-  tauri::WindowUrl::External("https://tauri.app/".parse().unwrap())
+  tauri:: WindowUrl::External("https://tauri.app/".parse().unwrap())
 ).build().expect("failed to build window");
 
-let local_window = tauri::WindowBuilder::new(
+let local_window = tauri:: WindowBuilder::new(
   &app,
   "local",
-  tauri::WindowUrl::App("index.html".into())
+  tauri:: WindowUrl::App("index.html".into())
 ).build()?;
 ```
 
@@ -93,10 +93,10 @@ tauri::Builder::default()
   .setup(|app| {
     let handle = app.handle();
     std::thread::spawn(move || {
-      let local_window = tauri::WindowBuilder::new(
+      let local_window = tauri:: WindowBuilder::new(
         &handle,
         "local",
-        tauri::WindowUrl::App("index.html".into())
+        tauri:: WindowUrl::App("index.html".into())
       ).build()?;
     });
     Ok(())
@@ -105,11 +105,11 @@ tauri::Builder::default()
 
 ```rust Create a window in a Tauri command
 #[tauri::command]
-async fn open_docs(handle: tauri::AppHandle) {
-  let docs_window = tauri::WindowBuilder::new(
+async fn open_docs(handle: tauri:: AppHandle) {
+  let docs_window = tauri:: WindowBuilder::new(
     &handle,
     "external", /* the unique window label */
-    tauri::WindowUrl::External("https://tauri.app/".parse().unwrap())
+    tauri:: WindowUrl::External("https://tauri.app/".parse().unwrap())
   ).build().unwrap();
 }
 ```
@@ -144,8 +144,8 @@ webview.once('tauri://error', function (e) {
 The window instance can be queried using its label and the [get_window][] method on Rust or [WebviewWindow.getByLabel][] on JavaScript.
 
 ```rust Using get_window
-use tauri::Manager;
-tauri::Builder::default()
+use tauri:: Manager;
+tauri:: Builder::default()
   .setup(|app| {
     let main_window = app.get_window("main").unwrap();
     Ok(())
