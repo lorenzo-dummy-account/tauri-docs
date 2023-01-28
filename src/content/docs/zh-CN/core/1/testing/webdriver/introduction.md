@@ -1,41 +1,43 @@
 ---
 sidebar_position: 1
-title: Introduction
+title: 一. 导言
 ---
 
 :::caution Currently in pre-alpha
-Webdriver support for Tauri is still in pre-alpha. Tooling that is dedicated to it, such as [tauri-driver][], is still in active development and may change as necessary over time. Additionally, only Windows and Linux are currently supported.
+Webdriver support for Tauri is still in pre-alpha. 专用于它的配刀，例如 [tauri驱动器][]，仍然处于 活跃的开发阶段，并可能随时间的需要而变化。 此外，目前只支持 Windows 和 Linux。
 :::
 
-[WebDriver][] is a standardized interface to interact with web documents primarily intended for automated testing. Tauri supports the [WebDriver][] interface by leveraging the native platform's [WebDriver][] server underneath a cross-platform wrapper [`tauri-driver`][].
+[WebDrive][] 是一个与主要用于自动测试的 web 文档交互的标准化界面。 Tauri支持 [WebDriver][] 接口，方法是利用本地平台 [WebDrive][] 服务器在一个 跨平台包装程序下 [`tauri驱动程序`][]
 
-## System Dependencies
+## 系统依赖关系
 
-Install the latest [`tauri-driver`][] or update an existing installation by running:
+安装最新的 [`tauri驱动程序`][] 或通过运行更新现有的安装：
 
 ```shell
-cargo install tauri-driver
+货物安装tauri驱动程序
 ```
 
-Because we currently utilize the platform's native [WebDriver][] server, there are some requirements for running [`tauri-driver`][] on supported platforms. Platform support is currently limited to Linux and Windows.
+因为我们目前正在使用平台的原生 [WebDriver][] 服务器， 在支持的平台上运行 [`tauri驱动程序`][] 平台支持目前仅限Linux和Windows。
 
 ### Linux
 
-We use `WebKitWebDriver` on Linux platforms. Check if this binary exists already (command `which WebKitWebDriver`) as some distributions bundle it with the regular WebKit package. Other platforms may have a separate package for them, such as `webkit2gtk-driver` on Debian-based distributions.
+我们在 Linux 平台上使用 `WebKitWebDriver` 检查这个二进制文件是否已经存在(命令 `是什么WebKitWebDriver`)， 一些发行版将它与常规WebKit软件包捆绑在一起。 Other platforms may have a separate package for them, such as `webkit2gtk-driver` on Debian-based distributions.
 
-### Windows
+### 窗口
 
-Make sure to grab the version of [Microsoft Edge Driver][] that matches your Windows' Edge version that the application is being built and tested on. This should almost always be the latest stable version on up-to-date Windows installs. If the two versions do not match, you may experience your WebDriver testing suite hanging while trying to connect.
+Make sure to grab the version of [Microsoft Edge Driver][] that matches your Windows' Edge version that the application is being built and tested on. 这几乎总是最新版本的Windows安装。 如果 两个版本不匹配，您可能会在尝试连接时遇到您的 WebDriver 测试套装。
 
-The download contains a binary called `msedgedriver.exe`. [`tauri-driver`][] looks for that binary in the `$PATH` so make sure it's either available on the path or use the `--native-driver` option on [`tauri-driver`][]. You may want to download this automatically as part of the CI setup process to ensure the Edge, and Edge Driver versions stay in sync on Windows CI machines. A guide on how to do this may be added at a later date.
+下载包含一个名为 `msedgedriver.exe` 的二进制文件。 [`tauri驱动程序`][] 在 `$PATH` 中寻找该二进制文件，所以请 确保它可以在路径上使用，或使用 `--native-driver` 选项在 [`tauri驱动程序`][]。 您可能想要自动下载，作为CI 设置过程的一部分，以确保边缘。 和Edge 驱动版本 保持在 Windows CI 机上同步。 关于如何做到这一点的指南可在晚些时候添加。
 
-## Example Application
+## 示例应用程序
 
-The [next section](example/setup) of the guide shows step-by-step how to create a minimal example application that is tested with WebDriver.
+指南的 [接下来的](example/setup) 部分显示了如何创建一个 通过 WebDrive 测试的最小示例应用程序。
 
-If you prefer to see the result of the guide and look over a finished minimal codebase that utilizes it, you can look at https://github.com/chippers/hello_tauri. That example also comes with a CI script to test with GitHub actions, but you may still be interested in the [WebDriver CI](ci) guide as it explains the concept a bit more.
+如果你喜欢看到指南的结果并看到一个使用它的最小代码库， 你 可以查看 https://github。 om/chippers/hello_tauri。 这个示例还伴随着一个 CI 脚本测试GitHub 动作。 但您可能仍然很感兴趣 [WebDriver CI](ci) 指南，因为它解释了更多的概念。
+
+[WebDrive]: https://www.w3.org/TR/webdriver/
 
 [WebDriver]: https://www.w3.org/TR/webdriver/
-[`tauri-driver`]: https://crates.io/crates/tauri-driver
-[tauri-driver]: https://crates.io/crates/tauri-driver
+[`tauri驱动程序`]: https://crates.io/crates/tauri-driver
+[tauri驱动器]: https://crates.io/crates/tauri-driver
 [Microsoft Edge Driver]: https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
