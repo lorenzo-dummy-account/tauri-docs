@@ -1,39 +1,39 @@
 ---
 sidebar_position: 1
-title: Introduction
+title: Introduzione
 ---
 
-:::caution Currently in pre-alpha
-Webdriver support for Tauri is still in pre-alpha. Tooling that is dedicated to it, such as [tauri-driver][], is still in active development and may change as necessary over time. Additionally, only Windows and Linux are currently supported.
+:::cautelaAttualmente in pre-alpha
+Il supporto al driver web per Tauri è ancora in pre-alfa. Lo strumento che vi è dedicato, come il [tauri-driver][], è ancora in sviluppo attivo e può cambiare se necessario nel tempo. Inoltre, solo Windows e Linux sono attualmente supportati.
 :::
 
-[WebDriver][] is a standardized interface to interact with web documents primarily intended for automated testing. Tauri supports the [WebDriver][] interface by leveraging the native platform's [WebDriver][] server underneath a cross-platform wrapper [`tauri-driver`][].
+[WebDriver][] è un'interfaccia standardizzata per interagire con documenti web destinati principalmente a test automatizzati. Tauri supporta l'interfaccia [WebDriver][] sfruttando il server [WebDriver][] della piattaforma nativa sotto un wrapper cross-platform [`tauri-driver`][].
 
-## System Dependencies
+## Dipendenze Di Sistema
 
-Install the latest [`tauri-driver`][] or update an existing installation by running:
+Installa l'ultimo [`tauri-driver`][] o aggiorna un'installazione esistente eseguendo:
 
 ```shell
 cargo install tauri-driver
 ```
 
-Because we currently utilize the platform's native [WebDriver][] server, there are some requirements for running [`tauri-driver`][] on supported platforms. Platform support is currently limited to Linux and Windows.
+Poiché attualmente utilizziamo il server nativo [WebDriver][] della piattaforma, ci sono alcuni requisiti per l'esecuzione di [`tauri-driver`][] su piattaforme supportate. Il supporto della piattaforma è attualmente limitato a Linux e Windows.
 
 ### Linux
 
-We use `WebKitWebDriver` on Linux platforms. Check if this binary exists already (command `which WebKitWebDriver`) as some distributions bundle it with the regular WebKit package. Other platforms may have a separate package for them, such as `webkit2gtk-driver` on Debian-based distributions.
+Utilizziamo `WebKitWebDriver` su piattaforme Linux. Verifica se questo binario esiste già (comando `quale WebKitWebDriver`) come alcune distribuzioni lo raggruppano con il normale pacchetto WebKit. Altre piattaforme possono avere un pacchetto separato per loro, ad esempio come `webkit2gtk-driver` su distribuzioni basate su Debian.
 
-### Windows
+### Finestre
 
-Make sure to grab the version of [Microsoft Edge Driver][] that matches your Windows' Edge version that the application is being built and tested on. This should almost always be the latest stable version on up-to-date Windows installs. If the two versions do not match, you may experience your WebDriver testing suite hanging while trying to connect.
+Assicurati di prendere la versione di [Microsoft Edge Driver][] che corrisponde alla versione di Windows Edge che l'applicazione è in fase di costruzione e testata. Questa dovrebbe essere quasi sempre l'ultima versione stabile sulle installazioni di Windows aggiornate. Se le due versioni non corrispondono, potresti provare la tua suite di test WebDriver appesa durante il tentativo di connetterti.
 
-The download contains a binary called `msedgedriver.exe`. [`tauri-driver`][] looks for that binary in the `$PATH` so make sure it's either available on the path or use the `--native-driver` option on [`tauri-driver`][]. You may want to download this automatically as part of the CI setup process to ensure the Edge, and Edge Driver versions stay in sync on Windows CI machines. A guide on how to do this may be added at a later date.
+Il download contiene un binario chiamato `msedgedriver.exe`. [`tauri-driver`][] looks for that binary in the `$PATH` so make sure it's either available on the path or use the `--native-driver` option on [`tauri-driver`][]. Si consiglia di scaricare questo automaticamente come parte del processo di configurazione CI per garantire il bordo, e le versioni del driver Edge rimangono sincronizzate sulle macchine Windows CI. Una guida su come farlo potrebbe essere aggiunta in un secondo momento.
 
-## Example Application
+## Esempio Di Applicazione
 
-The [next section](example/setup) of the guide shows step-by-step how to create a minimal example application that is tested with WebDriver.
+La sezione [successiva](example/setup) della guida mostra passo dopo passo come creare un'applicazione di esempio minimale che è testata con WebDriver.
 
-If you prefer to see the result of the guide and look over a finished minimal codebase that utilizes it, you can look at https://github.com/chippers/hello_tauri. That example also comes with a CI script to test with GitHub actions, but you may still be interested in the [WebDriver CI](ci) guide as it explains the concept a bit more.
+Se si preferisce vedere il risultato della guida e guardare oltre un codebase minimo finito che lo utilizza, puoi guardare su https://github. om/chippers/hello_tauri. Questo esempio viene fornito anche con uno script CI per testare con le azioni GitHub , ma potresti essere ancora interessato alla guida [WebDriver CI](ci) in quanto spiega il concetto un po 'di più.
 
 [WebDriver]: https://www.w3.org/TR/webdriver/
 [`tauri-driver`]: https://crates.io/crates/tauri-driver
