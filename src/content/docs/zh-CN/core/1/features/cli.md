@@ -1,10 +1,10 @@
-# Making Your Own CLI
+# 制作你自己的 CLI
 
-Tauri enables your app to have a CLI through [clap](https://github.com/clap-rs/clap), a robust command line argument parser. With a simple CLI definition in your `tauri.conf.json` file, you can define your interface and read its argument matches map on JavaScript and/or Rust.
+Tauri使您的应用能够通过 [clp](https://github.com/clap-rs/clap)获得一个 CLI ，一个强大的命令行参数解析器。 在您的 `tauri.conf中使用简单的 CLI 定义。 son` 文件，您可以定义您的接口并在JavaScript 和/或Rust上读取它的参数匹配图。
 
-## Base Configuration
+## 基本配置
 
-Under `tauri.conf.json`, you have the following structure to configure the interface:
+在 `tauri.conf.json`下，您有以下结构来配置接口：
 
 ```json title=src-tauri/tauri.conf.json
 {
@@ -29,17 +29,17 @@ Under `tauri.conf.json`, you have the following structure to configure the inter
 
 :::note
 
-All JSON configurations here are just samples, many other fields have been omitted for the sake of clarity.
+所有JSON在这里的配置都只是样本，为了明确起见，还省去了许多其他字段。
 
 :::
 
-## Adding Arguments
+## 添加参数
 
-The `args` array represents the list of arguments accepted by its command or subcommand. You can find more details about the way to configure them [here][tauri config].
+`args` 数组代表其命令或子命令接受的参数列表。 您可以在这里找到更多关于配置 [的详细信息。][tauri config]。
 
-### Positional Arguments
+### 位置参数
 
-A positional argument is identified by its position in the list of arguments. With the following configuration:
+它在辩论清单中的立场指明了一个立场的论点。 具有以下配置：
 
 ```json tauri.conf.json
 {
@@ -58,31 +58,31 @@ A positional argument is identified by its position in the list of arguments. Wi
 }
 ```
 
-Users can run your app as `./app tauri.txt dest.txt` and the arg matches map will define `source` as `"tauri.txt"` and `destination` as `"dest.txt"`.
+用户可以以 `./app tauri.txt 的形式运行您的应用程序。 xt` 和箭头匹配地图将定义 `源` 为 `"tauri"。 xt"` 和 `目标` 为 `"dest.txt"`.
 
-### Named Arguments
+### 命名参数
 
-A named argument is a (key, value) pair where the key identifies the value. With the following configuration:
+命名的参数是一对(键值)，键值指明值。 具有以下配置：
 
 ```json tauri.conf.json
-{
+主席:
   "args": [
-    {
+    }
       "name": "type",
-      "short": "t",
-      "takesValue": true,
-      "multiple": true,
-      "possibleValues": ["foo", "bar"]
+      "短": "t",
+      "takesValue": true
+      "multiple": true",
+      "可能的值": ["foo", "bar"]
     }
   ]
 }
 ```
 
-Users can run your app as `./app --type foo bar`, `./app -t foo -t bar` or `./app --type=foo,bar` and the arg matches map will define `type` as `["foo", "bar"]`.
+用户可以以 `./app --type foo bar`. `运行您的应用程序。 应用 -t foo -t 栏` 或 `。 App --type=foo,bar` 和箭头匹配地图将定义 `类型` 为 `["foo", "bar"]`
 
-### Flag Arguments
+### 标记参数
 
-A flag argument is a standalone key whose presence or absence provides information to your application. With the following configuration:
+标志参数是一个独立的密钥，其存在或缺席为您的应用程序提供了信息。 具有以下配置：
 
 ```json tauri.conf.json
 {
@@ -94,42 +94,42 @@ A flag argument is a standalone key whose presence or absence provides informati
 }
 ```
 
-Users can run your app as `./app -v -v -v`, `./app --verbose --verbose --verbose` or `./app -vvv` and the arg matches map will define `verbose` as `true`, with `occurrences = 3`.
+用户可以以 `./app -v -v`的方式运行您的应用。 `应用 --verbose --verbose --verbose` 或 `. App -vvv` 和 arg 匹配地图将定义 `详细` 为 `true`用 `发生数 = 3`
 
-## Subcommands
+## 子命令
 
-Some CLI applications has additional interfaces as subcommands. For instance, the `git` CLI has `git branch`, `git commit` and `git push`. You can define additional nested interfaces with the `subcommands` array:
+一些CLI 应用程序作为子命令有额外的接口。 例如， `git` CLI 有 `git 分支`, `git 提交` 和 `git 推送`. 您可以定义附加嵌套接口与 `子命令` 数组：
 
 ```json tauri.conf.json
-{
-  "cli": {
-    ...
-    "subcommands": {
-      "branch": {
-        "args": []
+很抱歉，
+  "cli"：format@@
+...
+    "subcommands":
+      "branch":
+        "args": […]
       },
-      "push": {
-        "args": []
+      "push":
+        "args": […]
       }
-    }
+
   }
 }
 ```
 
-Its configuration is the same as the root application configuration, with the `description`, `longDescription`, `args`, etc.
+其配置与 root 应用程序配置相同，包含 `描述`。 `长描述`, `args`, 等等。
 
-## Reading the matches
+## 读取匹配
 
-### Rust
+### 赤色
 
 ```rust
-fn main() {
+fn main() v.
   tauri::Builder::default()
-    .setup(|app| {
-      match app.get_cli_matches() {
-        // `matches` here is a Struct with { args, subcommand }.
-        // `args` is `HashMap<String, ArgData>` where `ArgData` is a struct with { value, occurrences }.
-        // `subcommand` is `Option<Box<SubcommandMatches>>` where `SubcommandMatches` is a struct with { name, matches }.
+    .setup(|app|
+      match app.get_cli_matches() v.
+        // `matches` 这里是一个 { args, subcommand } 的结构。
+        // `args`是`HashMap<String, ArgData>`，`ArgData` 是一个结构的 { value, occurrences }
+        // `subcommand` 是 `Option<Box<SubcommandMatches>>` ，其中`SubcommandMatches` 是一个 { name, matches } 的结构。
         Ok(matches) => {
           println!("{:?}", matches)
         }
@@ -152,8 +152,10 @@ getMatches().then((matches) => {
 })
 ```
 
-## Complete documentation
+## 完整文档
 
-You can find more about the CLI configuration [here][tauri config].
+您可以在这里找到更多关于 CLI 配置 [的信息][tauri config]。
+
+[tauri config]: ../../api/config.md#tauri
 
 [tauri config]: ../../api/config.md#tauri
