@@ -1,50 +1,49 @@
-import Tabs from '@theme/Tabs'
-import TabItem from '@theme/TabItem'
+importer des onglets depuis '@theme/Tabs' importer TabItem depuis '@theme/TabItem'
 
-# WebdriverIO
+# IO WebdriverWeb
 
-:::info Example Application
-This [WebdriverIO][] guide expects you to have already gone through the [example Application setup][] to follow step-by-step. The general information may still be helpful otherwise.
+:::info Exemple d'Application
+Ce guide [WebdriverIO][] attend que vous ayez déjà parcouru l' [exemple d'installation de l'application][] pour suivre étape par étape. Les informations générales peuvent encore être utiles autrement.
 :::
 
-This WebDriver testing example will use [WebdriverIO][], and its testing suite. It is expected to have Node.js already installed, along with `npm` or `yarn` although the [finished example project][] uses `yarn`.
+Cet exemple de test WebDriver utilisera [WebdriverIO][], et sa suite de test. Il est attendu d'avoir Node. s déjà installé, avec `npm` ou `yarn` bien que le [projet d'exemple fini][] utilise `yarn`.
 
-## Create a Directory for the Tests
+## Créer un répertoire pour les tests
 
-Let's create a space to write these tests in our project. We will be using a nested directory for this example project as we will later also go over other frameworks, but typically you only need to use one. Create the directory we will use with `mkdir -p webdriver/webdriverio`. The rest of this guide assumes you are inside the `webdriver/webdriverio` directory.
+Créons un espace pour écrire ces tests dans notre projet. Nous utiliserons un répertoire imbriqué pour ce projet d'exemple car nous passerons plus tard à d'autres frameworks, mais en général, vous n'avez besoin que d'en utiliser un. Créez le répertoire que nous utiliserons avec `mkdir -p webdriver/webdriverio`. Le reste de ce guide suppose que vous êtes à l'intérieur du répertoire `webdriver/webdriverio`.
 
-## Initializing a WebdriverIO Project
+## Initialisation d'un projet WebdriverIO
 
-We will be using a pre-existing `package.json` to bootstrap this test suite because we have already chosen specific [WebdriverIO][] config options and want to showcase a simple working solution. The bottom of this section has a collapsed guide on setting it up from scratch.
+Nous utiliserons un package `préexistant. son` pour amorcer cette suite de tests car nous avons déjà choisi des options de configuration spécifiques [WebdriverIO][] et nous voulons présenter une solution de travail simple. Le bas de cette section a un tutoriel réduit pour le configurer à partir de zéro.
 
 `package.json`:
 
 ```json
 {
   "name": "webdriverio",
-  "version": "1.0.0",
+  "version": "1.0. ",
   "private": true,
   "scripts": {
-    "test": "wdio run wdio.conf.js"
+    "test": "wdio run wdio. onf.js"
   },
   "dependencies": {
-    "@wdio/cli": "^7.9.1"
+    "@wdio/cli": "^7. .1"
   },
   "devDependencies": {
-    "@wdio/local-runner": "^7.9.1",
+    "@wdio/local-runner": "^7.9. ",
     "@wdio/mocha-framework": "^7.9.1",
     "@wdio/spec-reporter": "^7.9.0"
   }
 }
 ```
 
-We have a script that runs a [WebdriverIO][] config as a test suite exposed as the `test` command. We also have various dependencies added by the `@wdio/cli` command when we first set it up. In short, these dependencies are for the most simple setup using a local WebDriver runner, [Mocha][] as the test framework, and a simple Spec Reporter.
+Nous avons un script qui exécute une configuration [WebdriverIO][] en tant que suite de tests exposée comme la commande `test`. Nous avons également diverses dépendances ajoutées par la commande `@wdio/cli` lorsque nous le configurons pour la première fois. En bref, ces dépendances sont pour la configuration la plus simple en utilisant un exécuteur local WebDriver, [Mocha][] comme le framework de test, et un simple rapport de spécialisation.
 
-<details><summary>Click me if you want to see how to set a project up from scratch</summary>
+<details><summary>Cliquez sur moi si vous voulez voir comment configurer un projet à partir de zéro</summary>
 
-The CLI is interactive, and you may choose the tools to work with yourself. Note that you will likely diverge from the rest of the guide, and you need to set up the differences yourself.
+Le CLI est interactif et vous pouvez choisir les outils pour travailler avec vous. Note that you will likely diverge from the rest of the guide, and you need to set up the differences yourself.
 
-Let's add the [WebdriverIO][] CLI to this npm project.
+Ajoutons le CLI [WebdriverIO][] à ce projet npm.
 
 <Tabs groupId="package-manager"
 defaultValue="yarn"
@@ -68,7 +67,7 @@ yarn add @wdio/cli
 </TabItem>
 </Tabs>
 
-To then run the interactive config command to set up a [WebdriverIO][] test suite, you can then run:
+Pour ensuite exécuter la commande de configuration interactive pour mettre en place une suite de test [WebdriverIO][] , vous pouvez ensuite exécuter:
 
 <Tabs groupId="package-manager"
 defaultValue="yarn"
@@ -94,9 +93,9 @@ yarn wdio config
 
 </details>
 
-## Config
+## Configuration
 
-You may have noticed that the `test` script in our `package.json` mentions a file `wdio.conf.js`. That's the [WebdriverIO][] config file which controls most aspects of our testing suite.
+Vous avez peut-être remarqué que le script `test` dans notre `package.json` mentionne un fichier `wdio.conf.js`. C'est le fichier de configuration [WebdriverIO][] qui contrôle la plupart des aspects de notre suite de test.
 
 `wdio.conf.js`:
 
@@ -108,14 +107,14 @@ const { spawn, spawnSync } = require('child_process')
 // keep track of the `tauri-driver` child process
 let tauriDriver
 
-exports.config = {
-  specs: ['./test/specs/**/*.js'],
-  maxInstances: 1,
-  capabilities: [
+exports. onfig = {
+  spécifications : ['./test/specs/**/*. s'],
+  maxInstances : 1,
+  capacités : [
     {
-      maxInstances: 1,
+      maxInstances : 1,
       'tauri:options': {
-        application: '../../target/release/hello-tauri-webdriver',
+        application: '. /.. cible/release/hello-tauri-webdriver',
       },
     },
   ],
@@ -126,70 +125,70 @@ exports.config = {
     timeout: 60000,
   },
 
-  // ensure the rust project is built since we expect this binary to exist for the webdriver sessions
+  // s'assurer que le projet de rouille est construit car nous attendons que ce binaire existe pour les sessions du webdriver
   onPrepare: () => spawnSync('cargo', ['build', '--release']),
 
-  // ensure we are running `tauri-driver` before the session starts so that we can proxy the webdriver requests
+  // assurez-vous que nous exécutons `tauri-driver` avant que la session ne démarre afin que nous puissions proxy les requêtes du webdriver
   beforeSession: () =>
     (tauriDriver = spawn(
-      path.resolve(os.homedir(), '.cargo', 'bin', 'tauri-driver'),
+      path. esolve(os.homedir(), '.cargo', 'bin', 'tauri-driver'),
       [],
-      { stdio: [null, process.stdout, process.stderr] }
+      { stdio: [null, process.stdout, process. tderr] }
     )),
 
-  // clean up the `tauri-driver` process we spawned at the start of the session
-  afterSession: () => tauriDriver.kill(),
+  // nettoie le processus `tauri-driver` que nous avons créé au début de la session
+  afterSession: () => tauriDriver. malad(),
 }
 ```
 
-If you are interested in the properties on the `exports.config` object, I [suggest reading the documentation][webdriver documentation]. For non-WDIO specific items, there are comments explaining why we are running commands in `onPrepare`, `beforeSession`, and `afterSession`. We also have our specs set to `"./test/specs/**/*.js"`, so let's create a spec now.
+Si vous êtes intéressé par les propriétés de l'objet `exports.config` , je [suggère de lire la documentation][webdriver documentation]. Pour les éléments qui ne sont pas spécifiques à WDIO, il y a des commentaires expliquant pourquoi nous exécutons des commandes dans `onPrepare`, `beforeSession`, et `afterSession`. Nous avons également nos spécifications définies à `"./test/specs/**/*.js"`, nous allons donc créer une spécification maintenant.
 
-## Spec
+## Spécification
 
-A spec contains the code that is testing your actual application. The test runner will load these specs and automatically run them as it sees fit. Let's create our spec now in the directory we specified.
+Une spécification contient le code qui teste votre application réelle. L'exécuteur de test chargera ces spécifications et automatiquement les exécutera comme bon lui semble. Nous allons maintenant créer notre spécification dans le répertoire que nous avons spécifié.
 
 `test/specs/example.e2e.js`:
 
 ```js
-// calculates the luma from a hex color `#abcdef`
+// calcule la luma à partir d'une couleur hexadécimale `#abcdef`
 function luma(hex) {
-  if (hex.startsWith('#')) {
-    hex = hex.substring(1)
+  if (hex. tartsWith('#')) {
+    hex = hex. ubstring(1)
   }
 
   const rgb = parseInt(hex, 16)
   const r = (rgb >> 16) & 0xff
   const g = (rgb >> 8) & 0xff
   const b = (rgb >> 0) & 0xff
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+  return 0. 126 * r + 0.7152 * g + 0. 722 * b
 }
 
-describe('Hello Tauri', () => {
-  it('should be cordial', async () => {
-    const header = await $('body > h1')
-    const text = await header.getText()
-    expect(text).toMatch(/^[hH]ello/)
+describe('Bonjour Tauri', () => {
+  it('doit être cordial', async () => {
+    const header = wait $('body > h1')
+    const text = wait header. etText()
+    expect(texte). oMatch(/^[hH]ello/)
   })
 
-  it('should be excited', async () => {
-    const header = await $('body > h1')
-    const text = await header.getText()
-    expect(text).toMatch(/!$/)
+  il('doit être excité', async () => {
+    const header = wait $('body > h1')
+    const text = wait header. etText()
+    expect(texte). oMatch(/! /)
   })
 
-  it('should be easy on the eyes', async () => {
-    const body = await $('body')
-    const backgroundColor = await body.getCSSProperty('background-color')
+  it('doit être facile aux yeux', async () => {
+    const body = wait $('body')
+    const backgroundColor = wait body. etCSSProperty('background-color')
     expect(luma(backgroundColor.parsed.hex)).toBeLessThan(100)
   })
 })
 ```
 
-The `luma` function on top is just a helper function for one of our tests and is not related to the actual testing of the application. If you are familiar with other testing frameworks, you may notice similar functions being exposed that are used, such as `describe`, `it`, and `expect`. The other APIs, such as items like `$` and its exposed methods, are covered by the [WebdriverIO API docs][].
+La fonction `luma` est juste une fonction d'aide pour l'un de nos tests et n'est pas liée au test réel de l'application. Si vous êtes familier avec d'autres frameworks de test, vous pouvez remarquer que des fonctions similaires sont exposées que sont utilisées, comme `décrivez`, `il`et `attendez`. Les autres API, comme les éléments comme `$` et ses méthodes exposées, sont couverts par les [docs API WebdriverIO][].
 
-## Running the Test Suite
+## Exécution de la suite de test
 
-Now that we are all set up with config and a spec let's run it!
+Maintenant que nous sommes tous configurés avec la configuration et une spécialisation nous allons l'exécuter!
 
 <Tabs groupId="package-manager"
 defaultValue="yarn"
@@ -213,44 +212,44 @@ yarn test
 </TabItem>
 </Tabs>
 
-We should see output the following output:
+Nous devrions voir la sortie suivante :
 
 ```text
-➜  webdriverio git:(main) ✗ yarn test
+<unk> webdriverio git:(main) <unk> yarn test
 yarn run v1.22.11
-$ wdio run wdio.conf.js
+$ wdio run wdio.conf. s
 
-Execution of 1 workers started at 2021-08-17T08:06:10.279Z
+L'exécution de 1 travailleur a commencé à 2021-08-17T08:06:10.279Z
 
-[0-0] RUNNING in undefined - /test/specs/example.e2e.js
-[0-0] PASSED in undefined - /test/specs/example.e2e.js
+[0-0] RUNNING dans undefined - /test/specs/example.e2e. s
+[0-0] PASSED dans undefined - /test/specs/example.e2e.js
 
  "spec" Reporter:
 ------------------------------------------------------------------
-[wry 0.12.1 linux #0-0] Running: wry (v0.12.1) on linux
-[wry 0.12.1 linux #0-0] Session ID: 81e0107b-4d38-4eed-9b10-ee80ca47bb83
+[wry 0. 2.1 linux #0-0] Exécution : wry (v0.12.1) sur linux
+[wry 0.12. linux #0-0] ID de session : 81e0107b-4d38-4eed-9b10-e80ca47bb83
 [wry 0.12.1 linux #0-0]
-[wry 0.12.1 linux #0-0] » /test/specs/example.e2e.js
-[wry 0.12.1 linux #0-0] Hello Tauri
-[wry 0.12.1 linux #0-0]    ✓ should be cordial
-[wry 0.12.1 linux #0-0]    ✓ should be excited
-[wry 0.12.1 linux #0-0]    ✓ should be easy on the eyes
+[wry 0.12.1 linux #0-0] » /test/specs/example. 2e.js
+[wry 0.12.1 linux #0-0] Bonjour Tauri
+[wry 0.12.1 linux #0-0] ✓ devrait être cordial
+[wry 0.12. linux #0-0] ✓ devrait être excité
+[wry 0.12. linux #0-0] ✓ devrait être facile aux yeux
 [wry 0.12.1 linux #0-0]
-[wry 0.12.1 linux #0-0] 3 passing (244ms)
+[wry 0. 2.1 linux #0-0] 3 passant (244ms)
 
 
-Spec Files:  1 passed, 1 total (100% completed) in 00:00:01
+Fichiers Spec : 1 passés, 1 total (100% terminé) en 00:00:01
 
-Done in 1.98s.
+Terminé en 1.98s.
 ```
 
-We see the Spec Reporter tell us that all 3 tests from the `test/specs/example.e2e.js` file, along with the final report `Spec Files: 1 passed, 1 total (100% completed) in 00:00:01`.
+Nous voyons le rapport de spécialisation nous dire que les 3 tests des `test/specs/example.e2e. s` fichier, avec le rapport final `Fichiers de spécification : 1 passé, 1 total (100% terminé) en 00:00:01`.
 
-Using the [WebdriverIO][] test suite, we just easily enabled e2e testing for our Tauri application from just a few lines of configuration and a single command to run it! Even better, we didn't have to modify the application at all.
+Utilisation de la suite de test [WebdriverIO][] nous venons d'activer facilement les tests e2e pour notre application Tauri à partir de seulement quelques lignes de configuration et une commande unique pour l'exécuter ! Mieux encore, nous n'avons pas eu à modifier l'application du tout.
 
 [WebdriverIO]: https://webdriver.io/
-[finished example project]: https://github.com/chippers/hello_tauri
-[example Application setup]: ./setup.md
+[projet d'exemple fini]: https://github.com/chippers/hello_tauri
+[exemple d'installation de l'application]: ./setup.md
 [Mocha]: https://mochajs.org/
 [webdriver documentation]: https://webdriver.io/docs/configurationfile
-[WebdriverIO API docs]: https://webdriver.io/docs/api
+[docs API WebdriverIO]: https://webdriver.io/docs/api
