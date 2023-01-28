@@ -1,13 +1,13 @@
-# Continuous Integration
+# 継続的統合
 
-Utilizing Linux and some programs to create a fake display, it is possible to run [WebDriver][] tests with [`tauri-driver`][] on your CI. The following example uses the [WebdriverIO][] example we [previously built together][] and GitHub Actions.
+Linuxやプログラムを使って偽のディスプレイを作成する [WebDriver][] テストを [`tauri-driver`][] で CI で実行することができます。 次の例では、 [WebdriverIO][] の例を使用しています。 [以前にビルドした][] と GitHub Actions。
 
-This means the following assumptions:
+これは以下の仮定を意味します:
 
-1. The Tauri application is in the repository root and the binary builds when running `cargo build --release`.
+1. Tauriアプリケーションはリポジトリルートにあり、 `cargo build --release` を実行するとバイナリビルドが実行されます。
 2. The [WebDriverIO][] test runner is in the `webdriver/webdriverio` directory and runs when `yarn test` is used in that directory.
 
-The following is a commented GitHub Actions workflow file at `.github/workflows/webdriver.yml`
+以下はコメントされた GitHub Actions のワークフロー ファイル `.github/workflows/webdriver.yml`
 
 ```yaml
 # run this action when the repository is pushed to
@@ -73,16 +73,16 @@ jobs:
         working-directory: webdriver/webdriverio
 
       # install the latest version of `tauri-driver`.
-      # note: the tauri-driver version is independent of any other Tauri versions
+      # note: tauri-driver バージョンは、他の牡牛座のバージョンとは独立しています
       - name: Install tauri-driver
         uses: actions-rs/cargo@v1
-        with:
+
           command: install
           args: tauri-driver
 
       # run the WebdriverIO test suite.
-      # we run it through `xvfb-run` (the dependency we installed earlier) to have a fake
-      # display server which allows our application to run headless without any changes to the code
+      # `xvfb-run` (前にインストールした依存関係) を介して実行します。偽の
+      # display サーバを使用すると、アプリケーションはコードを変更せずにヘッドレスで実行できます。
       - name: WebdriverIO
         run: xvfb-run yarn test
         working-directory: webdriver/webdriverio
@@ -92,4 +92,4 @@ jobs:
 [`tauri-driver`]: https://crates.io/crates/tauri-driver
 [WebdriverIO]: https://webdriver.io/
 [WebDriverIO]: https://webdriver.io/
-[previously built together]: ./example/webdriverio.md
+[以前にビルドした]: ./example/webdriverio.md
