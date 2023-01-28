@@ -1,23 +1,23 @@
 import Command from '@theme/Command'
 
-# Icons
+# アイコン
 
-Tauri ships with a default iconset based on its logo. This is NOT what you want when you ship your application. To remedy this common situation, Tauri provides the `icon` command that will take an input file (`"./app-icon.png"` by default) and create all the icons needed for the various platforms.
+牡牛座はロゴに基づいてデフォルトのアイコンセットで出荷されます。 これは、アプリケーションを出荷するときに必要なものではありません。 To remedy this common situation, Tauri provides the `icon` command that will take an input file (`"./app-icon.png"` by default) and create all the icons needed for the various platforms.
 
-:::info Note on filetypes
+:::info ファイルの種類に対するメモ
 
 - `icon.icns` = macOS
 - `icon.ico` = Windows
 - `*.png` = Linux
-- `Square*Logo.png` & `StoreLogo.png` = Currently unused but intended for AppX/MS Store targets.
+- `Square*Logo.png` & `StoreLogo.png` = 現在未使用ですが、AppX/MS ストアのターゲットを対象としています。
 
-Note that icon types may be used on platforms other than those listed above (especially `png`). Therefore we recommend including all icons even if you intend to only build for a subset of platforms.
+アイコンの種類は上記以外のプラットフォームでも使用できます(特に `png`)。 したがって、一部のプラットフォームでのみビルドする場合でも、すべてのアイコンを含めることをお勧めします。
 
 :::
 
-## Command Usage
+## コマンドの使用法
 
-Starting with `@tauri-apps/cli` / `tauri-cli` version 1.1 the `icon` subcommand is part of the main cli:
+`@tauri-apps/cli` / `tauri-cli` バージョン 1.1 から、 `アイコン` サブコマンドはメインクライアントの一部です。
 
 <Command name="icon" />
 
@@ -35,12 +35,12 @@ ARGS:
 
 OPTIONS:
     -h, --help               Print help information
-    -o, --output <OUTPUT>    Output directory. Default: 'icons' directory next to the tauri.conf.json file
-    -v, --verbose            Enables verbose logging
-    -V, --version            Print version information
+    -o, --output <OUTPUT>    Output directory. デフォルト: tauri.conf.json ファイルの隣の 'icons' ディレクトリ
+    -v, --verbose 詳細なログを有効にする
+    -V, --version バージョン情報を印刷する
 ```
 
-By default, the icons will be placed in your `src-tauri/icons` folder where they will automatically be included in your built app. If you want to source your icons from a different location, you can edit this part of the `tauri.conf.json` file:
+デフォルトでは、アイコンは `src-tauri/icons` フォルダに配置され、自動的にビルドされたアプリに含まれます。 別の場所からアイコンをソースする場合は、 `tauri.conf.json` ファイルのこの部分を編集できます。
 
 ```json
 {
@@ -58,10 +58,10 @@ By default, the icons will be placed in your `src-tauri/icons` folder where they
 }
 ```
 
-## Creating the icons manually
+## アイコンを手動で作成する
 
-If you prefer to build these icons yourself (if you want to have a simpler design for small sizes or because you don't want to depend on the CLI's internal image resizing), the required layer sizes and names for the [`icns`][] file are described [in the Tauri repo][] and the [`ico`][] file must include layers for 16, 24, 32, 48, 64 and 256 pixels. For an optimal display of the ICO image _in development_, the 32px layer should be the first layer.
+これらのアイコンを自分で作成したい場合(小さなサイズのシンプルなデザインをしたい場合、またはCLIの内部イメージのリサイズに依存したくない場合) [`icns`][] ファイルの必要なレイヤーサイズと名前は、 [Tauri repo で説明されています。][] [`ico`][] ファイルには、16 のレイヤーを含める必要があります。 24、32、48、64、256ピクセル。 開発中の ICO 画像 __を最適に表示するには、32px レイヤーが最初のレイヤーでなければなりません。
 
-[in the Tauri repo]: https://github.com/tauri-apps/tauri/blob/dev/tooling/cli/src/helpers/icns.json
+[Tauri repo で説明されています。]: https://github.com/tauri-apps/tauri/blob/dev/tooling/cli/src/helpers/icns.json
 [`icns`]: https://en.wikipedia.org/wiki/Apple_Icon_Image_format
 [`ico`]: https://en.wikipedia.org/wiki/ICO_(file_format)
