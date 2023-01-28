@@ -1,10 +1,10 @@
-# System Tray
+# 系统托盘
 
-Native application system tray.
+本地应用程序系统托盘。
 
-### Setup
+### 设置
 
-Configure the `systemTray` object on `tauri.conf.json`:
+配置 `systemTray` 对象在 `tauri.conf.json`:
 
 ```json
 {
@@ -17,83 +17,83 @@ Configure the `systemTray` object on `tauri.conf.json`:
 }
 ```
 
-The `iconAsTemplate` is a boolean value that determines whether the image represents a [Template Image][] on macOS.
+`iconAsTemplate` 是一个布尔值，用于决定图像在macOS上是否表示一个 [模板图像][]。
 
-#### Linux Setup
+#### Linux 设置
 
-On Linux, you need to install one of `libayatana-appindicator` or `libappindicator3` packages. Tauri determines which package to use at runtime, with `libayatana` being the preferred one if both are installed.
+在 Linux 上，您需要安装 `libayatana-appindicate` 或 `libappindicator` 软件包。 Tauri决定在运行时使用哪个软件包，如果两个软件包都安装了， `libayatana` 是首选软件包。
 
-By default, the Debian package (`.deb` file) will add a dependency on `libayatana-appindicator3-1`. To create a Debian package targetting `libappindicator3`, set the `TAURI_TRAY` environment variable to `libappindicator3`.
+默认情况下，Debian 软件包 (`.deb` 文件)将添加依赖于 `libayatana-appindicator3-1`。 要创建一个 Debian 软件包目标 `libappindicator3`, 设置 `TAURI_TRAY` 环境变量为 `libappindicator3`
 
-The AppImage bundle automatically embeds the installed tray library, and you can also use the `TAURI_TRAY` environment variable to manually select it.
+AppImage Bundle自动嵌入已安装的托盘库，您也可以使用 `TAURI_TRAY` 环境变量手动选择它。
 
 :::info
 
-`libappindicator3` is unmaintained and does not exist on some distros like `debian11`, but `libayatana-appindicator` does not exist on older releases.
+`libappindicator3` 未维护，在一些磁盘上不存在，例如 `debian11`, 但是 `libayatana-appindicator` 在旧版本中不存在。
 
 :::
 
-### Creating a system tray
+### 创建系统托盘
 
-To create a native system tray, import the `SystemTray` type:
+要创建本地系统托盘，请导入 `系统托盘` 类型：
 
 ```rust
-use tauri::SystemTray;
+使用 tauri::SystemTray;
 ```
 
-Initialize a new tray instance:
+初始化新托盘实例：
 
 ```rust
 let tray = SystemTray::new();
 ```
 
-### Configuring a system tray context menu
+### 配置系统托盘上下文菜单
 
-Optionally you can add a context menu that is visible when the tray icon is right-clicked. Import the `SystemTrayMenu`, `SystemTrayMenuItem` and `CustomMenuItem` types:
+您可选择添加右键托盘图标时可见的上下文菜单。 导入 `SystemTrayMenu 菜单`, `SystemTrayMenuitem` 和 `CustomMenuitem` 类型:
 
 ```rust
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 ```
 
-Create the `SystemTrayMenu`:
+创建 `SystemTrayMenu`:
 
 ```rust
-// here `"quit".to_string()` defines the menu item id, and the second parameter is the menu item label.
+// 这里`quit".to_string()`定义菜单项id，第二个参数是菜单项标签。
 let quit = CustomMenuItem::new("quit".to_string(), "Quit");
 let hide = CustomMenuItem::new("hide".to_string(), "Hide");
 let tray_menu = SystemTrayMenu::new()
   .add_item(quit)
-  .add_native_item(SystemTrayMenuItem::Separator)
+  .add_native_item(SystemtrayMenutem:::Separator)
   .add_item(hide);
 ```
 
-Add the tray menu to the `SystemTray` instance:
+将托盘菜单添加到 `SystemTray` 实例：
 
 ```rust
 let tray = SystemTray::new().with_menu(tray_menu);
 ```
 
-### Configure the app system tray
+### 配置应用系统托盘
 
-The created `SystemTray` instance can be set using the `system_tray` API on the `tauri::Builder` struct:
+创建的 `SystemTray` 实例可以使用 `system_tray` API在 `tauri::Builder` 结构：
 
 ```rust
-use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu};
+使用tauri::{CustomMenuItem, SystemTray, SystemTrayMenu};
 
-fn main() {
-  let tray_menu = SystemTrayMenu::new(); // insert the menu items here
+fn main() v.
+  let tray_menu = SystemTrayMenu::new(); // 在此处插入菜单项
   let system_tray = SystemTray::new()
-    .with_menu(tray_menu);
+    ith_menu(tray_menu);
   tauri::Builder::default()
     .system_tray(system_tray)
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    . un(tauri::generate_context!())
+    .expect("运行tauri应用程序时出错");
 }
 ```
 
-### Listening to system tray events
+### 正在监听系统托盘事件
 
-Each `CustomMenuItem` triggers an event when clicked. Also, Tauri emits tray icon click events. Use the `on_system_tray_event` API to handle them:
+每一个 `自定义菜单项` 在点击时触发一个事件。 另外，Tauri发布托盘图标点击事件。 使用 `on_system_tray_event` API 来处理他们：
 
 ```rust
 use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu, SystemTrayEvent};
@@ -108,24 +108,24 @@ fn main() {
         position: _,
         size: _,
         ..
-      } => {
+      } => 。
         println!("system tray received a left click");
       }
-      SystemTrayEvent::RightClick {
+      SystemTrayEvent:::Rightclick volv.
         position: _,
         size: _,
-        ..
-      } => {
+...
+      } => 。
         println!("system tray received a right click");
       }
-      SystemTrayEvent::DoubleClick {
+      SystemTrayEvent::DoubleClick Windows
         position: _,
         size: _,
-        ..
-      } => {
-        println!("system tray received a double click");
+...
+      } => 。
+        println!("system tray received a two click");
       }
-      SystemTrayEvent::MenuItemClick { id, .. } => {
+      SystemTrayEvent:::MenuItemClick id ... } => {
         match id.as_str() {
           "quit" => {
             std::process::exit(0);
@@ -144,22 +144,22 @@ fn main() {
 }
 ```
 
-### Updating system tray
+### 更新系统托盘
 
-The `AppHandle` struct has a `tray_handle` method, which returns a handle to the system tray allowing updating tray icon and context menu items:
+`AppHandle` 结构有一个 `tray_hande` 方法， 返回一个句柄到系统托盘，允许更新托盘图标和上下文菜单项：
 
-#### Updating context menu items
+#### 正在更新上下文菜单项
 
 ```rust
-use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu, SystemTrayEvent};
-use tauri::Manager;
+使用tauri::{CustomMenuItem, SystemTray, SystemTrayMenu, SystemTrayEvent};
+使用tauri::Manager;
 
-fn main() {
-  let tray_menu = SystemTrayMenu::new(); // insert the menu items here
+fn main() v.
+  let tray_menu = SystemTrayMenu::new(); // 在此处插入菜单项
   tauri::Builder::default()
-    .system_tray(SystemTray::new().with_menu(tray_menu))
-    .on_system_tray_event(|app, event| match event {
-      SystemTrayEvent::MenuItemClick { id, .. } => {
+    ystem_tray(Systemtray::new().with_menu(tray_menu))
+    .on_system_tray_event(|app, event| match 活动卷定于
+      SystemTrayEvent:::MenuItemClick ID... } => {
         // get a handle to the clicked menu item
         // note that `tray_handle` can be called anywhere,
         // just get an `AppHandle` instance with `app.handle()` on the setup hook
@@ -170,40 +170,40 @@ fn main() {
             let window = app.get_window("main").unwrap();
             window.hide().unwrap();
             // you can also `set_selected`, `set_enabled` and `set_native_image` (macOS only).
-            item_handle.set_title("Show").unwrap();
+            item_handle.set_title("显示")。 nwrap();
           }
           _ => {}
         }
       }
       _ => {}
     })
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    . un(tauri::generate_context!())
+    .expect("运行tauri应用程序时出错");
 }
 ```
 
-#### Updating tray icon
+#### 更新托盘图标
 
-Note that you need to add `icon-ico` or `icon-png` feature flag to the tauri dependency in your Cargo.toml to be able to use `Icon::Raw`
+请注意，您需要将 `icon-ico` 或 `icon-png` 功能标志添加到您货物中的 tauri依赖之处。 oml 可以使用 `图标：Raw`
 
 ```rust
-app.tray_handle().set_icon(tauri::Icon::Raw(include_bytes!("../path/to/myicon.ico").to_vec())).unwrap();
+app.tray_handle().set_icon(tauri::Icon::Raw(include_bytes!) ("../path/to/myicon.ico").to_vec())).unwrawrapp();
 ```
 
-### Keep the app running in the background after closing all windows
+### 关闭所有窗口后保持应用程序在后台运行
 
-By default, tauri closes the application when the last window is closed. If your app should run in the background, you can call `api.prevent_close()` like so:
+默认情况下，当上一个窗口关闭时，tauri会关闭应用程序。 如果您的应用应该在后台运行，您可以调用 `api.prevent_close()` 就像这样：
 
 ```rust
 tauri::Builder::default()
   .build(tauri::generate_context!())
-  .expect("error while building tauri application")
-  .run(|_app_handle, event| match event {
-    tauri::RunEvent::ExitRequested { api, .. } => {
+  .expect("building tauri应用程序时发生错误")
+  .run(|_app_handle, event| match 事件 *
+    tauri::RunEvent::ExitRequest api, ... } => 。
       api.prevent_exit();
     }
     _ => {}
-  });
+});
 ```
 
-[Template Image]: https://developer.apple.com/documentation/appkit/nsimage/1520017-template?language=objc
+[模板图像]: https://developer.apple.com/documentation/appkit/nsimage/1520017-template?language=objc
