@@ -1,132 +1,132 @@
-# Calling Rust from the frontend
+# Llamar a Rust desde el frontend
 
-Tauri provides a simple yet powerful `command` system for calling Rust functions from your web app. Commands can accept arguments and return values. They can also return errors and be `async`.
+Tauri proporciona un sistema de comando `simple pero potente` para llamar a funciones de Rust desde tu aplicación web. Los comandos pueden aceptar argumentos y devolver valores. También pueden devolver errores y ser `asíncronos`.
 
-## Basic Example
+## Ejemplo básico
 
-Commands are defined in your `src-tauri/src/main.rs` file. To create a command, just add a function and annotate it with `#[tauri::command]`:
+Los comandos están definidos en el archivo `src-tauri/src/main.rs`. Para crear un comando, simplemente añade una función y anotarla con `#[tauri::command]`:
 
 ```rust
 #[tauri::command]
 fn my_custom_command() {
-  println!("I was invoked from JS!");
+  println!("¡Fui invocado desde JS!");
 }
 ```
 
-You will have to provide a list of your commands to the builder function like so:
+Tendrás que proporcionar una lista de tus comandos a la función del constructor así:
 
 ```rust
-// Also in main.rs
+// También en main. s
 fn main() {
   tauri::Builder::default()
-    // This is where you pass in your commands
-    .invoke_handler(tauri::generate_handler![my_custom_command])
+    // Aquí es donde pasas tus comandos
+    . nvoke_handler(tauri::generate_handler![my_custom_command])
     .run(tauri::generate_context!())
-    .expect("failed to run app");
+    .expect("fallo al ejecutar la aplicación");
 }
 ```
 
-Now, you can invoke the command from your JS code:
+Ahora, puedes invocar el comando desde tu código JS:
 
 ```js
-// When using the Tauri API npm package:
-import { invoke } from '@tauri-apps/api/tauri'
-// When using the Tauri global script (if not using the npm package)
-// Be sure to set `build.withGlobalTauri` in `tauri.conf.json` to true
+// Cuando se utiliza el paquete npm de la API Tauri:
+importar { invoke } de '@tauri-apps/api/tauri'
+// Cuando se utiliza el script global Tauri (si no se utiliza el paquete npm)
+// Asegúrese de establecer `build. ithGlobalTauri` en `tauri.conf.json` a true
 const invoke = window.__TAURI__.invoke
 
-// Invoke the command
+// Invoca el comando
 invoke('my_custom_command')
 ```
 
-## Passing Arguments
+## Pasando argumentos
 
-Your command handlers can take arguments:
+Sus controladores de comandos pueden tomar argumentos:
 
 ```rust
 #[tauri::command]
 fn my_custom_command(invoke_message: String) {
-  println!("I was invoked from JS, with this message: {}", invoke_message);
+  println!("Fui invocado desde JS, con este mensaje: {}", invoke_message);
 }
 ```
 
-Arguments should be passed as a JSON object with camelCase keys:
+Los argumentos deben pasarse como un objeto JSON con claves camelCase:
 
 ```js
-invoke('my_custom_command', { invokeMessage: 'Hello!' })
+invoke('my_custom_command', { invokeMessage: 'Hola!' })
 ```
 
-Arguments can be of any type, as long as they implement [`serde::Deserialize`][].
+Los argumentos pueden ser de cualquier tipo, siempre que implementen [`serde::Deserialize`][].
 
-## Returning Data
+## Devolviendo datos
 
-Command handlers can return data as well:
+Los manejadores de comandos también pueden devolver datos:
 
 ```rust
 #[tauri::command]
 fn my_custom_command() -> String {
-  "Hello from Rust!".into()
+  "Hola de Rust!".into()
 }
 ```
 
-The `invoke` function returns a promise that resolves with the returned value:
+La función `invocar` devuelve una promesa que se resuelve con el valor devuelto:
 
 ```js
-invoke('my_custom_command').then((message) => console.log(message))
+invoke('my_custom_command').then((mensaje) => console.log(message))
 ```
 
-Returned data can be of any type, as long as it implements [`serde::Serialize`][].
+Los datos devueltos pueden ser de cualquier tipo, siempre y cuando implemente [`serde::Serialize`][].
 
-## Error Handling
+## Manejo de errores
 
-If your handler could fail and needs to be able to return an error, have the function return a `Result`:
+Si su manejador puede fallar y necesita ser capaz de devolver un error, haga que la función devuelva un `Resultado`:
 
 ```rust
 #[tauri::command]
 fn my_custom_command() -> Result<String, String> {
-  // If something fails
-  Err("This failed!".into())
-  // If it worked
-  Ok("This worked!".into())
+  // Si algo falla
+  Err("¡Esto falló!". nto())
+  // Si funcionó
+  Ok("Esto funcionó!".into())
 }
 ```
 
-If the command returns an error, the promise will reject, otherwise, it resolves:
+Si la orden devuelve un error, la promesa rechazará, de lo contrario, resuelve:
 
 ```js
 invoke('my_custom_command')
-  .then((message) => console.log(message))
+  .then((mensaje) => console.log(message))
   .catch((error) => console.error(error))
 ```
 
-## Async Commands
+## Comandos Async
 
 :::note
 
-Async commands are executed on a separate thread using [`async_runtime::spawn`][]. Commands without the _async_ keyword are executed on the main thread unless defined with _#[tauri::command(async)]_.
+Los comandos de sincronización se ejecutan en un hilo separado usando [`async_runtime::spawn`][]. Los comandos sin la palabra clave _async_ son ejecutados en el hilo principal a menos que sean definidos con _#[tauri::command(async)]_.
 
 :::
 
-If your command needs to run asynchronously, simply declare it as `async`:
+Si tu comando necesita ejecutarse de forma asíncrona, simplemente declararlo como `async`:
 
 ```rust
 #[tauri::command]
 async fn my_custom_command() {
-  // Call another async function and wait for it to finish
-  let result = some_async_function().await;
-  println!("Result: {}", result);
+  // Llama a otra función asíncrona y espera a que termine
+  let result = some_async_function(). wait;
+  println!("Resultado: {}", resultado);
 }
 ```
 
-Since invoking the command from JS already returns a promise, it works just like any other command:
+Dado que invocar el comando de JS ya devuelve una promise, funciona como cualquier otro comando:
 
 ```js
-invoke('my_custom_command').then(() => console.log('Completed!'))
+invoke('my_custom_command').then(() => console.log('¡Completado!'))
 ```
 
-## Accessing the Window in Commands
+## Acceder a la ventana en comandos
 
-Commands can access the `Window` instance that invoked the message:
+Los comandos pueden acceder a la instancia de `Ventana` que invocó el mensaje:
 
 ```rust
 #[tauri::command]
@@ -135,9 +135,9 @@ async fn my_custom_command(window: tauri::Window) {
 }
 ```
 
-## Accessing an AppHandle in Commands
+## Acceder a un AppHandle en Comandos
 
-Commands can access an `AppHandle` instance:
+Los comandos pueden acceder a una instancia de `AppHandle`:
 
 ```rust
 #[tauri::command]
@@ -148,56 +148,56 @@ async fn my_custom_command(app_handle: tauri::AppHandle) {
 }
 ```
 
-## Accessing managed state
+## Acceder al estado administrado
 
-Tauri can manage state using the `manage` function on `tauri::Builder`. The state can be accessed on a command using `tauri::State`:
+Tauri puede administrar estado usando la función `Administrar` en `tauri::Builder`. Se puede acceder al estado en un comando usando `tauri::State`:
 
 ```rust
 struct MyState(String);
 
 #[tauri::command]
 fn my_custom_command(state: tauri::State<MyState>) {
-  assert_eq!(state.0 == "some state value", true);
+  assert_eq!(state. == "algún valor de estado", true);
 }
 
 fn main() {
   tauri::Builder::default()
-    .manage(MyState("some state value".into()))
+    . anage(MyState("some state value".into()))
     .invoke_handler(tauri::generate_handler![my_custom_command])
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    . un(tauri::generate_context!())
+    .expect("error mientras se ejecuta la aplicación tauri");
 }
 ```
 
-## Creating Multiple Commands
+## Creando múltiples comandos
 
-The `tauri::generate_handler!` macro takes an array of commands. To register multiple commands, you cannot call invoke_handler multiple times. Only the last call will be used. You must pass each command to a single call of `tauri::generate_handler!`.
+El macro `tauri::generate_handler!` toma un array de comandos. Para registrar comandos múltiples, no puede llamar a invoke_handler varias veces. Solo se usará la última llamada. ¡Debes pasar cada comando a una sola llamada de `tauri::generate_handler!`.
 
 ```rust
 #[tauri::command]
 fn cmd_a() -> String {
-    "Command a"
+    "Comando a"
 }
 #[tauri::command]
-fn cmd_b() -> String {
-    "Command b"
+fn cmd_b() -> Cadena {
+    "Comando b"
 }
 
 fn main() {
   tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![cmd_a, cmd_b])
+    . nvoke_handler(tauri::generate_handler![cmd_a, cmd_b])
     .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    .expect("error mientras se ejecuta la aplicación tauri");
 }
 ```
 
-## Complete Example
+## Ejemplo completo
 
-Any or all of the above features can be combined:
+Todas o todas las características anteriores pueden ser combinadas:
 
 ```rust main.rs
 
-struct Database;
+struir base de datos;
 
 #[derive(serde::Serialize)]
 struct CustomResponse {
@@ -205,45 +205,45 @@ struct CustomResponse {
   other_val: usize,
 }
 
-async fn some_other_function() -> Option<String> {
-  Some("response".into())
+async fn some_other_function() -> Opción<String> {
+  Some("response". nto())
 }
 
 #[tauri::command]
-async fn my_custom_command(
+asíncrona fn my_custom_command(
   window: tauri::Window,
-  number: usize,
+  number: usizar,
   database: tauri::State<'_, Database>,
 ) -> Result<CustomResponse, String> {
-  println!("Called from {}", window.label());
-  let result: Option<String> = some_other_function().await;
+  println! "Llamado desde {}", ventana. abel());
+  let result: Opción<String> = some_other_function(). espera;
   if let Some(message) = result {
     Ok(CustomResponse {
       message,
-      other_val: 42 + number,
+      other_val: 42 + número,
     })
   } else {
-    Err("No result".into())
+    Err("No resultado". nto())
   }
 }
 
 fn main() {
   tauri::Builder::default()
-    .manage(Database {})
-    .invoke_handler(tauri::generate_handler![my_custom_command])
+    . anage(Database {})
+    . nvoke_handler(tauri::generate_handler![my_custom_command])
     .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    .expect("error mientras se ejecuta la aplicación tauri");
 }
 ```
 
 ```js
-// Invocation from JS
+// Invocación de JS
 
 invoke('my_custom_command', {
   number: 42,
 })
-  .then((res) =>
-    console.log(`Message: ${res.message}, Other Val: ${res.other_val}`)
+  . hen((res) =>
+    consola. og(`Mensaje: ${res.message}, Otro Val: ${res.other_val}`)
   )
   .catch((e) => console.error(e))
 ```
