@@ -48,6 +48,7 @@ In this example we want to bundle additional i18n json files that look like this
   "hello": "Guten Tag!",
   "bye": "Auf Wiedersehen!"
 }
+}
 ```
 
 In this case, we store these files in a `lang` directory next to the `tauri.conf.json`. For this we add `"lang/*"` to `resources` and `$RESOURCE/lang/*` to the fs scope as shown above.
@@ -89,7 +90,7 @@ tauri::Builder::default()
 
 ```rust
 #[tauri::command]
-fn hello(handle: tauri::AppHandle) -> String {
+fn hello(handle: tauri:: AppHandle) -> String {
    let resource_path = handle.path_resolver()
       .resolve_resource("lang/de.json")
       .expect("failed to resolve resource");
