@@ -2,24 +2,24 @@
 sidebar_position: 1
 ---
 
-import Command from '@theme/Command'
+importa comando da '@theme/Command'
 
-# App Publishing
+# Pubblicazione App
 
-### 1. Build Your Web App
+### 1. Costruisci La Tua App Web
 
-Now that you are ready to package your project, you need to run your framework's or bundler's build command (assuming you're using one, of course).
+Ora che sei pronto a confezionare il tuo progetto, devi eseguire il comando di build del tuo framework o bundler (supponendo che ne stai usando uno, ovviamente).
 
 :::note
 
-Every framework has its publishing tooling. It is outside of the scope of this document to treat them all or keep them up to date.
+Ogni quadro ha i suoi strumenti editoriali. Non rientra nel campo di applicazione del presente documento trattarli tutti o tenerli aggiornati.
 
 :::
 
-### 2. Bundle your application with Tauri
+### 2. Raggruppa la tua applicazione con Tauri
 
 <Command name="build" />
 
-This command embeds your web assets into a single binary with your Rust code. The binary itself will be located in `src-tauri/target/release/[app name]`, and installers will be located in `src-tauri/target/release/bundle/`.
+Questo comando incorpora i tuoi asset web in un singolo binario con il tuo codice Rust. Il binario stesso si troverà in `src-tauri/target/release/[nome app]`e gli installatori si troveranno in `src-tauri/target/release/bundle/`.
 
-Like the `tauri dev` command, the first time you run this, it takes some time to collect the Rust crates and build everything - but on subsequent runs, it only needs to rebuild your app's code, which is much quicker.
+Come il comando `tauri dev` , la prima volta che esegui questo, ci vuole un po 'di tempo per raccogliere le casse di ruggine e costruire tutto - ma sulle corse successive, ha solo bisogno di ricostruire il codice della tua applicazione, che è molto più veloce.
