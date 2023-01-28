@@ -7,7 +7,7 @@ Native application menus can be attached to a window.
 To create a native window menu, import the `Menu`, `Submenu`, `MenuItem` and `CustomMenuItem` types. The `MenuItem` enum contains a collection of platform-specific items (currently not implemented on Windows). The `CustomMenuItem` allows you to create your own menu items and add special functionality to them.
 
 ```rust
-use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
+use tauri:: {CustomMenuItem, Menu, MenuItem, Submenu};
 ```
 
 Create a `Menu` instance:
@@ -28,11 +28,11 @@ let menu = Menu::new()
 The defined menu can be set to all windows using the `menu` API on the `tauri::Builder` struct:
 
 ```rust
-use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
+use tauri:: {CustomMenuItem, Menu, MenuItem, Submenu};
 
 fn main() {
   let menu = Menu::new(); // configure the menu
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .menu(menu)
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -44,17 +44,17 @@ fn main() {
 You can create a window and set the menu to be used. This allows defining a specific menu set for each application window.
 
 ```rust
-use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
-use tauri::WindowBuilder;
+use tauri:: {CustomMenuItem, Menu, MenuItem, Submenu};
+use tauri:: WindowBuilder;
 
 fn main() {
   let menu = Menu::new(); // configure the menu
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .setup(|app| {
       WindowBuilder::new(
         app,
         "main-window".to_string(),
-        tauri::WindowUrl::App("index.html".into()),
+        tauri:: WindowUrl::App("index.html".into()),
       )
       .menu(menu)
       .build()?;
@@ -72,11 +72,11 @@ Each `CustomMenuItem` triggers an event when clicked. Use the `on_menu_event` AP
 #### Listening to events on global menus
 
 ```rust
-use tauri::{CustomMenuItem, Menu, MenuItem};
+use tauri:: {CustomMenuItem, Menu, MenuItem};
 
 fn main() {
   let menu = Menu::new(); // configure the menu
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .menu(menu)
     .on_menu_event(|event| {
       match event.menu_item_id() {
@@ -97,17 +97,17 @@ fn main() {
 #### Listening to events on window menus
 
 ```rust
-use tauri::{CustomMenuItem, Menu, MenuItem};
-use tauri::{Manager, WindowBuilder};
+use tauri:: {CustomMenuItem, Menu, MenuItem};
+use tauri:: {Manager, WindowBuilder};
 
 fn main() {
   let menu = Menu::new(); // configure the menu
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .setup(|app| {
       let window = WindowBuilder::new(
         app,
         "main-window".to_string(),
-        tauri::WindowUrl::App("index.html".into()),
+        tauri:: WindowUrl::App("index.html".into()),
       )
       .menu(menu)
       .build()?;
@@ -137,7 +137,7 @@ The `Window` struct has a `menu_handle` method, which allows updating menu items
 ```rust
 fn main() {
   let menu = Menu::new(); // configure the menu
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .menu(menu)
     .setup(|app| {
       let main_window = app.get_window("main").unwrap();
