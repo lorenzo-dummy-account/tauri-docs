@@ -1,10 +1,10 @@
-# System Tray
+# Bandeja del sistema
 
-Native application system tray.
+Sistema de aplicación nativo.
 
-### Setup
+### Configurar
 
-Configure the `systemTray` object on `tauri.conf.json`:
+Configurar el objeto `systemTray` en `tauri.conf.json`:
 
 ```json
 {
@@ -17,193 +17,193 @@ Configure the `systemTray` object on `tauri.conf.json`:
 }
 ```
 
-The `iconAsTemplate` is a boolean value that determines whether the image represents a [Template Image][] on macOS.
+El `iconAsTemplate` es un valor booleano que determina si la imagen representa un [Template Image][] en macOS.
 
-#### Linux Setup
+#### Configuración de Linux
 
-On Linux, you need to install one of `libayatana-appindicator` or `libappindicator3` packages. Tauri determines which package to use at runtime, with `libayatana` being the preferred one if both are installed.
+En Linux, necesita instalar uno de los paquetes `libayatana-appindicator` o `libappindicator3`. Tauri determina qué paquete usar en tiempo de ejecución, siendo `libayatana` el preferido si ambos están instalados.
 
-By default, the Debian package (`.deb` file) will add a dependency on `libayatana-appindicator3-1`. To create a Debian package targetting `libappindicator3`, set the `TAURI_TRAY` environment variable to `libappindicator3`.
+Por defecto, el paquete Debian (`.deb` file) añadirá una dependencia en `libayatana-appindicator3-1`. Para crear un paquete Debian orientado a `libappindicator3`, establezca la variable de entorno `TAURI_TRAY` a `libappindicator3`.
 
-The AppImage bundle automatically embeds the installed tray library, and you can also use the `TAURI_TRAY` environment variable to manually select it.
+El paquete AppImage incrusta automáticamente la librería de bandeja instalada, y también puede utilizar la variable de entorno `TAURI_TRAY` para seleccionarla manualmente.
 
 :::info
 
-`libappindicator3` is unmaintained and does not exist on some distros like `debian11`, but `libayatana-appindicator` does not exist on older releases.
+`libappindicator3` no está mantenida y no existe en algunas distribuciones como `debian11`, pero `libayatana-appindicator` no existe en versiones anteriores.
 
 :::
 
-### Creating a system tray
+### Creando una bandeja de sistema
 
-To create a native system tray, import the `SystemTray` type:
-
-```rust
-use tauri::SystemTray;
-```
-
-Initialize a new tray instance:
+Para crear una bandeja de sistema nativa, importe el tipo `SystemTray`:
 
 ```rust
-let tray = SystemTray::new();
+usar tauri::SystemTray;
 ```
 
-### Configuring a system tray context menu
+Inicializar una nueva instancia de bandeja:
 
-Optionally you can add a context menu that is visible when the tray icon is right-clicked. Import the `SystemTrayMenu`, `SystemTrayMenuItem` and `CustomMenuItem` types:
+```rust
+let bandeja = SystemTray::new();
+```
+
+### Configurando un menú contextual de la bandeja del sistema
+
+Opcionalmente, puede añadir un menú contextual que es visible cuando el icono de la bandeja está pulsado con el botón derecho. Importar el `System TrayMenu`, `SystemTrayMenuItem` y `CustomMenuItem` tipos:
 
 ```rust
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 ```
 
-Create the `SystemTrayMenu`:
+Crear el `System TrayMenu`:
 
 ```rust
-// here `"quit".to_string()` defines the menu item id, and the second parameter is the menu item label.
-let quit = CustomMenuItem::new("quit".to_string(), "Quit");
-let hide = CustomMenuItem::new("hide".to_string(), "Hide");
+// aquí `"quit".to_string()` define el id del elemento de menú, y el segundo parámetro es la etiqueta del elemento de menú.
+let quit = CustomMenuItem::new("quit".to_string(), "Salir");
+let hide = CustomMenuItem::new("ocultar".to_string(), "Ocultar");
 let tray_menu = SystemTrayMenu::new()
   .add_item(quit)
   .add_native_item(SystemTrayMenuItem::Separator)
   .add_item(hide);
 ```
 
-Add the tray menu to the `SystemTray` instance:
+Añadir el menú de bandeja a la instancia de `SystemTray`:
 
 ```rust
 let tray = SystemTray::new().with_menu(tray_menu);
 ```
 
-### Configure the app system tray
+### Configurar la bandeja del sistema de aplicaciones
 
-The created `SystemTray` instance can be set using the `system_tray` API on the `tauri::Builder` struct:
+La instancia creada `SystemTray` puede establecerse usando la API `system_tray` en la estructura `tauri::Builder`:
 
 ```rust
 use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu};
 
 fn main() {
-  let tray_menu = SystemTrayMenu::new(); // insert the menu items here
+  let tray_menu = SystemTrayMenu::new(); // insertar los elementos del menú aquí
   let system_tray = SystemTray::new()
-    .with_menu(tray_menu);
+    . ith_menu(tray_menu);
   tauri::Builder::default()
     .system_tray(system_tray)
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    . un(tauri::generate_context!())
+    .expect("error mientras se ejecuta la aplicación tauri");
 }
 ```
 
-### Listening to system tray events
+### Escuchando eventos de la bandeja del sistema
 
-Each `CustomMenuItem` triggers an event when clicked. Also, Tauri emits tray icon click events. Use the `on_system_tray_event` API to handle them:
+Cada `elemento personalizado` activa un evento cuando se hace clic. También, Tauri emite eventos de iconos de bandeja. Utilice la API `on_system_tray_event` para manejarlas:
 
 ```rust
 use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu, SystemTrayEvent};
 use tauri::Manager;
 
 fn main() {
-  let tray_menu = SystemTrayMenu::new(); // insert the menu items here
+  let tray_menu = SystemTrayMenu::new(); // inserta los elementos del menú aquí
   tauri::Builder::default()
-    .system_tray(SystemTray::new().with_menu(tray_menu))
-    .on_system_tray_event(|app, event| match event {
+    . ystem_tray(SystemTray::new().with_menu(tray_menu))
+    . n_system_tray_event(|app, event| match event {
       SystemTrayEvent::LeftClick {
         position: _,
-        size: _,
-        ..
+        tamaño: _,
+..
       } => {
-        println!("system tray received a left click");
+        println!("bandeja del sistema recibió un clic izquierdo");
       }
-      SystemTrayEvent::RightClick {
+      SystemTrayEvent::Right Click {
         position: _,
         size: _,
-        ..
+..
       } => {
-        println!("system tray received a right click");
+        println!("bandeja del sistema recibió un clic derecho");
       }
       SystemTrayEvent::DoubleClick {
         position: _,
         size: _,
-        ..
+..
       } => {
-        println!("system tray received a double click");
+        println!("bandeja del sistema recibió un doble clic");
       }
       SystemTrayEvent::MenuItemClick { id, .. } => {
-        match id.as_str() {
+        id coincidente. s_str() {
           "quit" => {
             std::process::exit(0);
           }
-          "hide" => {
-            let window = app.get_window("main").unwrap();
-            window.hide().unwrap();
+          "ocultar" => {
+            let window = app. et_window("main").unwrap();
+            window. ide(). nwrap();
           }
           _ => {}
         }
       }
       _ => {}
     })
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    . un(tauri::generate_context!())
+    .expect("error mientras se ejecuta la aplicación tauri");
 }
 ```
 
-### Updating system tray
+### Actualizando bandeja del sistema
 
-The `AppHandle` struct has a `tray_handle` method, which returns a handle to the system tray allowing updating tray icon and context menu items:
+La estructura `AppHandle` tiene un método `tray_handle` , que devuelve un handle a la bandeja del sistema permitiendo actualizar el icono de la bandeja y los elementos del menú contextual:
 
-#### Updating context menu items
+#### Actualizando elementos del menú contextual
 
 ```rust
 use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu, SystemTrayEvent};
 use tauri::Manager;
 
 fn main() {
-  let tray_menu = SystemTrayMenu::new(); // insert the menu items here
+  let tray_menu = SystemTrayMenu::new(); // inserta los elementos del menú aquí
   tauri::Builder::default()
-    .system_tray(SystemTray::new().with_menu(tray_menu))
+    . ystem_tray(SystemTray::new().with_menu(tray_menu))
     .on_system_tray_event(|app, event| match event {
       SystemTrayEvent::MenuItemClick { id, .. } => {
-        // get a handle to the clicked menu item
-        // note that `tray_handle` can be called anywhere,
-        // just get an `AppHandle` instance with `app.handle()` on the setup hook
-        // and move it to another function or thread
-        let item_handle = app.tray_handle().get_item(&id);
-        match id.as_str() {
+        // obtiene un handle para el elemento de menú pulsado
+        // nota que `tray_handle` puede ser llamado en cualquier lugar,
+        // solo obtiene una instancia de `AppHandle` con `app. andle()` en el gancho de configuración
+        // y muévelo a otra función o hilo
+        dejar item_handle = app. ray_handle().get_item(&id);
+        match id. s_str() {
           "hide" => {
-            let window = app.get_window("main").unwrap();
-            window.hide().unwrap();
-            // you can also `set_selected`, `set_enabled` and `set_native_image` (macOS only).
-            item_handle.set_title("Show").unwrap();
+            let window = app. et_window("main"). nwrap();
+            window.hide(). nwrap();
+            // también puedes `set_selected`, `set_enabled` y `set_native_image` (solo macOS).
+            item_handle.set_title("Mostrar"). nwrap();
           }
           _ => {}
         }
       }
       _ => {}
     })
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+    . un(tauri::generate_context!())
+    .expect("error mientras se ejecuta la aplicación tauri");
 }
 ```
 
-#### Updating tray icon
+#### Actualizar icono de la bandeja
 
-Note that you need to add `icon-ico` or `icon-png` feature flag to the tauri dependency in your Cargo.toml to be able to use `Icon::Raw`
+Ten en cuenta que necesitas añadir la función `icon-ico` o `icon-png` a la dependencia de tauri en tu Cargo. oml para poder usar `Icon::Raw`
 
 ```rust
-app.tray_handle().set_icon(tauri::Icon::Raw(include_bytes!("../path/to/myicon.ico").to_vec())).unwrap();
+app.tray_handle().set_icon(tauri::Icon::Raw(include_bytes!("../ruta/to/miicon.ico").to_vec())).unwrap();
 ```
 
-### Keep the app running in the background after closing all windows
+### Mantener la aplicación funcionando en segundo plano después de cerrar todas las ventanas
 
-By default, tauri closes the application when the last window is closed. If your app should run in the background, you can call `api.prevent_close()` like so:
+Por defecto, tauri cierra la aplicación cuando se cierra la última ventana. Si tu aplicación debe ejecutarse en segundo plano, puedes llamar a `api.prevent_close()` así:
 
 ```rust
 tauri::Builder::default()
   .build(tauri::generate_context!())
-  .expect("error while building tauri application")
+  .expect("error mientras se construía la aplicación tauri")
   .run(|_app_handle, event| match event {
     tauri::RunEvent::ExitRequested { api, .. } => {
       api.prevent_exit();
     }
     _ => {}
-  });
+});
 ```
 
 [Template Image]: https://developer.apple.com/documentation/appkit/nsimage/1520017-template?language=objc
