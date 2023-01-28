@@ -1,16 +1,16 @@
-# Events
+# イベント
 
-The Tauri event system is a multi-producer multi-consumer communication primitive that allows message passing between the frontend and the backend. It is analogous to the command system, but a payload type check must be written on the event handler and it simplifies communication from the backend to the frontend, working like a channel.
+Tauriイベントシステムは、フロントエンドとバックエンドの間でメッセージを渡すことができるマルチプロデューサーのマルチコンシューマー通信プリミティブです。 それはコマンドシステムに類似しています しかし、ペイロードの型チェックはイベントハンドラに書かれなければならず、バックエンドからフロントエンドへの通信が簡単になります。 チャネルのように動作します。
 
-A Tauri application can listen and emit global and window-specific events. Usage from the frontend and the backend is described below.
+牡牛座アプリケーションは、グローバルおよびウィンドウ固有のイベントをリッスンして発生させることができます。 フロントエンドとバックエンドからの使用法については、以下で説明します。
 
 ## Frontend
 
 The event system is accessible on the frontend on the `event` and `window` modules of the `@tauri-apps/api` package.
 
-### Global events
+### グローバルイベント
 
-To use the global event channel, import the `event` module and use the `emit` and `listen` functions:
+グローバルイベントチャンネルを使用するには、 `イベント` モジュールをインポートし、 `エミット` および `listen` 関数を使用します。
 
 ```js
 import { emit, listen } from '@tauri-apps/api/event'
@@ -28,9 +28,9 @@ emit('click', {
 })
 ```
 
-### Window-specific events
+### Windows 固有のイベント
 
-Window-specific events are exposed on the `window` module.
+Windows 固有のイベントは `window` モジュールに公開されます。
 
 ```js
 import { appWindow, WebviewWindow } from '@tauri-apps/api/window'
@@ -38,21 +38,21 @@ import { appWindow, WebviewWindow } from '@tauri-apps/api/window'
 // emit an event that are only visible to the current window
 appWindow.emit('event', { message: 'Tauri is awesome!' })
 
-// create a new webview window and emit an event only to that window
+// 新しいWebviewウィンドウを作成し、そのウィンドウにのみイベントを発する
 const webview = new WebviewWindow('window')
 webview.emit('event')
 ```
 
-## Backend
+## バックエンド
 
 On the backend, the global event channel is exposed on the `App` struct, and window-specific events can be emitted using the `Window` trait.
 
-### Global events
+### グローバルイベント
 
 ```rust
-use tauri::Manager;
+tauri::Manager;
 
-// the payload type must implement `Serialize` and `Clone`.
+// ペイロードタイプは `Serialize` と `Clone` を実装する必要があります。
 #[derive(Clone, serde::Serialize)]
 struct Payload {
   message: String,
@@ -78,14 +78,14 @@ fn main() {
 }
 ```
 
-### Window-specific events
+### Windows 固有のイベント
 
-To use the window-specific event channel, a `Window` object can be obtained on a command handler or with the `get_window` function:
+ウィンドウ固有のイベントチャンネルを使用するには、 `Window` オブジェクトをコマンドハンドラーまたは `get_window` 関数で取得できます。
 
 ```rust
-use tauri::{Manager, Window};
+tauri::{Manager, Window};
 
-// the payload type must implement `Serialize` and `Clone`.
+// ペイロードタイプは `Serialize` と `Clone` を実装する必要があります。
 #[derive(Clone, serde::Serialize)]
 struct Payload {
   message: String,
