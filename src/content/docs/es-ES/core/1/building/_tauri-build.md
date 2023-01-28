@@ -1,13 +1,13 @@
-import Command from '@theme/Command'
+importar comando de '@theme/Command'
 
-# Temp heading to fix render
+# Encabezado temporal para fijar el procesamiento
 
 <!-- The above heading is here because fragments aren't really supported in the context of Astro Content Collections -->
 
-To build and bundle your Tauri application into a single executable simply run the following command:
+Para construir y empaquetar su aplicación Tauri en un solo ejecutable, simplemente ejecute el siguiente comando:
 
 <Command name="build" />
 
-It will build your frontend (if configured, see [`beforeBuildCommand`][beforebuildcommand]), compile the Rust binary, collect all external binaries and resources and finally produce neat platform-specific bundles and installers.
+Construirá su frontend (si está configurado, vea [`beforeBuildCommand`][beforebuildcommand]), compile el binario de Rust, recopilar todos los binarios y recursos externos y finalmente producir paquetes e instaladores específicos de la plataforma.
 
 [beforebuildcommand]: ../../api/config.md#buildconfig.beforebuildcommand
