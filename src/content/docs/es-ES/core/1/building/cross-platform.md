@@ -122,8 +122,7 @@ jobs:
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
 
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env: GITHUB_TOKEN: ${{ secrets. GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name }} # This only works if your workflow triggers on new tags.
           releaseName: 'App Name v__VERSION__' # tauri-action replaces \_\_VERSION\_\_ with the app version.
@@ -140,7 +139,7 @@ You can see the GitHub Token being passed to the workflow below:
 
 ```yaml
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets. GITHUB_TOKEN }}
 ```
 
 ### Usage Notes
