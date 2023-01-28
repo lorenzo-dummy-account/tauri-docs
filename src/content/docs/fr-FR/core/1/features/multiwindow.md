@@ -1,14 +1,14 @@
-# Multiwindow
+# Fenêtre multiple
 
-Manage multiple windows on a single application.
+Gérer plusieurs fenêtres sur une seule application.
 
-## Creating a window
+## Création d'une fenêtre
 
-A window can be created statically from the Tauri configuration file or at runtime.
+Une fenêtre peut être créée statiquement à partir du fichier de configuration Tauri ou à l'exécution.
 
-### Static window
+### Fenêtre statique
 
-Multiple windows can be created with the [tauri.windows][] configuration array. The following JSON snippet demonstrates how to statically create several windows through the config:
+Plusieurs fenêtres peuvent être créées avec le tableau de configuration [tauri.windows][]. Le snippet JSON suivant montre comment créer statiquement plusieurs fenêtres à travers la configuration :
 
 ```json tauri.conf.json
 {
@@ -16,34 +16,34 @@ Multiple windows can be created with the [tauri.windows][] configuration array. 
     "windows": [
       {
         "label": "external",
-        "title": "Tauri Docs",
-        "url": "https://tauri.app"
+        "titre": "Tauri Docs",
+        "url": "https://tauri. pp"
       },
       {
         "label": "local",
         "title": "Tauri",
-        "url": "index.html"
+        "url": "index. tml"
       }
     ]
   }
 }
 ```
 
-Note that the window label must be unique and can be used at runtime to access the window instance. The complete list of configuration options available for static windows can be found in the [WindowConfig][] documentation.
+Notez que l'étiquette de fenêtre doit être unique et peut être utilisée lors de l'exécution pour accéder à l'instance de fenêtre. La liste complète des options de configuration disponibles pour les fenêtres statiques se trouve dans la documentation de [WindowConfig][].
 
-### Runtime window
+### Fenêtre d'exécution
 
-You can also create windows at runtime either via the Rust layer or through the Tauri API.
+Vous pouvez également créer des fenêtres au moment de l'exécution, soit via la couche Rust ou via l'API Tauri.
 
-#### Create a window in Rust
+#### Créer une fenêtre dans Rust
 
-A window can be created at runtime using the [WindowBuilder][] struct.
+Une fenêtre peut être créée à l'exécution, en utilisant la structure [WindowBuilder][].
 
-To create a window, you must have an instance of the running [App][] or an [AppHandle][].
+Pour créer une fenêtre, vous devez avoir une instance de l' [App][] en cours d'exécution ou un [AppHandle][].
 
-##### Create a window using the [App][] instance
+##### Créer une fenêtre en utilisant l'instance [App][]
 
-The [App][] instance can be obtained in the setup hook or after a call to [Builder::build][].
+L'instance [App][] peut être obtenue dans le crochet d'installation ou après un appel à [Builder::build][].
 
 ```rust Using the setup hook
 tauri::Builder::default()
@@ -62,45 +62,45 @@ tauri::Builder::default()
   })
 ```
 
-Using the setup hook ensures static windows and Tauri plugins are initialized. Alternatively, you can create a window after building the [App][]:
+L'utilisation du crochet permet de s'assurer que les fenêtres statiques et les plugins Tauri sont initialisés. Alternativement, vous pouvez créer une fenêtre après la construction de l'application [][]:
 
 ```rust Using the built app
 let app = tauri::Builder::default()
   .build(tauri::generate_context!())
-  .expect("error while building tauri application");
+  . xpect("erreur lors de la construction de l'application tauri");
 
 let docs_window = tauri::WindowBuilder::new(
   &app,
-  "external", /* the unique window label */
-  tauri::WindowUrl::External("https://tauri.app/".parse().unwrap())
-).build().expect("failed to build window");
+  "external", /* l'étiquette de fenêtre unique */
+  tauri::WindowUrl::External("https://tauri. pp/".parse().unwrap())
+).build(). xpect("échec de la construction de la fenêtre");
 
 let local_window = tauri::WindowBuilder::new(
   &app,
   "local",
-  tauri::WindowUrl::App("index.html".into())
+  tauri::WindowUrl::App("index. tml".into())
 ).build()?;
 ```
 
-This method is useful when you cannot move ownership of values to the setup closure.
+Cette méthode est utile lorsque vous ne pouvez pas déplacer la propriété des valeurs vers la fermeture de l'installation.
 
-##### Create a window using an [AppHandle][] instance
+##### Créer une fenêtre en utilisant une instance [AppHandle][]
 
-An [AppHandle][] instance can be obtained using the [`App::handle`] function or directly injected in Tauri commands.
+Une instance [AppHandle][] peut être obtenue en utilisant la fonction [`App::handle`] ou directement injectée dans les commandes Tauri.
 
 ```rust Create a window in a separate thread
 tauri::Builder::default()
   .setup(|app| {
-    let handle = app.handle();
+    let handle = app. bougie();
     std::thread::spawn(move || {
       let local_window = tauri::WindowBuilder::new(
         &handle,
         "local",
-        tauri::WindowUrl::App("index.html".into())
+        tauri::WindowUrl::App("index. tml".into())
       ).build()?;
     });
     Ok(())
-  })
+})
 ```
 
 ```rust Create a window in a Tauri command
@@ -116,57 +116,59 @@ async fn open_docs(handle: tauri::AppHandle) {
 
 :::info
 
-When creating windows in a Tauri command, ensure the command function is `async` to avoid a deadlock on Windows due to the [wry#583][] issue.
+Lors de la création de fenêtres dans une commande Tauri, assurez-vous que la fonction de commande est `async` pour éviter un blocage sur Windows en raison du problème [wry#583][].
 
 :::
 
-#### Create a window in JavaScript
+#### Créer une fenêtre en JavaScript
 
-Using the Tauri API you can easily create a window at runtime by importing the [WebviewWindow][] class.
+En utilisant l'API Tauri, vous pouvez facilement créer une fenêtre lors de l'exécution en important la classe [WebviewWindow][].
 
 ```js Create a window using the WebviewWindow class
-import { WebviewWindow } from '@tauri-apps/api/window'
+import { WebviewWindow } depuis '@tauri-apps/api/window'
 const webview = new WebviewWindow('theUniqueLabel', {
-  url: 'path/to/page.html',
+  url: 'path/to/page. tml',
 })
-// since the webview window is created asynchronously,
-// Tauri emits the `tauri://created` and `tauri://error` to notify you of the creation response
-webview.once('tauri://created', function () {
-  // webview window successfully created
+// puisque la fenêtre webview est créée de manière asynchrone,
+// Tauri émet les `tauri://created` et `tauri://error` pour vous informer de la réponse de création
+webview. nce('tauri://created', function () {
+  // webview créée avec succès
 })
-webview.once('tauri://error', function (e) {
-  // an error occurred during webview window creation
+webview. nce('tauri://error', function (e) {
+  // une erreur est survenue lors de la création de la fenêtre de webview
 })
 ```
 
-## Accessing a window at runtime
+## Accéder à une fenêtre lors de l'exécution
 
-The window instance can be queried using its label and the [get_window][] method on Rust or [WebviewWindow.getByLabel][] on JavaScript.
+L'instance de fenêtre peut être interrogée en utilisant son label et la méthode [get_window][] sur Rust ou [WebviewWindow.getByLabel][] sur JavaScript.
 
 ```rust Using get_window
-use tauri::Manager;
+utiliser tauri::Manager;
 tauri::Builder::default()
   .setup(|app| {
-    let main_window = app.get_window("main").unwrap();
-    Ok(())
-  })
+    laisser main_window = app.get_window("main").unwrap();
+    Ok((())
+})
 ```
 
-Note that you must import [tauri::Manager][] to use the [get_window][] method on [App][] or [AppHandle][] instances.
+Notez que vous devez importer [tauri::Manager][] pour utiliser la méthode [get_window][] sur les instances [App][] ou [AppHandle][].
 
 ```js Using WebviewWindow.getByLabel
-import { WebviewWindow } from '@tauri-apps/api/window'
+importer { WebviewWindow } depuis '@tauri-apps/api/window'
 const mainWindow = WebviewWindow.getByLabel('main')
 ```
 
-## Communicating with other windows
+## Communiquer avec d'autres fenêtres
 
-Window communication can be done using the event system. See the [Event Guide][] for more information.
+La communication avec les fenêtres peut être effectuée à l'aide du système d'événements. Consultez le [Guide des événements][] pour plus d'informations.
 
 [tauri.windows]: ../../api/config.md#tauriconfig.windows
 [WindowConfig]: ../../api/config.md#windowconfig
 [WindowBuilder]: https://docs.rs/tauri/1.0.0/tauri/window/struct.WindowBuilder.html
 [App]: https://docs.rs/tauri/1.0.0/tauri/struct.App.html
+[7]: https://docs.rs/tauri/1.0.0/tauri/struct.App.html
+[8]: https://docs.rs/tauri/1.0.0/tauri/struct.App.html
 [AppHandle]: https://docs.rs/tauri/1.0.0/tauri/struct.AppHandle.html
 [Builder::build]: https://docs.rs/tauri/1.0.0/tauri/struct.Builder.html#method.build
 [get_window]: https://docs.rs/tauri/1.0.0/tauri/trait.Manager.html#method.get_window
@@ -174,4 +176,4 @@ Window communication can be done using the event system. See the [Event Guide][]
 [WebviewWindow]: ../../api/js/window.md#webviewwindow
 [WebviewWindow.getByLabel]: ../../api/js/window.md#getbylabel
 [tauri::Manager]: https://docs.rs/tauri/1.0.0/tauri/trait.Manager.html
-[Event Guide]: ./events.md
+[Guide des événements]: ./events.md
