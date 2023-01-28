@@ -1,10 +1,10 @@
-# System Tray
+# システムトレイ
 
-Native application system tray.
+ネイティブアプリケーションシステムトレイ。
 
-### Setup
+### セットアップ
 
-Configure the `systemTray` object on `tauri.conf.json`:
+`systemTray` オブジェクトを `tauri.conf.json に設定する`:
 
 ```json
 {
@@ -17,15 +17,15 @@ Configure the `systemTray` object on `tauri.conf.json`:
 }
 ```
 
-The `iconAsTemplate` is a boolean value that determines whether the image represents a [Template Image][] on macOS.
+`iconAsTemplate` は、macOS 上の [Template Image][] をイメージが表すかどうかを決定する boolean 値です。
 
-#### Linux Setup
+#### Linux セットアップ
 
-On Linux, you need to install one of `libayatana-appindicator` or `libappindicator3` packages. Tauri determines which package to use at runtime, with `libayatana` being the preferred one if both are installed.
+Linux では、 `libayatana-appindicator` または `libappindicator3` パッケージのいずれかをインストールする必要があります。 Tauriは実行時にどのパッケージを使用するかを決定します。両方がインストールされている場合は、 `libayatana` が優先されます。
 
-By default, the Debian package (`.deb` file) will add a dependency on `libayatana-appindicator3-1`. To create a Debian package targetting `libappindicator3`, set the `TAURI_TRAY` environment variable to `libappindicator3`.
+デフォルトでは、Debian パッケージ (`.deb` file) は `libayatana-appindicator3-1` に依存関係を追加します。 Debian パッケージ targeting `libappindicator3`を作成するには、 `TAURI_TRAY` 環境変数を `libappindicator3` に設定してください。
 
-The AppImage bundle automatically embeds the installed tray library, and you can also use the `TAURI_TRAY` environment variable to manually select it.
+AppImageバンドルは自動的にインストールされたトレイライブラリを埋め込みます。また、 `TAURI_TRAY` 環境変数を使用して手動で選択することもできます。
 
 :::info
 
@@ -33,32 +33,32 @@ The AppImage bundle automatically embeds the installed tray library, and you can
 
 :::
 
-### Creating a system tray
+### システムトレイの作成
 
-To create a native system tray, import the `SystemTray` type:
+ネイティブのシステムトレイを作成するには、 `SystemTray` typeをインポートします。
 
 ```rust
-use tauri::SystemTray;
+tauri::SystemTray; を使用する
 ```
 
-Initialize a new tray instance:
+新しいトレイインスタンスを初期化:
 
 ```rust
 let tray = SystemTray::new();
 ```
 
-### Configuring a system tray context menu
+### システムトレイコンテキストメニューの設定
 
-Optionally you can add a context menu that is visible when the tray icon is right-clicked. Import the `SystemTrayMenu`, `SystemTrayMenuItem` and `CustomMenuItem` types:
+必要に応じて、トレイアイコンが右クリックされたときに表示されるコンテキストメニューを追加できます。 `SystemTrayMenu`, `SystemTrayMenuItem` と `CustomMenuItem` 型をインポート:
 
 ```rust
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 ```
 
-Create the `SystemTrayMenu`:
+`SystemTrayMenu` を作成する :
 
 ```rust
-// here `"quit".to_string()` defines the menu item id, and the second parameter is the menu item label.
+// こちら `quit".to_string()` はメニューアイテムIDを定義し、2番目のパラメータはメニューアイテムラベルです。
 let quit = CustomMenuItem::new("quit".to_string(), "Quit");
 let hide = CustomMenuItem::new("hide".to_string(), "Hide");
 let tray_menu = SystemTrayMenu::new()
@@ -67,15 +67,15 @@ let tray_menu = SystemTrayMenu::new()
   .add_item(hide);
 ```
 
-Add the tray menu to the `SystemTray` instance:
+tray メニューを `SystemTray` インスタンスに追加します。
 
 ```rust
 let tray = SystemTray::new().with_menu(tray_menu);
 ```
 
-### Configure the app system tray
+### アプリのシステムトレイを設定
 
-The created `SystemTray` instance can be set using the `system_tray` API on the `tauri::Builder` struct:
+作成された `SystemTray` インスタンスは、 `tauri::Builder` 構造体の `system_tray` API を使用して設定できます。
 
 ```rust
 use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu};
@@ -91,9 +91,9 @@ fn main() {
 }
 ```
 
-### Listening to system tray events
+### システムトレイイベントを再生中
 
-Each `CustomMenuItem` triggers an event when clicked. Also, Tauri emits tray icon click events. Use the `on_system_tray_event` API to handle them:
+各 `CustomMenuItem` はクリックされたときにイベントをトリガーします。 また、おうりは、トレイアイコンをクリックしてイベントを発行します。 `on_system_tray_event` API を使用して処理します。
 
 ```rust
 use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu, SystemTrayEvent};
@@ -114,14 +114,14 @@ fn main() {
       SystemTrayEvent::RightClick {
         position: _,
         size: _,
-        ..
+..
       } => {
         println!("system tray received a right click");
       }
       SystemTrayEvent::DoubleClick {
         position: _,
         size: _,
-        ..
+..
       } => {
         println!("system tray received a double click");
       }
@@ -144,11 +144,11 @@ fn main() {
 }
 ```
 
-### Updating system tray
+### システムトレイの更新
 
-The `AppHandle` struct has a `tray_handle` method, which returns a handle to the system tray allowing updating tray icon and context menu items:
+`AppHandle` 構造体は `tray_handle` メソッドを持ちます。 は、tray アイコンとコンテキストメニュー項目を更新できるように、システムトレイにハンドルを返します。
 
-#### Updating context menu items
+#### コンテキストメニュー項目を更新中
 
 ```rust
 use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu, SystemTrayEvent};
@@ -182,7 +182,7 @@ fn main() {
 }
 ```
 
-#### Updating tray icon
+#### トレイアイコンを更新中
 
 Note that you need to add `icon-ico` or `icon-png` feature flag to the tauri dependency in your Cargo.toml to be able to use `Icon::Raw`
 
@@ -190,20 +190,20 @@ Note that you need to add `icon-ico` or `icon-png` feature flag to the tauri dep
 app.tray_handle().set_icon(tauri::Icon::Raw(include_bytes!("../path/to/myicon.ico").to_vec())).unwrap();
 ```
 
-### Keep the app running in the background after closing all windows
+### すべてのウィンドウを閉じた後もアプリをバックグラウンドで実行してください
 
-By default, tauri closes the application when the last window is closed. If your app should run in the background, you can call `api.prevent_close()` like so:
+デフォルトでは、tauriは最後のウィンドウが閉じられたときにアプリケーションを閉じます。 アプリがバックグラウンドで実行される場合は、 `api.prevent_close()` を以下のように呼び出すことができます。
 
 ```rust
 tauri::Builder::default()
   .build(tauri::generate_context!())
-  .expect("error while building tauri application")
+  .expect("tauriアプリケーションのビルド中にエラー")
   .run(|_app_handle, event| match event {
     tauri::RunEvent::ExitRequested { api, .. } => {
       api.prevent_exit();
     }
     _ => {}
-  });
+});
 ```
 
 [Template Image]: https://developer.apple.com/documentation/appkit/nsimage/1520017-template?language=objc
