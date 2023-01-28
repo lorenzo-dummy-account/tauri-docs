@@ -2,102 +2,102 @@
 sidebar_position: 6
 ---
 
-# Reducing App Size
+# Ridurre La Dimensione Dell'App
 
-With Tauri, we are working to reduce the environmental footprint of applications by using fewer system resources where available, providing compiled systems that don't need runtime evaluation, and offering guides so that engineers can go even smaller without sacrificing performance or security. By saving resources we are doing our part to help you help us save the planet -- which is the only bottom line that companies in the 21st Century should care about.
+Con Tauri, stiamo lavorando per ridurre l'impronta ambientale delle applicazioni utilizzando meno risorse di sistema laddove disponibili, fornendo sistemi compilati che non necessitano di valutazione di runtime, e offrendo guide in modo che gli ingegneri possano andare ancora più piccoli senza sacrificare prestazioni o sicurezza. Risparmiando risorse stiamo facendo la nostra parte per aiutarci a salvare il pianeta - che è l'unica linea di fondo di cui le aziende nel XXI secolo dovrebbero occuparsi .
 
-So if you are interested in learning how to improve your app size and performance, read on!
+Quindi, se sei interessato a imparare come migliorare le dimensioni e le prestazioni dell'app, leggi su!
 
-### You can't improve what you can't measure
+### Non puoi migliorare quello che non puoi misurare
 
-Before you can optimize your app, you need to figure out what takes up space in your app! Here are a couple of tools that can assist you with that:
+Prima di poter ottimizzare la tua app, devi capire cosa occupa spazio nella tua app! Ecco un paio di strumenti che possono aiutarvi con questo:
 
-- **`cargo-bloat`** - A Rust utility to determine what takes the most space in your app. It gives you an excellent, sorted overview of the most significant Rust functions.
+- **`cargo-bloat`** - Un'utilità Rust per determinare cosa richiede più spazio nella tua app. Ti dà una panoramica eccellente e ordinata delle funzioni Rust più significative.
 
-- **`cargo-expand`** - [Macros][] make your rust code more concise and easier to read, but they are also hidden size traps! Use [`cargo-expand`][cargo-expand] to see what those macros generate under the hood.
+- **`cargo-expand`** - [Macro][] rende il tuo codice di ruggine più conciso e più facile da leggere, ma sono anche trappole di dimensioni nascoste! Usa [`cargo-expand`][cargo-expand] per vedere cosa queste macro generano sotto il cofano.
 
-- **`rollup-plugin-visualizer`** - A tool that generates beautiful (and insightful) graphs from your rollup bundle. Very convenient for figuring out what JavaScript dependencies contribute to your final bundle size the most.
+- **`rollup-plugin-visualizer`** - Uno strumento che genera grafici belli (e intuitivi) dal tuo pacchetto rollup. Molto conveniente per capire quali dipendenze JavaScript contribuiscono di più alla dimensione finale del pacchetto.
 
-- **`rollup-plugin-graph`** - You noticed a dependency included in your final frontend bundle, but you are unsure why? [`rollup-plugin-graph`][rollup-plugin-graph] generates Graphviz-compatible visualizations of your entire dependency graph.
+- **`rollup-plugin-graph`** - Hai notato una dipendenza inclusa nel tuo frontend finale, ma non sei sicuro perché? [`rollup-plugin-graph`][rollup-plugin-graph] genera visualizzazioni compatibili con Graphviz-dell'intero grafico delle dipendenze.
 
-These are just a couple of tools that you might use. Make sure to check your frontend bundlers plugin list for more!
+Questi sono solo un paio di strumenti che si potrebbe utilizzare. Assicurati di controllare l'elenco dei plugin dei pacchetti frontend per ulteriori informazioni!
 
 ## Checklist
 
-1. [Minify Javascript](#minify-javascript)
-2. [Optimize Dependencies](#optimize-dependencies)
-3. [Optimize Images](#optimize-images)
-4. [Remove Unnecessary Custom Fonts](#remove-unnecessary-custom-fonts)
-5. [Allowlist Config](#allowlist-config)
-6. [Rust Build-time Optimizations](#rust-build-time-optimizations)
+1. [Minimizza Javascript](#minify-javascript)
+2. [Ottimizza Dipendenze](#optimize-dependencies)
+3. [Ottimizza Le Immagini](#optimize-images)
+4. [Rimuovi Caratteri Personalizzati Non Necessari](#remove-unnecessary-custom-fonts)
+5. [Permetti Configurazione](#allowlist-config)
+6. [Ottimizzazioni Rust Build-time](#rust-build-time-optimizations)
 7. [Stripping](#stripping)
 8. [UPX](#upx)
 
 ### Minify JavaScript
 
-JavaScript makes up a large portion of a typical Tauri app, so it's important to make the JavaScript as lightweight as possible.
+JavaScript costituisce una grande porzione di una tipica app Tauri, quindi è importante rendere il JavaScript il più leggero possibile.
 
-You can choose from a plethora of JavaScript bundlers; popular choices are [Vite][], [webpack][], and [rollup][]. All of them can produce minified JavaScript if configured correctly, so consult your bundler documentation for specific options. Generally speaking, you should make sure to:
+Puoi scegliere tra una pletora di pacchetti JavaScript; le scelte popolari sono [Vite][], [webpack][]e [rollup][]. Tutti possono produrre JavaScript minificato se configurato correttamente, quindi consulta la documentazione del tuo bundler per opzioni specifiche. In generale, dovresti assicurarti di:
 
-#### Enable tree shaking
+#### Abilita agitazione ad albero
 
-This option removes unused JavaScript from your bundle. All popular bundlers enable this by default.
+Questa opzione rimuove il JavaScript inutilizzato dal tuo pacchetto. Tutti i pacchetti popolari lo abilitano per impostazione predefinita.
 
-#### Enable minification
+#### Abilita minificazione
 
-Minification removes unnecessary whitespace, shortens variable names, and applies other optimizations. Most bundlers enable this by default; a notable exception is [rollup][], where you need plugins like [rollup-plugin-terser][] or [rollup-plugin-uglify][].
+La minimizzazione rimuove gli spazi bianchi inutili, accorcia i nomi delle variabili e applica altre ottimizzazioni. La maggior parte dei pacchetti lo abilita per impostazione predefinita; una notevole eccezione è il rollup [][], dove hai bisogno di plugin come [rollup-plugin-terser][] o [rollup-plugin-uglify][].
 
-Note: You can use minifiers like [terser][] and [esbuild][] as standalone tools.
+Nota: Puoi usare i minificatori come [terser][] e [esbuild][] come strumenti indipendenti.
 
-#### Disable source maps
+#### Disabilita mappe sorgenti
 
-Source maps provide a pleasant developer experience when working with languages that compile to JavaScript, such as [TypeScript][]. As source maps tend to be quite large, you must disable them when building for production. They have no benefit to your end-user, so it's effectively dead weight.
+Le mappe sorgente forniscono una piacevole esperienza di sviluppo quando si lavora con i linguaggi che compilano in JavaScript, come ad esempio [TypeScript][]. Poiché le mappe di origine tendono ad essere abbastanza grandi, è necessario disattivarle durante la costruzione per la produzione. Non hanno alcun beneficio per il vostro utente finale, quindi è effettivamente peso morto.
 
-### Optimize Dependencies
+### Ottimizza Dipendenze
 
-Many popular libraries have smaller and faster alternatives that you can choose from instead.
+Molte librerie popolari hanno alternative più piccole e più veloci tra cui si può scegliere.
 
-Most libraries you use depend on many libraries themselves, so a library that looks inconspicuous at first glance might add **several megabytes** worth of code to your app.
+La maggior parte delle librerie che usi dipendono da molte librerie stesse, in modo che una libreria che sembra poco visibile a prima vista potrebbe aggiungere **diversi megabyte** vale la pena di codice alla tua app.
 
-You can use [Bundlephobia][] to find the cost of JavaScript dependencies. Inspecting the cost of Rust dependencies is generally harder since the compiler does many optimizations.
+È possibile utilizzare [Bundlephobia][] per trovare il costo delle dipendenze JavaScript. Ispezionare il costo delle dipendenze Rust è generalmente più difficile dal momento che il compilatore fa molte ottimizzazioni.
 
-If you find a library that seems excessively large, Google around, chances are someone else already had the same thought and created an alternative. A good example is [Moment.js][] and it's [many alternatives][you-dont-need-momentjs].
+Se si trova una biblioteca che sembra eccessivamente grande, Google intorno, le probabilità sono qualcun altro aveva già lo stesso pensiero e creato un'alternativa. Un buon esempio è [Moment.js][] ed è [molte alternative][you-dont-need-momentjs].
 
-But keep in mind: **The best dependency is no dependency**, meaning that you should always prefer language builtins over 3rd party packages.
+Ma tenete a mente: **La migliore dipendenza è nessuna dipendenza**, il che significa che dovreste sempre preferire la lingua costruita su pacchetti di terze parti.
 
-### Optimize Images
+### Ottimizza Le Immagini
 
-According to the [Http Archive][], images are the [biggest contributor to website weight][http archive report, image bytes]. So if your app includes images or icons, make sure to optimize them!
+Secondo il [Http Archive][], le immagini sono il [più grande contributore al peso del sito][http archive report, image bytes]. Quindi, se la tua app include immagini o icone, assicurati di ottimizzarle!
 
-You can choose between a variety of manual options ([GIMP][], [Photoshop][], [Squoosh][]) or plugins for your favorite frontend build tools ([vite-imagetools][], [vite-plugin-imagemin][], [image-minimizer-webpack-plugin][]).
+È possibile scegliere tra diverse opzioni manuali ([GIMP][], [Photoshop][], [Squoosh][]) o plugin per i tuoi strumenti di generazione di frontend preferiti ([vite-imagetools][], [vite-plugin-imagemin][], [image-minimizer-webpack-plugin][]).
 
-Do note that the `imagemin` library most of the plugins use is [officially unmaintained][imagemin is unmaintained].
+Notare che la libreria `imagemin` la maggior parte dei plugin utilizzati è [ufficialmente non mantenuta][imagemin is unmaintained].
 
-#### Use Modern Image Formats
+#### Usa I Formati D'Immagine Moderni
 
-Formats such as `webp` or `avif` offer size reductions of **up to 95%** compared to jpeg while maintaining excellent visual accuracy. You can use tools such as [Squoosh][] to try different formats on your images.
+Formati come `webp` o `avif` offrono riduzioni di dimensione di **fino a 95%** rispetto a jpeg mantenendo un'eccellente precisione visiva. Puoi usare strumenti come [Squoosh][] per provare diversi formati sulle tue immagini.
 
-#### Size Images Accordingly
+#### Dimensione Immagini Di Conseguenza
 
-No one appreciates you shipping the 6K raw image with your app, so make sure to size your image accordingly. Images that appear large on-screen should be sized larger than images that take up less screen space.
+Nessuno apprezza la spedizione dell'immagine grezza 6K con la tua app, quindi assicurati di dimensionare l'immagine di conseguenza. Le immagini che appaiono grandi sullo schermo dovrebbero essere di dimensioni maggiori delle immagini che occupano meno spazio sullo schermo.
 
-#### Don't Use Responsive Images
+#### Non Utilizzare Immagini Reattive
 
-In a Web Environment, you are supposed to use [Responsive Images][] to load the correct image size for each user dynamically. Since you are not dynamically distributing images over the web, using Responsive Images only needlessly bloats your app with redundant copies.
+In un ambiente Web, dovresti usare [Immagini Responsive][] per caricare dinamicamente la dimensione dell'immagine corretta per ogni utente. Dal momento che non stai distribuendo dinamicamente le immagini sul web, utilizzando le immagini reattive gonfiano inutilmente la tua app con copie ridondanti.
 
-#### Remove Metadata
+#### Rimuovi Metadati
 
-Images that were taken straight from a camera or stock photo side often include metadata about the camera and lens model or photographer. Not only are those wasted bytes, but metadata properties can also hold potentially sensitive information such as the time, day, and location of the photo.
+Le immagini che sono state scattate direttamente da una fotocamera o da una foto stock lato spesso includono metadati circa la fotocamera e lente modello o fotografo. Non solo i byte sprecati, ma anche le proprietà dei metadati possono contenere informazioni potenzialmente sensibili come il tempo, giorno e posizione della foto.
 
-### Remove Unnecessary Custom Fonts
+### Rimuovi Caratteri Personalizzati Non Necessari
 
-Consider not shipping custom fonts with your app and relying on system fonts instead. If you must ship custom fonts, make sure they are in modern, optimized formats such as `woff2`.
+Considera di non spedire caratteri personalizzati con la tua app e di affidarti a font di sistema. Se devi spedire caratteri personalizzati, assicurati che siano in formati moderni e ottimizzati come `woff2`.
 
-Fonts can be pretty big, so using the fonts already included in the Operating System reduces the footprint of your app. It also avoids FOUT (Flash of Unstyled Text) and makes your app feel more "native" since it uses the same font as all other apps.
+I caratteri possono essere piuttosto grandi, quindi utilizzando i caratteri già inclusi nel sistema operativo si riduce l'impronta della tua app. Inoltre evita FOUT (Flash di Unstyled Text) e fa sentire la tua app più "nativa" in quanto utilizza lo stesso carattere di tutte le altre applicazioni.
 
-If you must include custom fonts, make sure you include them in modern formats such as `woff2` as those tend to be much smaller than legacy formats.
+Se è necessario includere caratteri personalizzati, assicurati di includerli in formati moderni come `woff2` come quelli tendono ad essere molto più piccoli dei formati legacy.
 
-Use so-called **"System Font Stacks"** in your CSS. There are a number of variations, but here are 3 basic ones to get you started:
+Usa le cosiddette **"Stack di Font di Sistema"** nel tuo CSS. Ci sono un numero di variazioni, ma qui ci sono 3 di base per iniziare:
 
 **Sans-Serif**
 
@@ -110,7 +110,7 @@ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
 
 ```css
 font-family: Iowan Old Style, Apple Garamond, Baskerville, Times New Roman, Droid
-    Serif, Times, Source Serif Pro, serif, Apple Color Emoji, Segoe UI Emoji, Segoe
+    Serif, Tempi, Source Serif Pro, serif, Apple Color Emoji, Segoe UI Emoji, Segoe
     UI Symbol;
 ```
 
@@ -121,13 +121,13 @@ font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation
     Mono, monospace;
 ```
 
-### Allowlist Config
+### Permetti Configurazione
 
-You can reduce the size of your app by only enabling the Tauri API features you need in the `allowlist` config.
+Puoi ridurre la dimensione della tua app solo abilitando le funzionalità API Tauri di cui hai bisogno nella configurazione `allowlist`.
 
-The `allowlist` config determines what API features to enable; disabled features will **not be compiled into your app**. This is an easy way of shedding some extra weight.
+La configurazione `allowlist` determina quali funzioni API abilitare; le funzioni disabilitate **non saranno compilate nella tua app**. Questo è un modo facile di perdere un po 'di peso in più.
 
-An example from a typical `tauri.conf.json`:
+Un esempio da un tipico `tauri.conf.json`:
 
 ```json
 {
@@ -148,129 +148,131 @@ An example from a typical `tauri.conf.json`:
 }
 ```
 
-### Rust Build-Time Optimizations
+### Ottimizzazioni Rust Build-Time
 
-Configure your cargo project to take advantage of Rusts size optimization features. [Why is a rust executable large ?][] provides an excellent explanation of why this matters and an in-depth walkthrough. At the same time, [Minimizing Rust Binary Size][] is more up-to-date and has a couple of extra recommendations.
+Configura il tuo progetto cargo per sfruttare le funzionalità di ottimizzazione delle dimensioni di Rusts. [Perché è un eseguibile di ruggine di grandi dimensioni?][] fornisce un'eccellente spiegazione del motivo per cui questo è importante e una passeggiata approfondita. Allo stesso tempo, [Minimizing Rust Binary Size][] è più aggiornato e ha un paio di raccomandazioni extra.
 
-Rust is notorious for producing large binaries, but you can instruct the compiler to optimize the final executable's size.
+Rust è noto per la produzione di grandi binari, ma è possibile istruire il compilatore per ottimizzare le dimensioni dell'eseguibile finale.
 
-Cargo exposes several options that determine how the compiler generates your binary. The "recommended" options for Tauri apps are these:
+Cargo espone diverse opzioni che determinano come il compilatore genera il tuo binario. Le opzioni "consigliate" per le app Tauri sono queste:
 
 ```toml
 [profile.release]
-panic = "abort" # Strip expensive panic clean-up logic
-codegen-units = 1 # Compile crates one after another so the compiler can optimize better
-lto = true # Enables link to optimizations
-opt-level = "s" # Optimize for binary size
+panic = "abort" # Strip costoso panic clean-up logic
+codegen-units = 1 # Compila le casse uno dopo l'altro in modo che il compilatore possa ottimizzare meglio
+lto = true # Abilita il link alle ottimizzazioni
+opt-level = "s" # Ottimizza per la dimensione binaria
 ```
 
 :::note
-There is also `opt-level = "z"` available to reduce the resulting binary size. `"s"` and `"z"` can sometimes be smaller than the other, so test it with your application!
+C'è anche `opt-level = "z"` disponibile per ridurre la dimensione binaria risultante. `"s"` e `"z"` possono a volte essere più piccoli dell'altro, quindi provalo con la tua applicazione!
 
-We've seen smaller binary sizes from `"s"` for Tauri example applications, but real-world applications can always differ.
+Abbiamo visto dimensioni binarie più piccole da `"s"` per applicazioni di esempio Tauri, ma le applicazioni del mondo reale possono sempre differire.
 :::
 
-For a detailed explanation of each option and a bunch more, refer to the [Cargo books Profiles section][cargo profiles].
+Per una spiegazione dettagliata di ogni opzione e un mucchio di più, fare riferimento alla sezione [Profili di libri di carico][cargo profiles].
 
-#### Disable Tauri's Asset Compression
+#### Disabilita La Compressione Degli Asset Di Tauri
 
-By default, Tauri uses Brotli to compress assets in the final binary. Brotli embeds a large (~170KiB) lookup table to achieve great results, but if the resources you embed are smaller than this or compress poorly, the resulting binary may be bigger than any savings.
+Per impostazione predefinita, Tauri utilizza Brotli per comprimere gli asset nel binario finale. Brotli incorpora una tabella di ricerca grande (~170KiB) per ottenere ottimi risultati, ma se le risorse che hai incorporato sono più piccole di questo o comprimono male, il binario risultante può essere più grande di qualsiasi risparmio.
 
-Compression can be disabled by setting `default-features` to `false` and specifying everything except the `compression` feature:
+La compressione può essere disabilitata impostando `funzioni predefinite` a `false` e specificando tutto tranne la funzione `compressione`:
 
 ```toml
 [dependencies]
 tauri = { version = "...", features = ["objc-exception", "wry"], default-features = false }
 ```
 
-#### Unstable Rust Compression Features
+#### Funzioni Di Compressione Ruggine Instabile
 
-:::caution
-The following suggestions are all unstable features and require a nightly toolchain. See the [Unstable Features][cargo unstable features] documentation for more information on what this involves.
+:::cautela
+I seguenti suggerimenti sono tutte caratteristiche instabili e richiedono una catena di strumenti notturna. Vedere la documentazione [Caratteristiche instabili][cargo unstable features] per maggiori informazioni su ciò che questo comporta.
 :::
 
-The following methods involve using unstable compiler features and require the rust nightly toolchain. If you don't have the nightly toolchain + `rust-src` nightly component added, try the following:
+I seguenti metodi comportano l'utilizzo di caratteristiche del compilatore instabile e richiedono la ruggine notturna toolchain. Se non hai aggiunto il componente notturno + `rust-src` per la notte, prova quanto segue:
 
 ```shell
 rustup toolchain install nightly
 rustup component add rust-src --toolchain nightly
 ```
 
-The Rust Standard Library comes precompiled. This means Rust is faster to install, but also that the compiler can't optimize the Standard Library. You can apply the optimization options for the rest of your binary + dependencies to the std with an unstable flag. This flag requires specifying your target, so know the target triple you are targeting.
+La Rust Standard Library viene precompilata. Ciò significa che Rust è più veloce da installare, ma anche che il compilatore non può ottimizzare la Libreria Standard. È possibile applicare le opzioni di ottimizzazione per il resto del binario + dipendenze al std con un flag instabile. Questo contrassegno richiede di specificare il tuo bersaglio, quindi conosci il triplo di destinazione che stai mirando.
 
 ```shell
 cargo +nightly build --release -Z build-std --target x86_64-unknown-linux-gnu
 ```
 
-If you are using `panic = "abort"` in your release profile optimizations, you need to make sure the `panic_abort` crate is compiled with std. Additionally, an extra std feature can further reduce the binary size. The following applies to both:
+Se stai usando `panic = "abort"` nelle ottimizzazioni del profilo di rilascio, è necessario assicurarsi che la cassa `panic_abort` sia compilata con std. Inoltre, una funzione di std extra può ridurre ulteriormente la dimensione binaria. Le seguenti disposizioni si applicano a entrambi:
 
 ```shell
 cargo +nightly build --release -Z build-std=std,panic_abort -Z build-std-features=panic_immediate_abort --target x86_64-unknown-linux-gnu
 ```
 
-See the unstable documentation for more details about [`-Z build-std`][cargo build-std] and [`-Z build-std-features`][cargo build-std-features].
+Vedere la documentazione unstable per maggiori dettagli su [`-Z build-std`][cargo build-std] e [`-Z build-std-features`][cargo build-std-features].
 
 ### Stripping
 
-Use strip utilities to remove debug symbols from your compiled app.
+Usa le utility strip per rimuovere i simboli di debug dalla tua app compilata.
 
-Your compiled app includes so-called "Debug Symbols" that include function and variable names. Your end-users will probably not care about Debug Symbols, so this is a pretty surefire way to save some bytes!
+La tua app compilata include i cosiddetti "Simboli di debug" che includono la funzione e i nomi delle variabili. I tuoi utenti finali probabilmente non si occuperanno dei Simboli di debug, quindi questo è un modo abbastanza sicuro per salvare alcuni bytes!
 
-The easiest way is to use the famous `strip` utility to remove this debugging information.
+Il modo più semplice è usare la famosa utility `strip` per rimuovere queste informazioni di debug.
 
 ```shell
 strip target/release/my_application
 ```
 
-See your local `strip` manpage for more information and flags that can be used to specify what information gets stripped out from the binary.
+Vedi la tua pagina di manpage `strip` locale per maggiori informazioni e flag che possono essere utilizzati per specificare quali informazioni vengono spogliate dal binario.
 
 :::info
 
-Rust 1.59 now has a builtin version of `strip`! It can be enabled by adding the following to your `Cargo.toml`:
+Rust 1.59 ora ha una versione integrata di `strip`! Può essere abilitato aggiungendo quanto segue al tuo `Cargo.toml`:
 
 ```toml
 [profile.release]
-strip = true  # Automatically strip symbols from the binary.
+strip = true # Striscia automaticamente i simboli dal binario.
 ```
 
 :::
 
 ### UPX
 
-UPX, **Ultimate Packer for eXecutables**, is a dinosaur amongst the binary packers. This 23-year old, well-maintained piece of kit is GPL-v2 licensed with a pretty liberal usage declaration. Our understanding of the licensing is that you can use it for any purposes (commercial or otherwise) without needing to change your license unless you modify the source code of UPX.
+UPX, **Ultimate Packer per eXecutables**, è un dinosauro tra i pacchetti binari. Questo kit di 23 anni, ben curato è GPL-v2 con licenza con una dichiarazione d'uso piuttosto liberale. La nostra comprensione della licenza è che è possibile utilizzarla per qualsiasi scopo (commerciale o altro) senza dover modificare la licenza a meno che non si modifichi il codice sorgente di UPX.
 
-Maybe your target audience has very slow internet, or your app needs to fit on a tiny USB stick, and all the above steps haven't resulted in the savings you need. Fear not, as we have one last trick up our sleeves:
+Forse il pubblico di destinazione ha internet molto lento, o la tua app deve adattarsi a un piccolo bastone USB, e tutti i passaggi di cui sopra non hanno portato al risparmio di cui hai bisogno. Non temere, come abbiamo un ultimo trucco le maniche:
 
-[UPX][] compresses your binary and creates a self-extracting executable that decompresses itself at runtime.
+[UPX][] comprime il tuo binario e crea un eseguibile autoestraente che si decomprime al runtime.
 
-:::caution
-You should know that this technique might flag your binary as a virus on Windows and macOS - so use at your own discretion, and as always, validate with [Frida][] and do real distribution testing!
+:::cautela
+Dovresti sapere che questa tecnica potrebbe contrassegnare il tuo binario come un virus su Windows e macOS - quindi usa a tua discrezione, e come sempre, convalidare con [Frida][] e fare test di distribuzione reale!
 :::
 
-#### Usage on macOS
+#### Utilizzo su macOS
 
 <!-- Add additional platforms -->
 
 ```
 brew install upx
 yarn tauri build
-upx --ultra-brute src-tauri/target/release/bundle/macos/app.app/Contents/macOS/app
+upx --ultra-brute src-tauri/target/release/bundle/macos/app. pp/Contents/macOS/app
 
                         Ultimate Packer for eXecutables
                             Copyright (C) 1996 - 2018
-UPX 3.95        Markus Oberhumer, Laszlo Molnar & John Reiser   Aug 26th 2018
+UPX 3. 5 Markus Oberhumer, Laszlo Molnar & John Reiser 26 agosto 2018
 
-        File size         Ratio      Format      Name
-    --------------------   ------   -----------   -----------
-    963140 ->    274448   28.50%   macho/amd64   app
+        Formato Formato formato file
+    -------------------- ------ ----------- -----------
+    963140 ->    274448 28. 0% macho/amd64 app
 ```
 
-[Macros]: https://doc.rust-lang.org/book/ch19-06-macros.html
+[Macro]: https://doc.rust-lang.org/book/ch19-06-macros.html
 [cargo-expand]: https://github.com/dtolnay/cargo-expand
 [rollup-plugin-graph]: https://github.com/ondras/rollup-plugin-graph
 [Vite]: https://vitejs.dev
 [webpack]: https://webpack.js.org
 [rollup]: https://rollupjs.org/guide/en/
+[7]: https://rollupjs.org/guide/en/
+[8]: https://rollupjs.org/guide/en/
 [rollup-plugin-terser]: https://github.com/TrySound/rollup-plugin-terser
 [rollup-plugin-uglify]: https://github.com/TrySound/rollup-plugin-uglify
 [terser]: https://terser.org
@@ -287,8 +289,8 @@ UPX 3.95        Markus Oberhumer, Laszlo Molnar & John Reiser   Aug 26th 2018
 [vite-plugin-imagemin]: https://github.com/vbenjs/vite-plugin-imagemin
 [image-minimizer-webpack-plugin]: https://github.com/webpack-contrib/image-minimizer-webpack-plugin
 [Squoosh]: https://squoosh.app
-[Responsive Images]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images
-[Why is a rust executable large ?]: https://lifthrasiir.github.io/rustlog/why-is-a-rust-executable-large.html
+[Immagini Responsive]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images
+[Perché è un eseguibile di ruggine di grandi dimensioni?]: https://lifthrasiir.github.io/rustlog/why-is-a-rust-executable-large.html
 [Minimizing Rust Binary Size]: https://github.com/johnthagen/min-sized-rust
 [cargo unstable features]: https://doc.rust-lang.org/cargo/reference/unstable.html#unstable-features
 [cargo profiles]: https://doc.rust-lang.org/cargo/reference/profiles.html
