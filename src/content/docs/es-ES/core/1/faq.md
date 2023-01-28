@@ -1,17 +1,17 @@
 ---
-title: Frequently Asked Questions
+title: Preguntas frecuentes
 sidebar_position: 10
-description: Fixes for common issues
+description: Soluciones para problemas comunes
 ---
 
-## How can I use unpublished Tauri changes?
+## ¿Cómo puedo usar cambios Tauri no publicados?
 
-To use Tauri from GitHub (bleeding edge version) you need to change your `Cargo.toml` file and update your CLI and API.
+Para utilizar Tauri de GitHub (versión del borde sangrado), necesita cambiar su archivo `Cargo.toml` y actualizar su CLI y API.
 
 <details>
-  <summary>Pulling the Rust crate from source</summary>
+  <summary>Extraer la caja de polvo de la fuente</summary>
 
-Append this to your `Cargo.toml` file:
+Añade esto a tu archivo `Cargo.toml`:
 
 ```toml title=Cargo.toml
 [patch.crates-io]
@@ -19,69 +19,69 @@ tauri = { git = "https://github.com/tauri-apps/tauri", branch = "dev" }
 tauri-build = { git = "https://github.com/tauri-apps/tauri", branch = "dev" }
 ```
 
-This will force all your dependencies to use `tauri` and `tauri-build` from Git instead of crates.io.
+Esto obligará a todas tus dependencias a usar `tauri` y `tauri-build` de Git en lugar de crates.io.
 
 </details>
 
 <details>
-  <summary>Using the Tauri CLI from source</summary>
+  <summary>Usando el CLI de Tauri desde el código fuente</summary>
 
-If you are using the Cargo CLI, you can install it directly from GitHub:
+Si está utilizando la CLI de Carga, puede instalarla directamente desde GitHub:
 
 ```shell
 cargo install --git https://github.com/tauri-apps/tauri --branch dev tauri-cli
 ```
 
-If you are using the `@tauri-apps/cli` package, you will need to clone the repo and build it:
+Si estás usando el paquete `@tauri-apps/cli` , necesitarás clonar el repositorio y construirlo:
 
 ```shell
 git clone https://github.com/tauri-apps/tauri
 git checkout dev
 cd tauri/tooling/cli/node
 yarn
-yarn build
+build yarn
 ```
 
-To use it, run directly with node:
+Para usarlo, ejecute directamente con nodo:
 
 ```shell
 node /path/to/tauri/tooling/cli/node/tauri.js dev
 node /path/to/tauri/tooling/cli/node/tauri.js build
 ```
 
-Alternatively, you can run your app with Cargo directly:
+Alternativamente, puedes ejecutar tu aplicación con Cargo directamente:
 
 ```shell
 cd src-tauri
-cargo run --no-default-features # instead of tauri dev
-cargo build # instead of tauri build - won't bundle your app though
+cargo run --no-default-features # en lugar de tauri dev
+carga build # en lugar de tauri build - no empaquetará tu aplicación aunque
 ```
 
 </details>
 
 <details>
-  <summary>Using the Tauri API from source</summary>
+  <summary>Usando la API de Tauri desde el código fuente</summary>
 
-It is recommended to also use the Tauri API package from source when using the Tauri crate from GitHub (though it might not be needed). To build it from source, run the following script:
+Se recomienda usar también el paquete Tauri API de origen cuando se utiliza la caja Tauri de GitHub (aunque puede que no sea necesario). Para construirlo desde el código fuente, ejecute el siguiente script:
 
 ```shell
 git clone https://github.com/tauri-apps/tauri
 git checkout dev
 cd tauri/tooling/api
 yarn
-yarn build
+build yarn
 ```
 
-Now you can link it using yarn:
+Ahora puedes enlazarlo usando hilos:
 
 ```shell
 cd dist
 yarn link
-cd /path/to/your/project
+cd /path/to/tu/proyecto
 yarn link @tauri-apps/api
 ```
 
-Or you can change your package.json to point to the dist folder directly:
+O puede cambiar su package.json para que apunte a la carpeta dist directamente:
 
 ```json title=package.json
 {
@@ -93,34 +93,34 @@ Or you can change your package.json to point to the dist folder directly:
 
 </details>
 
-## Should I use Node or Cargo? {#node-or-cargo}
+## ¿Debo usar Node o Carga? {#node-or-cargo}
 
-Even though installing the CLI through Cargo is the preferred option, it has to compile the whole binary from scratch when you install it. If you're in a CI environment or on a very slow machine you're better off choosing another installation method.
+Aunque instalar la CLI a través de Cargo es la opción preferida, tiene que compilar todo el binario desde cero al instalarlo. Si está en un entorno CI o en una máquina muy lenta, es mejor elegir otro método de instalación.
 
-As the CLI is written in Rust, it is naturally available through [crates.io][] and installable with Cargo.
+Como la CLI está escrita en Rust, está disponible naturalmente a través de [crates.io][] e instalable con Cargo.
 
-We also compile the CLI as a native Node.js addon and distribute it [via npm][]. This has several advantages compared to the Cargo installation method:
+También compilamos el CLI como complemento nativo de Node.js y lo distribuimos [a través de npm][]. Esto tiene varias ventajas en comparación con el método de instalación de carga:
 
-1. The CLI is pre-compiled, leading to much faster install times
-2. You can pin a specific version in your package.json file
-3. If you develop custom tooling around Tauri, you can import the CLI as a regular JavaScript module
-4. You can install the CLI using a JavaScript manager
+1. El CLI está precompilado, lo que lleva a tiempos de instalación mucho más rápidos
+2. Puede anclar una versión específica en su archivo package.json
+3. Si desarrolla herramientas personalizadas alrededor de Tauri, puede importar el CLI como un módulo JavaScript regular
+4. Puede instalar el CLI usando un gestor de JavaScript
 
-## Recommended Browserlist
+## Lista de navegadores recomendada
 
-We recommend using `es2021`, `last 3 Chrome versions`, and `safari13` for your browserlist and build targets. Tauri leverages the OS's native rendering engine (WebKit on macOS, WebView2 on Windows and WebKitGTK on Linux).
+Recomendamos usar `es2021`, `últimas 3 versiones de Chrome`y `safari13` para tu lista de navegadores y objetivos de construcción. Tauri aprovecha el motor de renderizado nativo del SO (WebKit en macOS, WebView2 en Windows y WebKitGTK en Linux).
 
-## Build Conflict with Homebrew on Linux
+## Construir conflictos con Homebrew en Linux
 
-Homebrew on Linux includes its own `pkg-config` (a utility to find libraries on the system). This can cause conflicts when installing the same `pkg-config` package for Tauri (usually installed through the package manager like `apt`). When you try to build a Tauri app it will try to invoke `pkg-config` and will end up invoking the one from Homebrew. If Homebrew wasn't used to install Tauri's dependencies, this can cause errors.
+Homebrew en Linux incluye su propio `pkg-config` (una utilidad para encontrar bibliotecas en el sistema). Esto puede causar conflictos al instalar el mismo paquete `pkg-config` para Tauri (normalmente instalado a través del gestor de paquetes como `apt`). Cuando intenta construir una aplicación Tauri, intentará invocar `pkg-config` y terminará invocando la de Homebrew. Si Homebrew no fue usado para instalar las dependencias de Tauri, esto puede causar errores.
 
-Errors will _usually_ contain messages along the lines of `error: failed to run custom build command for X` - `Package Y was not found in the pkg-config search path.`. Note that you may see similar errors if the required dependencies are not installed at all.
+Errores _generalmente_ contendrán mensajes a lo largo de las líneas de `error: no se pudo ejecutar el comando de compilación personalizada para X` - `El paquete Y no se encontró en la ruta de búsqueda de pkg-config.`. Tenga en cuenta que puede ver errores similares si las dependencias requeridas no están instaladas en absoluto.
 
-There are two solutions to this issue:
+Hay dos soluciones para esta cuestión:
 
-1. [Uninstall Homebrew][]
-2. Set the `PKG_CONFIG_PATH` environment variable to point to the correct `pkg-config` before building a Tauri app
+1. [Desinstalar Homebrew][]
+2. Establece la variable de entorno `PKG_CONFIG_PATH` para apuntar a la correcta `pkg-config` antes de construir una aplicación Tauri
 
 [crates.io]: https://crates.io/crates/tauri-cli
-[via npm]: https://www.npmjs.com/package/@tauri-apps/cli
-[Uninstall Homebrew]: https://docs.brew.sh/FAQ#how-do-i-uninstall-homebrew
+[a través de npm]: https://www.npmjs.com/package/@tauri-apps/cli
+[Desinstalar Homebrew]: https://docs.brew.sh/FAQ#how-do-i-uninstall-homebrew
