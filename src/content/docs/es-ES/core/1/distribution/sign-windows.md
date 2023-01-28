@@ -157,8 +157,7 @@ jobs:
       - name: install app dependencies and build it
         run: yarn && yarn build
       - uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env: GITHUB_TOKEN: ${{ secrets. GITHUB_TOKEN }}
         with:
           tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
           releaseName: 'App v__VERSION__'
@@ -172,9 +171,8 @@ jobs:
 ```yml
 - name: import windows certificate
   if: matrix.platform == 'windows-latest'
-  env:
-    WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
-    WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+  env: WINDOWS_CERTIFICATE: ${{ secrets. WINDOWS_CERTIFICATE }}
+    WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets. WINDOWS_CERTIFICATE_PASSWORD }}
   run: |
     New-Item -ItemType directory -Path certificate
     Set-Content -Path certificate/tempCert.txt -Value $env:WINDOWS_CERTIFICATE
