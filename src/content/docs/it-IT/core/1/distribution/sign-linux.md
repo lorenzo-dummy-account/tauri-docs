@@ -1,44 +1,44 @@
 ---
-sidebar_label: Linux Code Signing
+sidebar_label: Firma Codice Linux
 sidebar_position: 3
 ---
 
 # Code Signing Linux packages
 
-This guide provides information on code signing for Linux packages.
+Questa guida fornisce informazioni sulla firma del codice per i pacchetti Linux.
 
-## Requirements
+## Requisiti
 
-- gpg or gpg2
+- gpg o gpg2
 
-A key for signing must be prepared. A new one can be generated using:
+Deve essere preparata una chiave per la firma. Uno nuovo può essere generato utilizzando:
 
 ```shell
 gpg2 --full-gen-key
 ```
 
-Please refer to the gpg or gpg2 documentation for additional information. You should take additional care to backup your private and public keys in a secure location.
+Fare riferimento alla documentazione gpg o gpg2 per ulteriori informazioni. Dovresti prestare ulteriore attenzione al backup delle chiavi pubbliche e private in una posizione sicura.
 
-## Signing for AppImages
+## Firma per AppImages
 
-You can embed a signature in the AppImage by setting the following environment variables:
+È possibile inserire una firma nell'AppImage impostando le seguenti variabili d'ambiente:
 
-- **SIGN**: set to `1` to sign the AppImage.
-- **SIGN_KEY**: optional variable to use a specific GPG Key ID for signing.
-- **APPIMAGETOOL_SIGN_PASSPHRASE**: the signing key password. If unset, gpg shows a dialog so you can input it. You must set this when running automated tasks.
+- **SIGN**: impostato a `1` per firmare l'AppImage.
+- **SIGN_KEY**: variabile opzionale per usare un ID chiave GPG specifico per la firma.
+- **APPIMAGETOOL_SIGN_PASSPHRASE**: la password della chiave di firma. Se disattivato, gpg mostra una finestra di dialogo in modo da poterla inserire. È necessario impostare questo quando si eseguono attività automatizzate.
 
-You can display the signature embedded in the AppImage by running the following command:
+È possibile visualizzare la firma incorporata nell'AppImage eseguendo il seguente comando:
 
 ```shell
 ./src-tauri/target/release/bundle/appimage/$APPNAME_$VERSION_amd64.AppImage --appimage-signature
 ```
 
-Note that you need to change the $APPNAME and $VERSION values with the correct ones based on your configuration.
+Nota che devi modificare i valori $APPNAME e $VERSION con quelli corretti in base alla tua configurazione.
 
-:::caution The signature is not verified
+:::cautela La firma non è verificata
 
-AppImage does not validate the signature, so you can't rely on it to check whether the file has been tampered with or not. To validate the signature, you must provide an external tool for your users. See [the official AppImage documentation][] for additional information.
+AppImage non convalida la firma, quindi non puoi fare affidamento su di essa per verificare se il file è stato manomesso o meno. Per convalidare la firma, è necessario fornire uno strumento esterno per i propri utenti. Vedere [la documentazione ufficiale di AppImage][] per ulteriori informazioni.
 
 :::
 
-[the official AppImage documentation]: https://docs.appimage.org/packaging-guide/optional/signatures.html
+[la documentazione ufficiale di AppImage]: https://docs.appimage.org/packaging-guide/optional/signatures.html
