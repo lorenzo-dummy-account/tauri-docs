@@ -1,20 +1,20 @@
 import HelloTauriWebdriver from '@site/static/img/webdriver/hello-tauri-webdriver.png'
 
-# Setup Example
+# セットアップ例
 
-This example application solely focuses on adding WebDriver testing to an already existing project. To have a project to test in the following two sections, we will set up an extremely minimal Tauri application for use in our testing. We will not use the Tauri CLI, any frontend dependencies or build steps, and not be bundling the application afterward. This is to showcase exactly a minimal suite to show off adding WebDriver testing to an existing application.
+このアプリケーション例では、既存のプロジェクトに WebDriver テストを追加することに焦点を当てています。 To have a project to test in the following two sections, we will set up an extremely minimal Tauri application for use in our testing. Tauri CLI は使用せず、フロントエンドの依存関係やビルド手順を使用せず、その後は アプリケーションをバンドルしません。 これは、既存の アプリケーションにWebDriverテストを追加することを示すために、正確に最小限のスイートを紹介することです。
 
-If you just want to see the finished example project that utilizes what will be shown in this example guide, then you can see https://github.com/chippers/hello_tauri.
+このサンプルガイドに表示される内容を活用した完成したプロジェクトを見たい場合。 は https://githubを見ることができます。 om/chippers/hello_tauri.
 
-## Initializing a Cargo Project
+## 貨物プロジェクトの初期化
 
-We want to create a new binary Cargo project to house this example application. We can easily do this from the command line with `cargo new hello-tauri-webdriver --bin`, which will scaffold a minimal binary Cargo project for us. This directory will serve as the working directory for the rest of this guide, so make sure commands you run are inside this new `hello-tauri-webdriver/` directory.
+このサンプルアプリケーションを格納するための新しいバイナリ Cargo プロジェクトを作成したいと考えています。 これは コマンド行から `cargo new hello-tauri-webdriver --bin`で簡単に行えます。 最小限のバイナリCargoプロジェクトを構築します。 この ディレクトリは、このガイドの残りの作業ディレクトリとして機能します 実行するコマンドが 新しい `hello-tauri-webdriver/` ディレクトリ内にあることを確認してください。
 
-## Creating a Minimal Frontend
+## 最小限のフロントエンドの作成
 
-We will create a minimal HTML file to act as our example application's front end. We will also be using a few things from this frontend later during our WebDriver tests.
+サンプルアプリケーションのフロントエンドとして機能する最小限の HTML ファイルを作成します。 また、WebDriverのテスト中に、このフロントエンドからいくつかのものを使用します 。
 
-First, let's create our Tauri `distDir` that we know we will need once building the Tauri portion of the application. `mkdir dist` should create a new directory called `dist/` in which we will be placing the following `index.html` file.
+最初に、アプリケーションの牡牛座部分を構築したら必要になることがわかっている私たちの牡牛座 `distDir` を作成しましょう。 `mkdir dist` は、 `dist/` という新しいディレクトリを作成し、次の `index.html` ファイルを配置します。
 
 `dist/index.html`:
 
@@ -48,9 +48,9 @@ First, let's create our Tauri `distDir` that we know we will need once building 
 </html>
 ```
 
-## Adding Tauri to the Cargo Project
+## 貨物プロジェクトに牡牛座を追加する
 
-Next, we will add necessary items to turn our Cargo project into a Tauri project. First, is adding the dependencies to the Cargo Manifest (`Cargo.toml`) so that Cargo knows to pull in our dependencies while building.
+次に、貨物プロジェクトを牡牛座プロジェクトに変えるために必要なアイテムを追加します。 First, is adding the dependencies to the Cargo Manifest (`Cargo.toml`) so that Cargo knows to pull in our dependencies while building.
 
 `Cargo.toml`:
 
@@ -70,8 +70,8 @@ tauri-build = "1"
 tauri = { version = "1", features = ["custom-protocol"] }
 
 # Make --release build a binary that is small (opt-level = "s") and fast (lto = true).
-# This is completely optional, but shows that testing the application as close to the
-# typical release settings is possible. Note: this will slow down compilation.
+# これは完全に任意ですが、アプリケーションのテストが
+# 一般的なリリース設定に近いことを示しています。 注意: コンパイルが遅くなります。
 [profile.release]
 incremental = false
 codegen-units = 1
@@ -80,22 +80,22 @@ opt-level = "s"
 lto = true
 ```
 
-We added a `[build-dependency]` as you may have noticed. To use the build dependency, we must use it from a build script. We will create one now at `build.rs`.
+お気づきのように、 `[build-dependency]` を追加しました。 ビルド依存性を使用するには、ビルド スクリプトから使用する必要があります。 `build.rs` で作成します。
 
 `build.rs`:
 
 ```rust
 fn main() {
-    // Only watch the `dist/` directory for recompiling, preventing unnecessary
-    // changes when we change files in other project subdirectories.
+    // 再コンパイルのための `dist/` ディレクトリのみを見てください。不要な変更を防ぎます。
+    // 他のプロジェクトのサブディレクトリでファイルを変更したときに変更します。
     println!("cargo:rerun-if-changed=dist");
 
-    // Run the Tauri build-time helpers
+    // 牡牛座のビルド時ヘルパーを実行する
     tauri_build::build()
 }
 ```
 
-Our Cargo Project now knows how to pull in and build our Tauri dependencies with all that setup. Let's finish making this minimal example a Tauri application by setting up Tauri in the actual project code. We will be editing the `src/main.rs` file to add this Tauri functionality.
+Cargo プロジェクトでは、すべてのセットアップで牡牛座の依存関係を構築する方法が分かりました。 実際のプロジェクトコードに牡牛座を設定することによって、 この最小限の例を牡牛座アプリケーションに作り終えましょう。 この牡牛座機能を追加するために、 `src/main.rs` ファイルを編集します。
 
 `src/main.rs`:
 
@@ -107,13 +107,13 @@ fn main() {
 }
 ```
 
-Pretty simple, right?
+とてもシンプルですよね？
 
 ## Tauri Configuration
 
-We are going to need 2 things to successfully build the application. First, we need an icon file. You can use any PNG for this next part and copy it into `icon.png`. Typically, this will be provided as part of the scaffolding when you use the Tauri CLI to create a project. To get the default Tauri icon, we can download the icon used by the Hello Tauri example repository with the command `curl -L "https://github.com/chippers/hello_tauri/raw/main/icon.png" --output icon.png`.
+アプリケーションを正常に構築するには2つのことが必要になります。 まず、アイコンファイルが必要です。 次のパートには任意の PNG を使用して、 `icon.png` にコピーできます。 典型的には、プロジェクトを作成するために Tauri CLI を使用するときに、これは足場の一部として提供されます。 To get the default Tauri icon, we can download the icon used by the Hello Tauri example repository with the command `curl -L "https://github.com/chippers/hello_tauri/raw/main/icon.png" --output icon.png`.
 
-We will need a `tauri.conf.json` to set some important configuration values for Tauri. Again, this would typically come from the `tauri init` scaffolding command, but we will be creating our own minimal config here.
+牡牛座の重要な設定値を設定するには、 `tauri.conf.json` が必要です。 ここでも、 は通常、 `tauri init` scaffolding コマンドから生成されますが、ここでは独自の最小限の設定 を作成します。
 
 `tauri.conf.json`:
 
@@ -142,18 +142,18 @@ We will need a `tauri.conf.json` to set some important configuration values for 
 }
 ```
 
-I'll go over some of these. You can see the `dist/` directory we created earlier specified as the `distDir` property. We set a bundle identifier so that the built application has a unique id and set the `icon.png` as the only icon. We aren't using any Tauri APIs or features, so we disable them in `allowlist` by setting `"all": false`. The window values just set a single window to be created with some reasonable default values.
+これをいくつか見てみましょう 先ほど作成した `dist/` ディレクトリを `distDir` プロパティとして見ることができます。 We set a bundle identifier so that the built application has a unique id and set the `icon.png` as the only icon. Tauri APIや機能を使用していないため、 `allowlist` で `"all": false` を設定して無効にします。 window 値は、適切なデフォルト値を使用して作成される単一のウィンドウを設定するだけです。
 
-At this point, we have a basic Hello World application that should display a simple greeting when run.
+この時点で、実行時に簡単な挨拶を表示する基本的な Hello World アプリケーションがあります。
 
-## Running the Example Application
+## サンプルアプリケーションの実行
 
-To make sure we did it right, let's build this application! We will run this as a `--release` application because we will also run our WebDriver tests with a release profile. Run `cargo run --release`, and after some compiling, we should see the following application pop up.
+正しく実行したことを確認するために、このアプリケーションをビルドしましょう！ これは `--release` アプリケーションとして実行されます。 は WebDriver テストをリリースプロファイルで実行するためです。 `cargo run --release`を実行し、コンパイルを行うと、 以下のアプリケーションがポップアップするようになります。
 
 <div style={{textAlign: 'center'}}>
   <img src={HelloTauriWebdriver}/>
 </div>
 
-_Note: If you are modifying the application and want to use the Devtools, then run it without `--release` and "Inspect Element" should be available in the right-click menu._
+_注意: アプリケーションを変更し、Devtoolsを使用する場合。 次に、 `--release` と "Inspect Element" を右クリックメニューで使用できるようにします。_
 
-We should now be ready to start testing this application with some WebDriver frameworks. This guide will go over both [WebdriverIO](webdriverio) and [Selenium](selenium) in that order.
+これで、いくつかのWebDriverフレームワークでこのアプリケーションのテストを開始する準備が整いました。 このガイドは [WebdriverIO](webdriverio) と [Selenium](selenium) の両方を順番に見ていきます。
