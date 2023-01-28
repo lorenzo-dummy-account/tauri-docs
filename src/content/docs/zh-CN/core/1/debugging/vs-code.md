@@ -1,75 +1,75 @@
-# Debugging in VS Code
+# 虚拟机代码调试
 
-This guide describes how to setup debugging in VS Code for the [Core Process in Tauri applications][].
+本指南描述了如何在 VS 代码中为 [Tauri 应用程序的核心进程][] 设置调试程序。
 
-## Setup
+## 设置
 
-Install the [`vscode-lldb`][] extension.
+安装 [`vscode-lldb`][] 扩展。
 
-## Configure launch.json
+## 配置启动.json
 
-Create a `.vscode/launch.json` file and paste the below JSON contents into it:
+创建一个 `.vscode/launch.json` 文件并粘贴下面的 JSON 内容到它：
 
 ```json title=".vscode/launch.json"
-{
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
+
+  // 使用 IntellliSense 来了解可能的属性。
+  // 悬停以查看现有属性的描述。
+  / 欲了解更多信息，请访问：https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2 ",
   "configurations": [
-    {
+    }
       "type": "lldb",
       "request": "launch",
       "name": "Tauri Development Debug",
-      "cargo": {
+      "cargo": P,
         "args": [
           "build",
-          "--manifest-path=./src-tauri/Cargo.toml",
+          "--mentionest路径=. 雪松/牛奶/牛奶。 oml",
           "--no-default-features"
         ]
       },
-      // task for the `beforeDevCommand` if used, must be configured in `.vscode/tasks.json`
-      "preLaunchTask": "ui:dev"
+      // 如果使用 "before DevCommand" 的任务必须在 ". 分数/任务。 son`
+      "PreLaunchTask": "ui:dev"
     },
-    {
-      "type": "lldb",
+    *
+      "类型": "lldb",
       "request": "launch",
       "name": "Tauri Production Debug",
-      "cargo": {
-        "args": ["build", "--release", "--manifest-path=./src-tauri/Cargo.toml"]
+      "cargo": ~
+        "args": ["build", "--release", "--micromistic path=. 雪松/牛奶/牛奶。 oml"]
       },
-      // task for the `beforeBuildCommand` if used, must be configured in `.vscode/tasks.json`
+      // 使用 `preBuilding Command` 的任务 必须在`中配置。 scode/tasks.json`
       "preLaunchTask": "ui:build"
     }
   ]
 }
 ```
 
-This uses `cargo` directly to build the Rust application and load it in both development and production modes.
+这直接使用 `件货物` 来构建Rust 应用程序，并在开发和生产模式中加载它。
 
-Note that it does not use the Tauri CLI, so exclusive CLI features are not executed. The `beforeDevCommand` and `beforeBuildCommand` scripts must be executed beforehand or configured as a task in the `preLaunchTask` field. Below is an example `.vscode/tasks.json` file that has two tasks, one for a `beforeDevCommand` that spawns a development server and one for `beforeBuildCommand`:
+请注意，它不使用Tauri CLI，所以不会执行独家的 CLI功能。 `before DevCommand` and `preambular Build命令` 脚本必须事先执行或配置为 `LaunchTask` 字段。 下面是一个示例 `.vscode/missions. son` 文件有两项任务。 一个 `事先开发命令` 生成了一个开发服务器，一个为 `事先建设命令`:
 
 ```json title=".vscode/tasks.json"
-{
-  // See https://go.microsoft.com/fwlink/?LinkId=733558
-  // for the documentation about the tasks.json format
-  "version": "2.0.0",
+●
+  // 见 https://go.microsoft.com/fwlink/?LinkId=733558
+  // 获取关于任务.json 格式
+  "version": "2.0 ",
   "tasks": [
-    {
+    }
       "label": "ui:dev",
-      "type": "shell",
-      // `dev` keeps running in the background
-      // ideally you should also configure a `problemMatcher`
-      // see https://code.visualstudio.com/docs/editor/tasks#_can-a-background-task-be-used-as-a-prelaunchtask-in-launchjson
-      "isBackground": true,
-      // change this to your `beforeDevCommand`:
+      "类型": "shell",
+      // `dev` 一直在后台运行
+      // 理想的情况下，您也应该配置一个 `problemMatcher`
+      // 请参阅https://code。 isualstudio。 om/docs/editor/tasks#_can-a-background-task-be-used-as--a prelaunched tasks in launchjson
+      "isBackground": true
+      // 将其更改为您的`pre-DevCommand`：
       "command": "yarn",
       "args": ["dev"]
     },
-    {
+    *
       "label": "ui:build",
       "type": "shell",
-      // change this to your `beforeBuildCommand`:
+      // 将其更改为您的`pre-BuildBuildCommand`：
       "command": "yarn",
       "args": ["build"]
     }
@@ -77,8 +77,8 @@ Note that it does not use the Tauri CLI, so exclusive CLI features are not execu
 }
 ```
 
-Now you can set breakpoints in `src-tauri/src/main.rs` or any other Rust file and start debugging by pressing `F5`.
+现在您可以在 `src-tauri/src/main.rs` 或任何其他Rust 文件中设置断点，然后按 `F5` 开始调试.
 
 [`vscode-lldb`]: https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb
 
-[Core Process in Tauri applications]: ../../references/architecture/process-model.md#the-core-process
+[Tauri 应用程序的核心进程]: ../../references/architecture/process-model.md#the-core-process
