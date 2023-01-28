@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # Reducing App Size
 
-With Tauri, we are working to reduce the environmental footprint of applications by using fewer system resources where available, providing compiled systems that don't need runtime evaluation, and offering guides so that engineers can go even smaller without sacrificing performance or security. By saving resources we are doing our part to help you help us save the planet -- which is the only bottom line that companies in the 21st Century should care about.
+Con Tauri, estamos trabajando para reducir la huella ambiental de las aplicaciones utilizando menos recursos del sistema cuando estén disponibles, proporcionando sistemas compilados que no necesitan una evaluación de tiempo de ejecución, y ofreciendo guías para que los ingenieros puedan ser aún más pequeños sin sacrificar el rendimiento o la seguridad. Ahorrando recursos, estamos haciendo nuestra parte para ayudarnos a salvar el planeta, que es el único resultado que las empresas del siglo XXI deberían preocupar.
 
 So if you are interested in learning how to improve your app size and performance, read on!
 
@@ -18,7 +18,7 @@ Before you can optimize your app, you need to figure out what takes up space in 
 
 - **`rollup-plugin-visualizer`** - A tool that generates beautiful (and insightful) graphs from your rollup bundle. Very convenient for figuring out what JavaScript dependencies contribute to your final bundle size the most.
 
-- **`rollup-plugin-graph`** - You noticed a dependency included in your final frontend bundle, but you are unsure why? [`rollup-plugin-graph`][rollup-plugin-graph] generates Graphviz-compatible visualizations of your entire dependency graph.
+- **`rollup-plugin-graph`** - You noticed a dependency included in your final frontend bundle, but you are unsure why? [`rollup-plugin-graph`][rollup-plugin-graph] generates Graphviz-compatible visualizations of your entire dependency graph. [`rollup-plugin-graph`][rollup-plugin-graph] generates Graphviz-compatible visualizations of your entire dependency graph.
 
 These are just a couple of tools that you might use. Make sure to check your frontend bundlers plugin list for more!
 
@@ -226,7 +226,7 @@ See your local `strip` manpage for more information and flags that can be used t
 
 :::info
 
-Rust 1.59 now has a builtin version of `strip`! It can be enabled by adding the following to your `Cargo.toml`:
+Rust 1.59 now has a builtin version of `strip`! It can be enabled by adding the following to your `Cargo.toml`: It can be enabled by adding the following to your `Cargo.toml`:
 
 ```toml
 [profile.release]
@@ -245,6 +245,7 @@ Maybe your target audience has very slow internet, or your app needs to fit on a
 
 :::caution
 You should know that this technique might flag your binary as a virus on Windows and macOS - so use at your own discretion, and as always, validate with [Frida][] and do real distribution testing!
+:::
 :::
 
 #### Usage on macOS
