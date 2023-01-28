@@ -2,29 +2,29 @@
 sidebar_position: 2
 ---
 
-import Command from '@theme/Command'
+从 '@theme/Command' 导入命令
 
-# Development Cycle
+# 发展周期
 
-### 1. Start Your Dev server
+### 1. 启动你的开发服务器
 
-Now that you have everything set up, you should start your application development server provided by your UI framework or bundler (assuming you're using one, of course).
+现在你已经设置了一切， 您应该启动由您的 UI 框架或 Bundler 提供的应用程序开发服务器 (假设您使用的当然是一个)。
 
 :::note
 
-Every framework has its own development tooling. It is outside of the scope of this document to cover them all or stay up to date.
+每个框架都有自己的发展工具。 不在本文件的范围内涵盖所有这些问题或不断更新这些问题。
 :::
 
-### 2. Start Tauri Development Window
+### 2. 启动Tauri开发窗口
 
 <Command name="dev" />
 
-The first time you run this command, the Rust package manager takes several minutes to download and build all the required packages. Since they are cached, subsequent builds are much faster, as only your code needs rebuilding.
+首次运行此命令，Rust 软件包管理器需要几分钟才能下载和构建所有必需的软件包。 由于它们被缓存，其后的构建速度要快得多，因为只有你的代码需要重建。
 
-Once Rust has finished building, the webview opens, displaying your web app. You can make changes to your web app, and if your tooling enables it, the webview should update automatically, just like a browser. When you make changes to your Rust files, they are rebuilt automatically, and your app automatically restarts.
+一旦Rust 完成建筑，网页视图就会打开，显示您的网页应用程序。 您可以更改您的网页应用，如果您的工具启用它，网页视图应自动更新，就像浏览器一样。 当你更改你的Rust文件时，它们会被自动重建，你的应用会自动重启。
 
-:::info About Cargo.toml and Source Control
+:::info 关于 Cargo.toml 和源控制
 
-In your project repository, you SHOULD commit the "src-tauri/Cargo.lock" along with the "src-tauri/Cargo.toml" to git because Cargo uses the lockfile to provide deterministic builds. As a result, it is recommended that all applications check in their Cargo.lock. You SHOULD NOT commit the "src-tauri/target" folder or any of its contents.
+在您的项目仓库中，您SHOULD 将"src-tauri/Cargo.lock"和"src-tauri/Cargo.toml"一起提交到git，因为货物使用锁文件提供确定构建。 因此，建议所有申请都在货物锁上检查。 您不提交"src-tauri/target"文件夹或其中任何内容。
 
 :::
