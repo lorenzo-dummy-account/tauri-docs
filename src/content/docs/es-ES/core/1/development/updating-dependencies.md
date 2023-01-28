@@ -2,14 +2,13 @@
 sidebar_position: 3
 ---
 
-import Tabs from '@theme/Tabs'
-import TabItem from '@theme/TabItem'
+importar pestañas de '@theme/Tabs' importar TabItem de '@theme/TabItem'
 
-# Updating Dependencies
+# Actualizando dependencias
 
-## Update npm Packages
+## Actualizar paquetes npm
 
-If you are using the `tauri` package:
+Si estás usando el paquete `tauri`:
 
 <Tabs groupId="package-manager">
   <TabItem value="npm">
@@ -42,33 +41,33 @@ pnpm update @tauri-apps/cli @tauri-apps/api --latest
   </TabItem>
 </Tabs>
 
-You can also detect what the latest version of Tauri is on the command line, using:
+También puedes detectar cuál es la última versión de Tauri en la línea de comandos, usando:
 
 <Tabs groupId="package-manager">
   <TabItem value="npm">
 
 ```shell
-npm outdated @tauri-apps/cli
+npm desactualizado @tauri-apps/cli
 ```
 
   </TabItem>
   <TabItem value="Yarn">
 
 ```shell
-yarn outdated @tauri-apps/cli
+yarn desactualizado @tauri-apps/cli
 ```
 
   </TabItem>
   <TabItem value="pnpm">
 
 ```shell
-pnpm outdated @tauri-apps/cli
+pnpm desactualizada @tauri-apps/cli
 ```
 
   </TabItem>
 </Tabs>
 
-Alternatively, if you are using the `vue-cli-plugin-tauri` approach:
+Alternativamente, si estás usando el método `vue-cli-plugin-tauri`:
 
 <Tabs groupId="package-manager">
   <TabItem value="npm">
@@ -101,32 +100,32 @@ pnpm update vue-cli-plugin-tauri --latest
   </TabItem>
 </Tabs>
 
-## Update Cargo Packages
+## Actualizar paquetes de carga
 
-You can check for outdated packages with [`cargo outdated`][] or on the crates.io pages: [tauri][] / [tauri-build][].
+Puede comprobar si hay paquetes desactualizados con [`carga desactualizada`][] o en las cajas. o pages: [tauri][] / [tauri-build][].
 
-Go to `src-tauri/Cargo.toml` and change `tauri` and `tauri-build` to
+Ve a `src-tauri/Cargo.toml` y cambia `tauri` y `tauri-build` a
 
 ```toml
 [build-dependencies]
 tauri-build = "%version%"
 
 [dependencies]
-tauri = { version = "%version%" }
+tauri = { versión = "%version%" }
 ```
 
-where `%version%` is the corresponding version number from above. <!-- TODO: (You can just use the `MAJOR.MINOR`) version, like `0.9`. -->
+donde `%version%` es el número de versión correspondiente desde arriba. <!-- TODO: (You can just use the `MAJOR.MINOR`) version, like `0.9`. -->
 
-Then do the following:
+Luego haz lo siguiente:
 
 ```shell
 cd src-tauri
 cargo update
 ```
 
-Alternatively, you can run the `cargo upgrade` command provided by [cargo-edit][] which does all of this automatically.
+Alternativamente, puedes ejecutar el comando `de actualización de carga` proporcionado por [cargo-edit][] que hace todo esto automáticamente.
 
-[`cargo outdated`]: https://github.com/kbknapp/cargo-outdated
+[`carga desactualizada`]: https://github.com/kbknapp/cargo-outdated
 [tauri]: https://crates.io/crates/tauri/versions
 [tauri-build]: https://crates.io/crates/tauri-build/versions
 [cargo-edit]: https://github.com/killercup/cargo-edit
