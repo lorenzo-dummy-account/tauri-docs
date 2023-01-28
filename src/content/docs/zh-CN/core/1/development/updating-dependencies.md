@@ -2,14 +2,13 @@
 sidebar_position: 3
 ---
 
-import Tabs from '@theme/Tabs'
-import TabItem from '@theme/TabItem'
+从 '@theme/Tabs' 导入标签页 从 '@theme/TabItem' 导入标签页
 
-# Updating Dependencies
+# 正在更新依赖关系
 
-## Update npm Packages
+## 更新 npm 包
 
-If you are using the `tauri` package:
+如果您正在使用 `tauri` 包：
 
 <Tabs groupId="package-manager">
   <TabItem value="npm">
@@ -42,33 +41,33 @@ pnpm update @tauri-apps/cli @tauri-apps/api --latest
   </TabItem>
 </Tabs>
 
-You can also detect what the latest version of Tauri is on the command line, using:
+您还可以通过以下方式检测最新版本的Tauri在命令行上：
 
 <Tabs groupId="package-manager">
   <TabItem value="npm">
 
 ```shell
-npm outdated @tauri-apps/cli
+npm 过期的 @tauri-apps/cli
 ```
 
   </TabItem>
   <TabItem value="Yarn">
 
 ```shell
-yarn outdated @tauri-apps/cli
+yarn 过时的@tauri-apps/cli
 ```
 
   </TabItem>
   <TabItem value="pnpm">
 
 ```shell
-pnpm outdated @tauri-apps/cli
+pnpm 过期的@tauri-apps/cli
 ```
 
   </TabItem>
 </Tabs>
 
-Alternatively, if you are using the `vue-cli-plugin-tauri` approach:
+或者，如果您正在使用 `vue-cli-plugin-tauri` 方法：
 
 <Tabs groupId="package-manager">
   <TabItem value="npm">
@@ -101,11 +100,11 @@ pnpm update vue-cli-plugin-tauri --latest
   </TabItem>
 </Tabs>
 
-## Update Cargo Packages
+## 更新货运包
 
-You can check for outdated packages with [`cargo outdated`][] or on the crates.io pages: [tauri][] / [tauri-build][].
+您可以用 [`货物过期`][] 或箱子检查过期的包裹。 o 页面： [tauri][] / [tauri-build][]
 
-Go to `src-tauri/Cargo.toml` and change `tauri` and `tauri-build` to
+转到 `src-tauri/Cargo.toml` 并更改 `tauri` 和 `tauri-build` 到
 
 ```toml
 [build-dependencies]
@@ -115,18 +114,18 @@ tauri-build = "%version%"
 tauri = { version = "%version%" }
 ```
 
-where `%version%` is the corresponding version number from above. <!-- TODO: (You can just use the `MAJOR.MINOR`) version, like `0.9`. -->
+其中 `%version%` 是上面相应的版本号。 <!-- TODO: (You can just use the `MAJOR.MINOR`) version, like `0.9`. -->
 
-Then do the following:
+然后这样做：
 
 ```shell
 cd src-tauri
 cargo update
 ```
 
-Alternatively, you can run the `cargo upgrade` command provided by [cargo-edit][] which does all of this automatically.
+或者，您可以运行 `货物升级` 命令，由 [货物编辑][] 提供，这将自动完成所有这一切。
 
-[`cargo outdated`]: https://github.com/kbknapp/cargo-outdated
+[`货物过期`]: https://github.com/kbknapp/cargo-outdated
 [tauri]: https://crates.io/crates/tauri/versions
 [tauri-build]: https://crates.io/crates/tauri-build/versions
-[cargo-edit]: https://github.com/killercup/cargo-edit
+[货物编辑]: https://github.com/killercup/cargo-edit
