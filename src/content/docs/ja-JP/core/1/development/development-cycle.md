@@ -4,27 +4,27 @@ sidebar_position: 2
 
 import Command from '@theme/Command'
 
-# Development Cycle
+# 開発サイクル
 
-### 1. Start Your Dev server
+### 1. 開発サーバーを起動する
 
-Now that you have everything set up, you should start your application development server provided by your UI framework or bundler (assuming you're using one, of course).
+今、あなたはすべてのセットアップを持っています。 UIフレームワークまたはバンドラによって提供されるアプリケーション開発サーバーを起動する必要があります(もちろん、使用していると仮定しています)。
 
 :::note
 
-Every framework has its own development tooling. It is outside of the scope of this document to cover them all or stay up to date.
+どのフレームワークにも独自の開発ツールがあります。 本書の範囲外で、すべてをカバーするか、最新の状態に保つことができます。
 :::
 
-### 2. Start Tauri Development Window
+### 2. 牡牛座開発ウィンドウを開始
 
 <Command name="dev" />
 
-The first time you run this command, the Rust package manager takes several minutes to download and build all the required packages. Since they are cached, subsequent builds are much faster, as only your code needs rebuilding.
+このコマンドを初めて実行するとき、Rust パッケージマネージャは、必要なパッケージをすべてダウンロードしてビルドするのに数分かかります。 キャッシュされているため、後続のビルドは、コードの再構築だけが必要なので、はるかに高速です。
 
-Once Rust has finished building, the webview opens, displaying your web app. You can make changes to your web app, and if your tooling enables it, the webview should update automatically, just like a browser. When you make changes to your Rust files, they are rebuilt automatically, and your app automatically restarts.
+Rust のビルドが完了すると、Web ビューが開き、Web アプリが表示されます。 Web アプリに変更を加えることができ、ツールが有効になっている場合、Web ビューはブラウザと同じように自動的に更新されます。 Rustファイルを変更すると、それらは自動的に再構築され、アプリは自動的に再起動されます。
 
-:::info About Cargo.toml and Source Control
+:::info Cargo.tomlとソース管理について
 
-In your project repository, you SHOULD commit the "src-tauri/Cargo.lock" along with the "src-tauri/Cargo.toml" to git because Cargo uses the lockfile to provide deterministic builds. As a result, it is recommended that all applications check in their Cargo.lock. You SHOULD NOT commit the "src-tauri/target" folder or any of its contents.
+プロジェクトリポジトリでは、Cargo が lockfile を使用して確定的なビルドを提供するため、git に "src-tauri/Cargo.toml" と "src-tauri/Cargo.lock" をコミットする必要があります(SHOULD)。 その結果、すべてのアプリケーションがCargo.lockでチェックすることをお勧めします。 "src-tauri/target" フォルダまたはその内容をコミットしてはいけません。
 
 :::
