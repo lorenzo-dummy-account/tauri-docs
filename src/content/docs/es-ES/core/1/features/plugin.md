@@ -8,7 +8,7 @@ To use a plugin, just pass the plugin instance to the App's `plugin` method:
 
 ```rust
 fn main() {
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .plugin(my_awesome_plugin::init())
     .run(tauri::generate_context!())
     .expect("failed to run app");
@@ -85,7 +85,8 @@ struct MyState {}
 
 #[tauri::command]
 // this will be accessible with `invoke('plugin:awesome|do_something')`.
-fn do_something<R: Runtime>(_app: AppHandle<R>, state: State<'_, MyState>) {
+fn do_something<R: Runtime>(_app: AppHandle<R>, state:
+State<'_, MyState>) {
   // you can access `MyState` here!
 }
 
