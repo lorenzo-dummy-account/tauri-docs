@@ -1,10 +1,10 @@
-# Calling Rust from the frontend
+# フロントエンドから Rust を呼び出す
 
-Tauri provides a simple yet powerful `command` system for calling Rust functions from your web app. Commands can accept arguments and return values. They can also return errors and be `async`.
+Tauriは、WebアプリからRust関数を呼び出すためのシンプルでパワフルな `コマンド` システムを提供します。 コマンドは引数を受け取り、値を返すことができます。 また、エラーを返し、 `async` にすることもできます。
 
-## Basic Example
+## 基本的な例
 
-Commands are defined in your `src-tauri/src/main.rs` file. To create a command, just add a function and annotate it with `#[tauri::command]`:
+コマンドは `src-tauri/src/main.rs` ファイルに定義されています。 コマンドを作成するには、関数を追加して `#[tauri::command]` で注釈を付けてください。
 
 ```rust
 #[tauri::command]
@@ -13,7 +13,7 @@ fn my_custom_command() {
 }
 ```
 
-You will have to provide a list of your commands to the builder function like so:
+以下のように、ビルダー関数にコマンドのリストを提供する必要があります。
 
 ```rust
 // Also in main.rs
@@ -26,7 +26,7 @@ fn main() {
 }
 ```
 
-Now, you can invoke the command from your JS code:
+これで、JSコードからコマンドを呼び出すことができます。
 
 ```js
 // When using the Tauri API npm package:
@@ -39,28 +39,28 @@ const invoke = window.__TAURI__.invoke
 invoke('my_custom_command')
 ```
 
-## Passing Arguments
+## 引数のパス
 
-Your command handlers can take arguments:
+コマンドハンドラは引数を取ることができます:
 
 ```rust
 #[tauri::command]
 fn my_custom_command(invoke_message: String) {
-  println!("I was invoked from JS, with this message: {}", invoke_message);
+  println!("私はJSから呼び出され、このメッセージ: {}", invoke_message);
 }
 ```
 
-Arguments should be passed as a JSON object with camelCase keys:
+引数は camelCase キーを持つ JSON オブジェクトとして渡す必要があります。
 
 ```js
 invoke('my_custom_command', { invokeMessage: 'Hello!' })
 ```
 
-Arguments can be of any type, as long as they implement [`serde::Deserialize`][].
+[`serde::Deserialize`][] を実装していれば、引数は任意の型にすることができます。
 
-## Returning Data
+## データを返す
 
-Command handlers can return data as well:
+コマンドハンドラは以下のようにデータを返すことができます:
 
 ```rust
 #[tauri::command]
@@ -69,17 +69,17 @@ fn my_custom_command() -> String {
 }
 ```
 
-The `invoke` function returns a promise that resolves with the returned value:
+`が` を呼び出すと、返された値で解決する Promise が返されます。
 
 ```js
 invoke('my_custom_command').then((message) => console.log(message))
 ```
 
-Returned data can be of any type, as long as it implements [`serde::Serialize`][].
+[`serde::Serialize`][] を実装している限り、返されたデータは任意の型にすることができます。
 
-## Error Handling
+## エラー処理
 
-If your handler could fail and needs to be able to return an error, have the function return a `Result`:
+ハンドラが失敗し、エラーを返す必要がある場合は、関数に `結果` を返すようにしてください。
 
 ```rust
 #[tauri::command]
@@ -91,7 +91,7 @@ fn my_custom_command() -> Result<String, String> {
 }
 ```
 
-If the command returns an error, the promise will reject, otherwise, it resolves:
+コマンドがエラーを返した場合、promiseは拒否されます。そうでなければ、次のように解決します。
 
 ```js
 invoke('my_custom_command')
@@ -99,15 +99,15 @@ invoke('my_custom_command')
   .catch((error) => console.error(error))
 ```
 
-## Async Commands
+## 非同期コマンド
 
 :::note
 
-Async commands are executed on a separate thread using [`async_runtime::spawn`][]. Commands without the _async_ keyword are executed on the main thread unless defined with _#[tauri::command(async)]_.
+Asyncコマンドは [`async_runtime::spawn`][] を使用して別々のスレッドで実行されます。 _async_ キーワードのないコマンドは、 _#[tauri::command(async)]_ で定義されていない場合、メインスレッドで実行されます。
 
 :::
 
-If your command needs to run asynchronously, simply declare it as `async`:
+コマンドを非同期で実行する必要がある場合は、 `async` として宣言してください。
 
 ```rust
 #[tauri::command]
@@ -118,15 +118,15 @@ async fn my_custom_command() {
 }
 ```
 
-Since invoking the command from JS already returns a promise, it works just like any other command:
+JSからコマンドを呼び出すとすでにPromiseが返されるので、他のコマンドと同じように動作します。
 
 ```js
 invoke('my_custom_command').then(() => console.log('Completed!'))
 ```
 
-## Accessing the Window in Commands
+## コマンドでウィンドウにアクセスする
 
-Commands can access the `Window` instance that invoked the message:
+コマンドは、メッセージを呼び出した `Window` インスタンスにアクセスできます。
 
 ```rust
 #[tauri::command]
@@ -135,9 +135,9 @@ async fn my_custom_command(window: tauri::Window) {
 }
 ```
 
-## Accessing an AppHandle in Commands
+## コマンドでAppHandleにアクセスする
 
-Commands can access an `AppHandle` instance:
+コマンドは `AppHandle` インスタンスにアクセスできます:
 
 ```rust
 #[tauri::command]
@@ -148,9 +148,9 @@ async fn my_custom_command(app_handle: tauri::AppHandle) {
 }
 ```
 
-## Accessing managed state
+## 管理状態へのアクセス
 
-Tauri can manage state using the `manage` function on `tauri::Builder`. The state can be accessed on a command using `tauri::State`:
+Tauriは `manage` 関数 on `tauri::Builder` を使用して状態を管理することができます。 状態は `tauri::State` を使用してコマンドでアクセスできます:
 
 ```rust
 struct MyState(String);
@@ -169,9 +169,9 @@ fn main() {
 }
 ```
 
-## Creating Multiple Commands
+## 複数のコマンドの作成
 
-The `tauri::generate_handler!` macro takes an array of commands. To register multiple commands, you cannot call invoke_handler multiple times. Only the last call will be used. You must pass each command to a single call of `tauri::generate_handler!`.
+`tauri::generate_handler!` マクロはコマンドの配列を取ります。 複数のコマンドを 登録するには、invoke_handlerを複数回呼び出すことはできません。 最後の 呼び出しのみが使用されます。 `tauri::generate_handler!` の呼び出しにそれぞれのコマンドを渡す必要があります。
 
 ```rust
 #[tauri::command]
@@ -191,9 +191,9 @@ fn main() {
 }
 ```
 
-## Complete Example
+## 完全な例
 
-Any or all of the above features can be combined:
+上記のすべての機能を組み合わせることができます:
 
 ```rust main.rs
 
@@ -237,13 +237,13 @@ fn main() {
 ```
 
 ```js
-// Invocation from JS
+// JS
 
 invoke('my_custom_command', {
   number: 42,
 })
-  .then((res) =>
-    console.log(`Message: ${res.message}, Other Val: ${res.other_val}`)
+  . hen(res) =>
+    コンソール。 og(`Message: ${res.message}, Other Val: ${res.other_val}`)
   )
   .catch((e) => console.error(e))
 ```
