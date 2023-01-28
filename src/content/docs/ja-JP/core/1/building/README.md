@@ -2,11 +2,11 @@
 sidebar_position: 1
 ---
 
-# Introduction
+# はじめに
 
-The Tauri Bundler is a Rust harness to compile your binary, package assets, and prepare a final bundle.
+Tauri Bundlerは、バイナリ、パッケージ資産をコンパイルし、最終バンドルを準備するためのRustハーネスです。
 
-It will detect your operating system and build a bundle accordingly. It currently supports:
+オペレーティングシステムを検出し、それに応じてバンドルを構築します。 現在サポートされています：
 
 - [Windows](./windows.md): .msi
 - [macOS](./macos.md): .app, .dmg
