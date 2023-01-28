@@ -2,58 +2,60 @@
 sidebar_position: 3
 ---
 
-import TauriBuild from './\_tauri-build.md'
+importar TauriBuild desde './\_tauri-build.md'
 
 # macOS Bundle
 
-Tauri applications for macOS are distributed either with an [Application Bundle][] (`.app` file) or an Apple Disk Image (`.dmg` file). The Tauri CLI automatically bundles your application code in these formats, providing options to codesign and notarize your application. Please note that `.app` and `.dmg` bundles can **only be created on macOS** as cross-compilation doesn't work yet.
+Las aplicaciones Tauri para macOS se distribuyen con un paquete de aplicaciones [][] (`. Archivo pp` ) o una imagen de Apple Disk (archivo`.dmg`). El Tauri CLI agrupa automáticamente su código de aplicación en estos formatos, proporcionando opciones para codiseñar y notarializar su aplicación. Tenga en cuenta que `.app` y `.dmg` paquetes sólo pueden **ser creados en macOS** porque la compilación cruzada aún no funciona.
 
 :::note
 
-GUI apps on macOS and Linux do not inherit the `$PATH` from your shell dotfiles (`.bashrc`, `.bash_profile`, `.zshrc`, etc). Check out Tauri's [fix-path-env-rs][] crate to fix this issue.
+Las aplicaciones GUI en macOS y Linux no heredan el `$PATH` de tus archivos de puntos del shell (`. ashrc`, `.bash_profile`, `.zshrc`, etc). Mira la caja de Tauri [fix-path-env-rs][] para solucionar este problema.
 
 :::
 
 <TauriBuild />
 
-## Setting a Minimum System Version
+## Establecer una versión mínima del sistema
 
-The minimum version of the operating system required for a Tauri app to run in macOS is `10.13`. If you need support for newer macOS APIs like `window.print` that is only supported from macOS version `11.0` onwards, you can change the [`tauri.bundle.macOS.minimumSystemVersion`][]. This will in turn set the `Info.plist` [LSMinimumSystemVersion][] property and the `MACOSX_DEPLOYMENT_TARGET` environment variable.
+La versión mínima del sistema operativo requerida para que una aplicación Tauri ejecute en macOS es `10.13`. Si necesitas soporte para las API macOS más nuevas como `window.print` que solo es compatible con macOS versión `11.` en adelante, puede cambiar la [`tauri.bundle.macOS.minimumSystemVersion`][]. Esto establecerá a su vez la propiedad `Info.plist` [LSMinimumSystemVersion][] y la variable de entorno `MACOSX_DEPLOYMENT_TARGET`.
 
-## Binary Targets
+## Objetivos binarios
 
-You can compile your application targeting Apple Silicon, Intel-based Mac computers, or universal macOS binaries. By default, the CLI builds a binary targeting your machine's architecture. If you want to build for a different target you must first install the missing rust target for that target by running `rustup target add aarch64-apple-darwin` or `rustup target add x86_64-apple-darwin`, then you can build your app using the `--target` flag:
+Usted puede compilar su aplicación dirigida a Apple Silicon, computadoras Mac basadas en Intelbased o binarios universales de macOS. Por defecto, el CLI construye un binario orientado a la arquitectura de su máquina. Si quieres compilar para un objetivo diferente, primero debes instalar el objetivo de rust faltante ejecutando `rustup target add aarch64-apple-darwin` o `rustup target add x86_64-apple-darwin`, entonces puedes construir tu aplicación usando la bandera `--target`:
 
-- `tauri build --target aarch64-apple-darwin`: targets Apple silicon machines.
-- `tauri build --target x86_64-apple-darwin`: targets Intel-based machines.
-- `tauri build --target universal-apple-darwin`: produces a [universal macOS binary][] which runs on both Apple silicon and Intel-based Macs.
+- `tauri build --target aarch64-apple-darwin`: apunta a máquinas de silicio de Apple.
+- `tauri build --target x86_64-apple-darwin`: destino a máquinas basadas en Intel.
+- `tauri build --target universal-apple-darwin`: produce un [binario macOS universal][] que se ejecuta tanto en Apple silicon como en Macs basados en Intel.
 
-While Apple silicon machines can run applications compiled for Intel-based Macs through a translation layer called [Rosetta][], this leads to a reduction in performance due to processor instruction translations. It is common practice to let the user choose the correct target when downloading the app, but you can also choose to distribute a [Universal Binary][universal macos binary]. Universal Binaries include both `aarch64` and `x86_64` executables, giving you the best experience on both architectures. Note, however, that this increases your bundle size significantly.
+Mientras que las máquinas de silicio de Apple pueden ejecutar aplicaciones compiladas para Macs basados en Intel a través de una capa de traducción llamada [Rosetta][], esto conduce a una reducción del rendimiento debido a las traducciones del instructor del procesador. Es práctica común permitir que el usuario elija el destino correcto al descargar la aplicación, pero también puede elegir distribuir un [Binario Universal][universal macos binary]. Los binarios universales incluyen ejecutables de `aarch64` y `x86_64` , dándole la mejor experiencia en ambas arquitecturas. Sin embargo, ten en cuenta que esto aumenta significativamente el tamaño de tu paquete.
 
-## Application Bundle Customization
+## Personalización del paquete de aplicaciones
 
-The Tauri configuration file provides the following options to customize your application bundle:
+El archivo de configuración Tauri proporciona las siguientes opciones para personalizar el paquete de la aplicación:
 
-- **Bundle name:** Your app's human-readable name. Configured by the [`package.productName`][] property.
-- **Bundle version:** Your app's version. Configured by the [`package.version`][] property.
-- **Application category:** The category that describes your app. Configured by the [`tauri.bundle.category`][] property. You can see a list of macOS categories [here][macos app categories].
-- **Copyright:** A copyright string associated with your app. Configured by the [`tauri.bundle.copyright`][] property.
-- **Bundle icon:** Your app's icon. Uses the first `.icns` file listed in the [`tauri.bundle.icon`][] array.
-- **Minimum system version:** Configured by the [`tauri.bundle.macOS.minimumSystemVersion`][] property.
-- **DMG license file:** A license that is added to the `.dmg` file. Configure by the [`tauri.bundle.macOS.license`][] property.
-- **[Entitlements.plist file][]:** Entitlements control what APIs your app will have access to. Configured by the [`tauri.bundle.macOS.entitlements`][] property.
-- **Exception domain:** an insecure domain that your application can access such as a `localhost` or a remote `http` domain. It is a convenience configuration around `NSAppTransportSecurity > NSExceptionDomains` setting `NSExceptionAllowsInsecureHTTPLoads` and `NSIncludesSubdomains` to true. See [`tauri.bundle.macOS.exceptionDomain`][] for more information.
+- **Nombre del paquete:** El nombre legible por humanos de tu aplicación. Configurado por la propiedad [`package.productName`][].
+- **Versión del paquete:** Versión de tu aplicación. Configurado por la propiedad [`package.version`][].
+- **Categoría de aplicación:** La categoría que describe tu aplicación. Configurado por la propiedad [`tauri.bundle.category`][]. Puedes ver una lista de las categorías de macOS [aquí][macos app categories].
+- **Copyright:** Una cadena de derechos de autor asociada a tu aplicación. Configurado por la propiedad [`tauri.bundle.copyright`][].
+- **Icono del paquete:** El icono de tu aplicación. Utiliza el primer archivo `.icns` listado en el array [`tauri.bundle.icon`][].
+- **Versión mínima del sistema:** Configurada por la propiedad [`tauri.bundle.macOS.minimumSystemVersion`][].
+- **Archivo de licencia DMG:** Una licencia que se añade al archivo `.dmg`. Configurado por la propiedad [`tauri.bundle.macOS.license`][].
+- **[Archivo Entitlements.plist][]:** Los títulos controlan a qué APIs tendrá acceso su aplicación. Configurado por la propiedad [`tauri.bundle.macOS.entitlements`][].
+- **Dominio de excepción:** un dominio insecuro al que su aplicación puede acceder como un `local host` o un dominio `http` remoto. Es una configuración de conveniencia alrededor de `NSAppTransportSecurity > NSExceptionDomains` configurando `NSExceptionAllowsInsecureHTTPLoads` y `NSIncludesSubdomains` a verdadero. Vea [`tauri.bundle.macOS.exceptionDomain`][] para más información.
 
 :::info
 
-These options generate the application bundle [Info.plist file][]. You can extend the generated file with your own `Info.plist` file stored in the Tauri folder (`src-tauri` by default). The CLI merges both `.plist` files in production, and the core layer embeds it in the binary during development.
+Estas opciones generan el paquete de la aplicación [archivo Info.plist][]. Puede extender el archivo generado con su propio archivo `Info.plist` almacenado en la carpeta Tauri (`src-tauri` por defecto). El CLI combina ambos archivos `.plist` en producción, y la capa principal lo incrusta en el binario durante el desarrollo.
 
 :::
 
-[Application Bundle]: https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html
+[1]: https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html
+
+[2]: https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html
 [`tauri.bundle.macOS.minimumSystemVersion`]: ../../api/config.md#macconfig.minimumsystemversion
 [LSMinimumSystemVersion]: https://developer.apple.com/documentation/bundleresources/information_property_list/lsminimumsystemversion
-[universal macOS binary]: https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary
+[binario macOS universal]: https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary
 [universal macos binary]: https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary
 [Rosetta]: https://support.apple.com/en-gb/HT211861
 [macos app categories]: https://developer.apple.com/app-store/categories/
@@ -63,8 +65,8 @@ These options generate the application bundle [Info.plist file][]. You can exten
 [`tauri.bundle.copyright`]: ../../api/config.md#bundleconfig.copyright
 [`tauri.bundle.icon`]: ../../api/config.md#bundleconfig.icon
 [`tauri.bundle.macOS.license`]: ../../api/config.md#bundleconfig.icon
-[Entitlements.plist file]: https://developer.apple.com/documentation/bundleresources/entitlements
+[Archivo Entitlements.plist]: https://developer.apple.com/documentation/bundleresources/entitlements
 [`tauri.bundle.macOS.entitlements`]: ../../api/config.md#macconfig.entitlements
 [`tauri.bundle.macOS.exceptionDomain`]: ../../api/config.md#macconfig.exceptiondomain
-[Info.plist file]: https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Introduction/Introduction.html
+[archivo Info.plist]: https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Introduction/Introduction.html
 [fix-path-env-rs]: https://github.com/tauri-apps/fix-path-env-rs
