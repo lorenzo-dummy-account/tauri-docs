@@ -2,17 +2,17 @@
 sidebar_position: 7
 ---
 
-# Embedding External Binaries
+# Intégrer des binaires externes
 
-You may need to embed depending binaries to make your application work or prevent users from installing additional dependencies (e.g., Node.js or Python). We call this binary a `sidecar`.
+Vous devrez peut-être intégrer des binaires pour faire fonctionner votre application ou empêcher les utilisateurs d'installer des dépendances supplémentaires (par exemple, Node.js ou Python). Nous appelons ce binaire un `sidecar`.
 
-To bundle the binaries of your choice, you can add the `externalBin` property to the `tauri > bundle` object in your `tauri.conf.json`.
+Pour regrouper les binaires de votre choix, vous pouvez ajouter la propriété `externalBin` au bundle `tauri >` objet dans votre `tauri. onf.json`.
 
-See more about tauri.conf.json configuration [here][tauri.bundle].
+En savoir plus sur la configuration de tauri.conf.json [ici][tauri.bundle].
 
-`externalBin` expects a list of strings targeting binaries either with absolute or relative paths.
+`externalBin` attend une liste de chaînes de caractères ciblant des binaires avec des chemins absolus ou relatifs.
 
-Here is a sample to illustrate the configuration. This is not a complete `tauri.conf.json` file:
+Voici un exemple pour illustrer la configuration. Ce n'est pas un fichier `tauri.conf.json` complet :
 
 ```json
 {
@@ -20,7 +20,7 @@ Here is a sample to illustrate the configuration. This is not a complete `tauri.
     "bundle": {
       "externalBin": [
         "/absolute/path/to/sidecar",
-        "relative/path/to/binary",
+        "relative/chemin/vers/binaire",
         "binaries/my-sidecar"
       ]
     },
@@ -29,8 +29,8 @@ Here is a sample to illustrate the configuration. This is not a complete `tauri.
         "sidecar": true,
         "scope": [
           { "name": "/absolute/path/to/sidecar", "sidecar": true },
-          { "name": "relative/path/to/binary", "sidecar": true },
-          { "name": "binaries/my-sidecar", "sidecar": true }
+          { "name": "relative/chemin/vers/binary", "sidecar": true },
+          { "name": "binaries/my-sidecar", "sidecar": vrai }
         ]
       }
     }
@@ -38,13 +38,13 @@ Here is a sample to illustrate the configuration. This is not a complete `tauri.
 }
 ```
 
-A binary with the same name and a `-$TARGET_TRIPLE` suffix must exist on the specified path. For instance, `"externalBin": ["binaries/my-sidecar"]` requires a `src-tauri/binaries/my-sidecar-x86_64-unknown-linux-gnu` executable on Linux. You can find the current platform's target triple by running the following command:
+Un binaire avec le même nom et un suffixe `-$TARGET_TRIPLE` doit exister sur le chemin spécifié. Par exemple, `"externalBin": ["binaries/my-sidecar"]` nécessite un exécutable `src-tauri/binaries/my-sidecar-x86_64-unknown-linux-gnu` sous Linux. Vous pouvez trouver le triple cible de la plateforme actuelle en exécutant la commande suivante :
 
 ```shell
 rustc -Vv | grep host | cut -f2 -d' '
 ```
 
-Here's a Node.js script to append the target triple to a binary:
+Voici un script Node.js pour ajouter le triple cible à un binaire :
 
 ```javascript
 const execa = require('execa')
@@ -72,11 +72,11 @@ main().catch((e) => {
 })
 ```
 
-## Running it from JavaScript
+## L'exécuter à partir de JavaScript
 
-In the JavaScript code, import the `Command` class on the `shell` module and use the `sidecar` static method.
+Dans le code JavaScript, importez la classe `Command` sur le module `shell` et utilisez la méthode statique `sidecar`.
 
-Note that you must configure the allowlist to enable `shell > sidecar` and configure all binaries in `shell > scope`.
+Notez que vous devez configurer la liste d'autorisations pour activer `shell > sidecar` et configurer tous les binaires dans `shell > scope`.
 
 ```javascript
 import { Command } from '@tauri-apps/api/shell'
@@ -86,32 +86,32 @@ const command = Command.sidecar('binaries/my-sidecar')
 const output = await command.execute()
 ```
 
-## Running it from Rust
+## Exécution depuis la rouille
 
-On the Rust side, import the `Command` struct from the `tauri::api::process` module:
+Sur le côté rouille, importez la commande `` du tauri `::api::process` module:
 
 ```rust
-// `new_sidecar()` expects just the filename, NOT the whole path like in JavaScript
+// `new_sidecar()` attend juste le nom du fichier, PAS le chemin complet comme en JavaScript
 let (mut rx, mut child) = Command::new_sidecar("my-sidecar")
-  .expect("failed to create `my-sidecar` binary command")
-  .spawn()
-  .expect("Failed to spawn sidecar");
+  . xpect("échec de la création de la commande binaire `my-sidecar`")
+  . pawn()
+  . xpect("Échec de l'apparition du trottoir");
 
 tauri::async_runtime::spawn(async move {
-  // read events such as stdout
-  while let Some(event) = rx.recv().await {
-    if let CommandEvent::Stdout(line) = event {
-      window
-        .emit("message", Some(format!("'{}'", line)))
-        .expect("failed to emit event");
+  // lit les événements tels que stdout
+  alors que let Some(event) = rx. ecv(). attendre {
+    si let CommandEvent::Stdout(line) = événement {
+      fenêtre
+        . mit("message", Some(format!("'{}'", ligne)))
+        . xpect("failed to emit event");
       // write to stdin
-      child.write("message from Rust\n".as_bytes()).unwrap();
+      child. rite("message de Rust\n".as_bytes()).unwrap();
     }
   }
 });
 ```
 
-Note that you must enable the **process-command-api** Cargo feature (Tauri's CLI will do this for you once you changed the config):
+Notez que vous devez activer la fonctionnalité Cargo **process-command-api** (L'CLI de Tauri fera cela pour vous une fois que vous aurez modifié la configuration):
 
 ```toml
 # Cargo.toml
@@ -119,11 +119,11 @@ Note that you must enable the **process-command-api** Cargo feature (Tauri's CLI
 tauri = { version = "1", features = ["process-command-api", ...] }
 ```
 
-## Passing arguments
+## Arguments passés
 
-You can pass arguments to Sidecar commands just like you would for running normal `Command`s (see [Restricting access to the Command APIs][]).
+Vous pouvez passer des arguments aux commandes Sidecar comme vous le feriez pour exécuter la `Commande normale`s (voir [Restreindre l'accès aux API de commande][]).
 
-First, define the arguments that need to be passed to the Sidecar command in `tauri.conf.json`:
+Premièrement, définissez les arguments qui doivent être passés à la commande Sidecar dans `tauri.conf.json`:
 
 ```json
 {
@@ -131,7 +131,7 @@ First, define the arguments that need to be passed to the Sidecar command in `ta
     "bundle": {
       "externalBin": [
         "/absolute/path/to/sidecar",
-        "relative/path/to/binary",
+        "relative/chemin/vers/binaire",
         "binaries/my-sidecar"
       ]
     },
@@ -141,7 +141,7 @@ First, define the arguments that need to be passed to the Sidecar command in `ta
         "scope": [
           {
             "name": "binaries/my-sidecar",
-            "sidecar": true,
+            "trottoir": vrai,
             "args": [
               "arg1",
               "-a",
@@ -158,7 +158,7 @@ First, define the arguments that need to be passed to the Sidecar command in `ta
 }
 ```
 
-Then, to call the sidecar command, simply pass in **all** the arguments as an array:
+Ensuite, pour appeler la commande sidecar, il suffit de passer **tous les** arguments en tant que tableau:
 
 ```js
 import { Command } from '@tauri-apps/api/shell'
@@ -166,14 +166,14 @@ import { Command } from '@tauri-apps/api/shell'
 // `binaries/my-sidecar` is the EXACT value specified on `tauri.conf.json > tauri > bundle > externalBin`
 // notice that the args array matches EXACTLY what is specified on `tauri.conf.json`.
 const command = Command.sidecar('binaries/my-sidecar', ['arg1', '-a', '--arg2', 'any-string-that-matches-the-validator'])
-const output = await command.execute()
+const output = wait command.execute()
 ```
 
-## Using Node.js on a Sidecar
+## Utiliser Node.js sur un Sidecar
 
-The Tauri [sidecar example][] demonstrates how to use the sidecar API to run a Node.js application on Tauri. It compiles the Node.js code using [pkg][] and uses the scripts above to run it.
+L'exemple Tauri [sidecar][] montre comment utiliser l'API sidecar pour exécuter une application Node.js sur Tauri. Il compile le code Node.js en utilisant [pkg][] et utilise les scripts ci-dessus pour l'exécuter.
 
 [tauri.bundle]: ../../api/config.md#tauri.bundle
-[sidecar example]: https://github.com/tauri-apps/tauri/tree/dev/examples/sidecar
-[Restricting access to the Command APIs]: ../../api/js/shell.md#restricting-access-to-the-command-apis
+[sidecar]: https://github.com/tauri-apps/tauri/tree/dev/examples/sidecar
+[Restreindre l'accès aux API de commande]: ../../api/js/shell.md#restricting-access-to-the-command-apis
 [pkg]: https://github.com/vercel/pkg
