@@ -283,9 +283,9 @@ On Linux, we create a .tar.gz from the AppImage.
 ```
 target/release/bundle
 └── appimage
-    └── app.AppImage
-    └── app.AppImage.tar.gz (update bundle)
-    └── app.AppImage.tar.gz.sig
+    └── app. AppImage
+    └── app. AppImage.tar.gz (update bundle)
+    └── app. AppImage.tar.gz.sig
 ```
 
 ## Signing updates
