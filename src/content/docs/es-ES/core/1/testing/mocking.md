@@ -15,7 +15,7 @@ Most commonly, you want to intercept IPC requests; this can be helpful in a vari
 - Ensure the correct backend calls are made
 - Simulate different results from backend functions
 
-Tauri provides the mockIPC function to intercept IPC requests. You can find more about the specific API in detail [here][<code>mockipc()</code>].
+Tauri provides the mockIPC function to intercept IPC requests. You can find more about the specific API in detail \[here\]\[<code>mockipc()</code>\].
 
 :::note
 The following examples use [Vitest][], but you can use any other frontend testing library such as jest.
@@ -150,7 +150,6 @@ test('invoke', async () => {
 ```
 
 [`@tauri-apps/api/mocks`]: ../../api/js/mocks.md
-[<code>mockipc()</code>]: ../../api/js/mocks.md#mockipc
 [`mockIPC()`]: ../../api/js/mocks.md#mockipc
 [`mockWindows()`]: ../../api/js/mocks.md#mockwindows
 [`clearMocks()`]: ../../api/js/mocks.md#clearmocks
