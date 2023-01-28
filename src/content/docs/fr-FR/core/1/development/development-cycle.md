@@ -2,29 +2,29 @@
 sidebar_position: 2
 ---
 
-import Command from '@theme/Command'
+Importer la commande depuis '@theme/Command'
 
-# Development Cycle
+# Cycle de développement
 
-### 1. Start Your Dev server
+### 1. Démarrez votre serveur Dev
 
-Now that you have everything set up, you should start your application development server provided by your UI framework or bundler (assuming you're using one, of course).
+Maintenant que vous avez tout configuré, vous devriez démarrer votre serveur de développement d'applications fourni par votre framework UI ou bundler (en supposant que vous en utilisiez un, bien sûr).
 
 :::note
 
-Every framework has its own development tooling. It is outside of the scope of this document to cover them all or stay up to date.
+Chaque cadre a ses propres outils de développement. Il est hors de portée de ce document de les couvrir tous ou de rester à jour.
 :::
 
-### 2. Start Tauri Development Window
+### 2. Démarrer la fenêtre de développement de Tauri
 
 <Command name="dev" />
 
-The first time you run this command, the Rust package manager takes several minutes to download and build all the required packages. Since they are cached, subsequent builds are much faster, as only your code needs rebuilding.
+La première fois que vous exécutez cette commande, le gestionnaire de paquets Rust prend plusieurs minutes pour télécharger et compiler tous les paquets nécessaires. Puisqu'ils sont mis en cache, les versions suivantes sont beaucoup plus rapides, car seul votre code a besoin d'être reconstruit.
 
-Once Rust has finished building, the webview opens, displaying your web app. You can make changes to your web app, and if your tooling enables it, the webview should update automatically, just like a browser. When you make changes to your Rust files, they are rebuilt automatically, and your app automatically restarts.
+Une fois la construction de Rust terminée, le webview s'ouvre, affichant votre application web. Vous pouvez apporter des modifications à votre application web, et si votre outil l'active, le webview devrait se mettre à jour automatiquement, tout comme un navigateur. Lorsque vous apportez des modifications à vos fichiers Rust ils sont reconstruits automatiquement, et votre application redémarre automatiquement.
 
-:::info About Cargo.toml and Source Control
+:::info À propos de Cargo.toml et Contrôle Source
 
-In your project repository, you SHOULD commit the "src-tauri/Cargo.lock" along with the "src-tauri/Cargo.toml" to git because Cargo uses the lockfile to provide deterministic builds. As a result, it is recommended that all applications check in their Cargo.lock. You SHOULD NOT commit the "src-tauri/target" folder or any of its contents.
+Dans votre dépôt de projet, vous DEVEZ valider le « src-tauri/Cargo.lock » avec le « src-tauri/Cargo.toml » pour git car Cargo utilise le fichier de verrouillage pour fournir des constructions déterministes. Par conséquent, il est recommandé que toutes les applications vérifient dans leur Cargo.lock. Vous NE DEVEZ PAS livrer le dossier "src-tauri/target" ou son contenu.
 
 :::
