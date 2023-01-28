@@ -1,36 +1,36 @@
-# Continuous Integration
+# 连续集成
 
 Utilizing Linux and some programs to create a fake display, it is possible to run [WebDriver][] tests with [`tauri-driver`][] on your CI. The following example uses the [WebdriverIO][] example we [previously built together][] and GitHub Actions.
 
-This means the following assumptions:
+这意味着以下假设：
 
-1. The Tauri application is in the repository root and the binary builds when running `cargo build --release`.
-2. The [WebDriverIO][] test runner is in the `webdriver/webdriverio` directory and runs when `yarn test` is used in that directory.
+1. 当运行 `cargo building --release` 时，Tauri应用程序就在资源库根和二进制构建中。
+2. [WebDriverIO][] 测试运行器在 `webdriverio` 目录中，当 `yarn 测试` 在那个 目录中使用时运行。
 
-The following is a commented GitHub Actions workflow file at `.github/workflows/webdriver.yml`
+以下是 `.github/workflows/webdriver.yml 上评论的 GitHub 操作流程文件`
 
 ```yaml
-# run this action when the repository is pushed to
-on: [push]
+# 在仓库推送至
+时运行此动作： [push]
 
-# the name of our workflow
-name: WebDriver
+# 我们工作流的名称
+名称：WebDriver
 
-jobs:
-  # a single job named test
-  test:
-    # the display name of the test job
-    name: WebDriverIO Test Runner
+作业：
+  # 单项作业命名测试
+  测试：
+    # 测试作业的显示名称
+    名称：WebDriverIO 测试运行器
 
-    # we want to run on the latest linux environment
-    runs-on: ubuntu-latest
+    # 我们想要在最新的 linux 环境中运行
+    运行：ubuntu-最新
 
-    # the steps our job runs **in order**
-    steps:
-      # checkout the code on the workflow runner
-      - uses: actions/checkout@v2
+    # 我们的任务运行步骤**order**
+    步骤：
+      # 检查工作流运行器上的代码
+      - 使用：动作/校验@v2
 
-      # install system dependencies that Tauri needs to compile on Linux.
+      # 安装系统依赖关系。Tauri 需要编译Linux 。
       # note the extra dependencies for `tauri-driver` to run which are: `webkit2gtk-driver` and `xvfb`
       - name: Tauri dependencies
         run: >-
@@ -81,11 +81,11 @@ jobs:
           args: tauri-driver
 
       # run the WebdriverIO test suite.
-      # we run it through `xvfb-run` (the dependency we installed earlier) to have a fake
-      # display server which allows our application to run headless without any changes to the code
-      - name: WebdriverIO
-        run: xvfb-run yarn test
-        working-directory: webdriver/webdriverio
+      # 我们通过 `xvfb-run` (我们先前安装的依赖) 运行一个假的
+      # 显示服务器，允许我们的应用程序在不更改代码
+      - 名称: WebdriverIO
+        运行: xvfb-run yarn 测试
+        working-directory: webdriver/webdrierio
 ```
 
 [WebDriver]: https://www.w3.org/TR/webdriver/
