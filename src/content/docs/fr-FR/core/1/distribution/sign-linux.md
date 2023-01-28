@@ -1,44 +1,44 @@
 ---
-sidebar_label: Linux Code Signing
+sidebar_label: Signature de code Linux
 sidebar_position: 3
 ---
 
-# Code Signing Linux packages
+# Paquets Linux de signature de code
 
-This guide provides information on code signing for Linux packages.
+Ce guide fournit des informations sur la signature de code pour les paquets Linux.
 
-## Requirements
+## Exigences
 
-- gpg or gpg2
+- gpg ou gpg2
 
-A key for signing must be prepared. A new one can be generated using:
+Une clé de signature doit être préparée. Une nouvelle génération peut être générée en utilisant :
 
 ```shell
-gpg2 --full-gen-key
+gpg2 --clé gen-complète
 ```
 
-Please refer to the gpg or gpg2 documentation for additional information. You should take additional care to backup your private and public keys in a secure location.
+Veuillez vous référer à la documentation de gpg ou gpg2 pour plus d'informations. Vous devriez prendre des précautions supplémentaires pour sauvegarder vos clés privées et publiques dans un endroit sûr.
 
-## Signing for AppImages
+## Signature pour les images d'applications
 
-You can embed a signature in the AppImage by setting the following environment variables:
+Vous pouvez intégrer une signature dans l'AppImage en définissant les variables d'environnement suivantes :
 
-- **SIGN**: set to `1` to sign the AppImage.
-- **SIGN_KEY**: optional variable to use a specific GPG Key ID for signing.
-- **APPIMAGETOOL_SIGN_PASSPHRASE**: the signing key password. If unset, gpg shows a dialog so you can input it. You must set this when running automated tasks.
+- **SIGN**: définir à `1` pour signer l'AppImage.
+- **SIGN_KEY**: variable facultative pour utiliser une clé spécifique GPG pour signer.
+- **APPIMAGETOOL_SIGN_PASSPHRASE**: la clé de signature mot de passe. Si non défini, gpg affiche une boîte de dialogue pour que vous puissiez la saisir. Vous devez définir ceci lors de l'exécution de tâches automatisées.
 
-You can display the signature embedded in the AppImage by running the following command:
+Vous pouvez afficher la signature intégrée dans l'AppImage en exécutant la commande suivante :
 
 ```shell
 ./src-tauri/target/release/bundle/appimage/$APPNAME_$VERSION_amd64.AppImage --appimage-signature
 ```
 
-Note that you need to change the $APPNAME and $VERSION values with the correct ones based on your configuration.
+Notez que vous devez modifier les valeurs $APPNAME et $VERSION avec les valeurs correctes basées sur votre configuration.
 
-:::caution The signature is not verified
+:::prudence La signature n'est pas vérifiée
 
-AppImage does not validate the signature, so you can't rely on it to check whether the file has been tampered with or not. To validate the signature, you must provide an external tool for your users. See [the official AppImage documentation][] for additional information.
+AppImage ne valide pas la signature, vous ne pouvez donc pas compter sur elle pour vérifier si le fichier a été altéré ou non. Pour valider la signature, vous devez fournir un outil externe pour vos utilisateurs. Voir [la documentation officielle d'AppImage][] pour plus d'informations.
 
 :::
 
-[the official AppImage documentation]: https://docs.appimage.org/packaging-guide/optional/signatures.html
+[la documentation officielle d'AppImage]: https://docs.appimage.org/packaging-guide/optional/signatures.html
