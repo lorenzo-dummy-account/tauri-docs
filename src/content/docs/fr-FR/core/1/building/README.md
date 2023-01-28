@@ -4,9 +4,9 @@ sidebar_position: 1
 
 # Introduction
 
-The Tauri Bundler is a Rust harness to compile your binary, package assets, and prepare a final bundle.
+Le Tauri Bundler est un harnais Rust pour compiler votre binaire, empaqueter des actifs et préparer un paquet final.
 
-It will detect your operating system and build a bundle accordingly. It currently supports:
+Il détectera votre système d'exploitation et construira un paquet en conséquence. Il prend actuellement en charge :
 
 - [Windows](./windows.md): .msi
 - [macOS](./macos.md): .app, .dmg
