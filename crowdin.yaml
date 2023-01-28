@@ -3,6 +3,9 @@ api_token_env: CROWDIN_TOKEN
 project_id: 2
 preserve_hierarchy: true
 files:
-  # Docs Markdown files
   - source: /src/content/docs/en/**/*
     translation: /src/content/docs/%locale%/**/%original_file_name%
+  - source: /src/content/api/en/**/*
+    translation: /src/content/api/%locale%/**/%original_file_name%
+  - source: /src/content/blog/en/**/*
+    translation: /src/content/blog/%locale%/**/%original_file_name%
