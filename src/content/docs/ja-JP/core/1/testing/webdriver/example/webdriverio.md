@@ -4,18 +4,18 @@ import TabItem from '@theme/TabItem'
 # WebdriverIO
 
 :::info Example Application
-This [WebdriverIO][] guide expects you to have already gone through the [example Application setup][] to follow step-by-step. The general information may still be helpful otherwise.
+この [WebdriverIO][] ガイドでは、 [アプリケーションの設定例][] ステップバイステップに従ってください。 そうでなければ一般的な情報はまだ役に立つかもしれません。
 :::
 
-This WebDriver testing example will use [WebdriverIO][], and its testing suite. It is expected to have Node.js already installed, along with `npm` or `yarn` although the [finished example project][] uses `yarn`.
+このWebDriverテストの例では、 [WebdriverIO][]とそのテストスイートを使用します。 ノードを持つことが期待されます。 sはすでに をインストールしています 完成したプロジェクト `` と `yarn` と一緒に [npm][] または `yarn` を使用します。
 
-## Create a Directory for the Tests
+## テスト用のディレクトリを作成
 
-Let's create a space to write these tests in our project. We will be using a nested directory for this example project as we will later also go over other frameworks, but typically you only need to use one. Create the directory we will use with `mkdir -p webdriver/webdriverio`. The rest of this guide assumes you are inside the `webdriver/webdriverio` directory.
+これらのテストをプロジェクトに書くためのスペースを作りましょう。 このプロジェクトのネストされたディレクトリ を使用します。後で他のフレームワークについても説明します。 しかし通常は1つだけ使う必要があります を `mkdir -p webdriver/webdriverio` で使用するディレクトリを作成します。 このガイドの残りの部分は、あなたが `webdriver/webdriverio` ディレクトリ内にいることを前提としています。
 
-## Initializing a WebdriverIO Project
+## WebdriverIO プロジェクトの初期化
 
-We will be using a pre-existing `package.json` to bootstrap this test suite because we have already chosen specific [WebdriverIO][] config options and want to showcase a simple working solution. The bottom of this section has a collapsed guide on setting it up from scratch.
+既存の `パッケージを使用します。 息子<code>` はこのテストスイートをブートストラップします。 [WebdriverIO][] 設定オプションをすでに選択しており、シンプルな動作ソリューションを紹介したいのです。 このセクションの下部には、最初から設定する際に折りたたまれた ガイドがあります。
 
 `package.json`:
 
@@ -38,13 +38,13 @@ We will be using a pre-existing `package.json` to bootstrap this test suite beca
 }
 ```
 
-We have a script that runs a [WebdriverIO][] config as a test suite exposed as the `test` command. We also have various dependencies added by the `@wdio/cli` command when we first set it up. In short, these dependencies are for the most simple setup using a local WebDriver runner, [Mocha][] as the test framework, and a simple Spec Reporter.
+[テスト][] コマンドとして公開されたテストスイートとして `WebdriverIO` 設定を実行するスクリプトがあります。 最初に設定するときに、 @wdio/cli `コマンドによって追加されたさまざまな` 依存関係もあります。 In short, these dependencies are for the most simple setup using a local WebDriver runner, [Mocha][] as the test framework, and a simple Spec Reporter.
 
-<details><summary>Click me if you want to see how to set a project up from scratch</summary>
+<details><summary>プロジェクトを一から立ち上げる方法を見たい場合は、ここをクリックしてください</summary>
 
-The CLI is interactive, and you may choose the tools to work with yourself. Note that you will likely diverge from the rest of the guide, and you need to set up the differences yourself.
+CLIはインタラクティブであり、あなたは自分で作業するツールを選択することができます。 ガイドの残りの から分岐する可能性が高いことに注意してください。違いを自分で設定する必要があります。
 
-Let's add the [WebdriverIO][] CLI to this npm project.
+この npm プロジェクトに [WebdriverIO][] CLI を追加しましょう。
 
 <Tabs groupId="package-manager"
 defaultValue="yarn"
@@ -68,7 +68,7 @@ yarn add @wdio/cli
 </TabItem>
 </Tabs>
 
-To then run the interactive config command to set up a [WebdriverIO][] test suite, you can then run:
+対話型の config コマンドを実行して、 [WebdriverIO][] テストスイートを設定するには、次のように実行します。
 
 <Tabs groupId="package-manager"
 defaultValue="yarn"
@@ -94,9 +94,9 @@ yarn wdio config
 
 </details>
 
-## Config
+## 設定
 
-You may have noticed that the `test` script in our `package.json` mentions a file `wdio.conf.js`. That's the [WebdriverIO][] config file which controls most aspects of our testing suite.
+`package.json` の `テスト` スクリプト `wdio.conf.js` に言及していることに気づいたかもしれません。 テストスイートのほとんどの側面を制御する [WebdriverIO][] 設定ファイルです。
 
 `wdio.conf.js`:
 
@@ -142,11 +142,11 @@ exports.config = {
 }
 ```
 
-If you are interested in the properties on the `exports.config` object, I [suggest reading the documentation][webdriver documentation]. For non-WDIO specific items, there are comments explaining why we are running commands in `onPrepare`, `beforeSession`, and `afterSession`. We also have our specs set to `"./test/specs/**/*.js"`, so let's create a spec now.
+`exports.config` オブジェクトのプロパティに興味がある場合は、 [ドキュメント][webdriver documentation] を読むことをお勧めします。 For non-WDIO specific items, there are comments explaining why we are running commands in `onPrepare`, `beforeSession`, and `afterSession`. また、仕様が `"./test/specs/**/*.js"`に設定されていますので、仕様を作成しましょう。
 
-## Spec
+## 仕様
 
-A spec contains the code that is testing your actual application. The test runner will load these specs and automatically run them as it sees fit. Let's create our spec now in the directory we specified.
+仕様には、実際のアプリケーションをテストするコードが含まれています。 テストランナーはこれらの仕様をロードし、自動的に 適切に実行します。 ここで仕様書を指定したディレクトリに作成しましょう。
 
 `test/specs/example.e2e.js`:
 
@@ -185,11 +185,11 @@ describe('Hello Tauri', () => {
 })
 ```
 
-The `luma` function on top is just a helper function for one of our tests and is not related to the actual testing of the application. If you are familiar with other testing frameworks, you may notice similar functions being exposed that are used, such as `describe`, `it`, and `expect`. The other APIs, such as items like `$` and its exposed methods, are covered by the [WebdriverIO API docs][].
+上部の `luma` 関数は、私たちのテストの1つのヘルパー関数であり、 アプリケーションの実際のテストとは関係ありません。 他のテストフレームワークに精通している場合、 が使用されていることに同様の関数が公開されていることに気づくかもしれません。 例: `describe`, `it`, `expects`. `$` やその公開されたメソッドのような他のAPIは、 [WebdriverIO API docs][] でカバーされます。
 
-## Running the Test Suite
+## テストスイートの実行
 
-Now that we are all set up with config and a spec let's run it!
+今、私たちはすべての設定と仕様で設定されているので、それを実行しましょう!
 
 <Tabs groupId="package-manager"
 defaultValue="yarn"
@@ -213,7 +213,7 @@ yarn test
 </TabItem>
 </Tabs>
 
-We should see output the following output:
+出力は以下のようになります:
 
 ```text
 ➜  webdriverio git:(main) ✗ yarn test
@@ -244,13 +244,15 @@ Spec Files:  1 passed, 1 total (100% completed) in 00:00:01
 Done in 1.98s.
 ```
 
-We see the Spec Reporter tell us that all 3 tests from the `test/specs/example.e2e.js` file, along with the final report `Spec Files: 1 passed, 1 total (100% completed) in 00:00:01`.
+Spec Reporterは、 `test/specs/example.e2eからの3つのテストすべてを示しています。 s <code>` file, with the final report `Spec Files: 1 passed, 1 total (100% completed) in 00:00:01`.
 
-Using the [WebdriverIO][] test suite, we just easily enabled e2e testing for our Tauri application from just a few lines of configuration and a single command to run it! Even better, we didn't have to modify the application at all.
+Using the [WebdriverIO][] test suite, we just easily enabled e2e testing for our Tauri application from just a few lines of configuration and a single command to run it! さらに、アプリケーションを修正する必要は全くありませんでした。
 
 [WebdriverIO]: https://webdriver.io/
-[finished example project]: https://github.com/chippers/hello_tauri
-[example Application setup]: ./setup.md
+
+[テスト]: https://webdriver.io/
+[npm]: https://github.com/chippers/hello_tauri
+[アプリケーションの設定例]: ./setup.md
 [Mocha]: https://mochajs.org/
 [webdriver documentation]: https://webdriver.io/docs/configurationfile
 [WebdriverIO API docs]: https://webdriver.io/docs/api
