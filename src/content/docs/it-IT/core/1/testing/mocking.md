@@ -1,24 +1,24 @@
 # Mocking Tauri APIs
 
-When writing your frontend tests, having a "fake" Tauri environment to simulate windows or intercept IPC calls is common, so-called _mocking_. The [`@tauri-apps/api/mocks`][] module provides some helpful tools to make this easier for you:
+Quando si scrivono i test del fronten, avere un ambiente "falso" Tauri per simulare le finestre o intercettare le chiamate IPC è comune, il cosiddetto _beffardo_. Il modulo [`@tauri-apps/api/mocks`][] fornisce alcuni strumenti utili per rendere questo più facile per te:
 
-:::caution
+:::cautela
 
-Remember to clear mocks after each test run to undo mock state changes between runs! See [`clearMocks()`][] docs for more info.
+Ricordati di cancellare i mocks dopo ogni esecuzione di test per annullare le modifiche allo stato fittizio tra le esecuzioni! Vedere [`clearMocks()`][] docs per ulteriori informazioni.
 
 :::
 
-## IPC Requests
+## Richieste IPC
 
-Most commonly, you want to intercept IPC requests; this can be helpful in a variety of situations:
+Più comunemente, si desidera intercettare le richieste IPC; questo può essere utile in una varietà di situazioni:
 
-- Ensure the correct backend calls are made
-- Simulate different results from backend functions
+- Assicurarsi che le chiamate di backend corrette siano effettuate
+- Simula risultati diversi dalle funzioni di backend
 
-Tauri provides the mockIPC function to intercept IPC requests. You can find more about the specific API in detail [here][<code>mockipc()</code>].
+Tauri fornisce la funzione mockIPC per intercettare le richieste IPC. Puoi trovare ulteriori dettagli sull'API specifica [qui][<code>mockipc()</code>].
 
 :::note
-The following examples use [Vitest][], but you can use any other frontend testing library such as jest.
+I seguenti esempi usano [Vitest][], ma puoi usare qualsiasi altra libreria di test frontend come jest.
 :::
 
 ```js
@@ -28,10 +28,10 @@ import { randomFillSync } from "crypto";
 import { mockIPC } from "@tauri-apps/api/mocks"
 import { invoke } from "@tauri-apps/api/tauri";
 
-// jsdom doesn't come with a WebCrypto implementation
+// jsdom non viene fornito con un'implementazione WebCrypto
 beforeAll(() => {
   //@ts-ignore
-  window.crypto = {
+  window. rypto = {
     getRandomValues: function (buffer) {
       return randomFillSync(buffer);
     },
@@ -41,17 +41,17 @@ beforeAll(() => {
 
 test("invoke simple", async () => {
     mockIPC((cmd, args) => {
-        // simulated rust command called "add" that just adds two numbers
+        // comando di rust simulato chiamato "add" che aggiunge solo due numeri
         if(cmd === "add") {
-           return (args.a as number) + (args.b as number)
+           return (args. come numero) + (args. come numero)
         }
     })
 
-    expect(invoke("add", { a: 12, b: 15 })).resolves.toBe(27)
+    expect(invoke("add", { a: 12, b: 15 })). esolves.toBe(27)
 })
 ```
 
-Sometimes you want to track more information about an IPC call; how many times was the command invoked? Was it invoked at all? You can use [`mockIPC()`][] with other spying and mocking tools to test this:
+A volte vuoi tracciare ulteriori informazioni su una chiamata IPC; quante volte è stato invocato il comando? È stato invocato affatto? È possibile utilizzare [`mockIPC()`][] con altri strumenti di spionaggio e scherzo per testare questo:
 
 ```js
 import { beforeAll, expect, test, vi } from "vitest";
@@ -60,10 +60,10 @@ import { randomFillSync } from "crypto";
 import { mockIPC } from "@tauri-apps/api/mocks"
 import { invoke } from "@tauri-apps/api/tauri";
 
-// jsdom doesn't come with a WebCrypto implementation
+// jsdom non viene fornito con un'implementazione WebCrypto
 beforeAll(() => {
   //@ts-ignore
-  window.crypto = {
+  window. rypto = {
     getRandomValues: function (buffer) {
       return randomFillSync(buffer);
     },
@@ -73,38 +73,38 @@ beforeAll(() => {
 
 test("invoke", async () => {
     mockIPC((cmd, args) => {
-        // simulated rust command called "add" that just adds two numbers
+        // comando di rust simulato chiamato "add" che aggiunge solo due numeri
         if(cmd === "add") {
-           return (args.a as number) + (args.b as number)
+           return (args. come numero) + (args. come numero)
         }
     })
 
-    // we can use the spying tools provided by vitest to track the mocked function
-    const spy = vi.spyOn(window, "__TAURI_IPC__")
+    // possiamo utilizzare gli strumenti di spionaggio forniti da vitest per tracciare la funzione beffata
+    const spy = vi. pyOn(finestra, "__TAURI_IPC__")
 
     expect(invoke("add", { a: 12, b: 15 })).resolves.toBe(27)
     expect(spy).toHaveBeenCalled()
 })
 ```
 
-To mock IPC requests to a sidecar or shell command you need to grab the ID of the event handler when `spawn()` or `execute()` is called and use this ID to emit events the backend would send back:
+Per simulare le richieste IPC a un comando sidecar o shell è necessario catturare l'ID del gestore eventi quando `spawn()` o `execute()` è chiamato e utilizzare questo ID per emettere eventi che il backend invierebbe:
 
 ```js
 mockIPC(async (cmd, args) => {
-  if (args.message.cmd === 'execute') {
+  if (args.message. md === 'execute') {
     const eventCallbackId = `_${args.message.onEventFn}`;
     const eventEmitter = window[eventCallbackId];
 
-    // 'Stdout' event can be called multiple times
+    // L'evento 'Stdout' può essere chiamato più volte
     eventEmitter({
       event: 'Stdout',
       payload: 'some data sent from the process',
     });
 
-    // 'Terminated' event must be called at the end to resolve the promise
+    // L'evento 'Terminato' deve essere chiamato alla fine per risolvere la promessa
     eventEmitter({
-      event: 'Terminated',
-      payload: {
+      evento: 'Terminato',
+      carico utile: {
         code: 0,
         signal: 'kill',
       },
@@ -113,13 +113,13 @@ mockIPC(async (cmd, args) => {
 });
 ```
 
-## Windows
+## Finestre
 
-Sometimes you have window-specific code (a splash screen window, for example), so you need to simulate different windows. You can use the [`mockWindows()`][] method to create fake window labels. The first string identifies the "current" window (i.e., the window your JavaScript believes itself in), and all other strings are treated as additional windows.
+A volte si dispone di un codice specifico per la finestra (una finestra della schermata iniziale, per esempio), quindi è necessario simulare diverse finestre. È possibile utilizzare il metodo [`mockWindows()`][] per creare etichette finte finestra. La prima stringa identifica la finestra "corrente" (cioè la finestra in cui il tuo JavaScript si crede), e tutte le altre stringhe sono trattate come finestre aggiuntive.
 
 :::note
 
-[`mockWindows()`][] only fakes the existence of windows but no window properties. To simulate window properties, you need to intercept the correct calls using [`mockIPC()`][]
+[`mockWindows()`][] falsa solo l'esistenza di finestre ma nessuna proprietà di finestra. Per simulare le proprietà della finestra, è necessario intercettare le chiamate corrette utilizzando [`mockIPC()`][]
 
 :::
 
@@ -129,10 +129,10 @@ import { randomFillSync } from 'crypto'
 
 import { mockWindows } from '@tauri-apps/api/mocks'
 
-// jsdom doesn't come with a WebCrypto implementation
+// jsdom doesn't comes with a WebCrypto implementation
 beforeAll(() => {
   //@ts-ignore
-  window.crypto = {
+  window. rypto = {
     getRandomValues: function (buffer) {
       return randomFillSync(buffer)
     },
@@ -144,7 +144,7 @@ test('invoke', async () => {
 
   const { getCurrent, getAll } = await import('@tauri-apps/api/window')
 
-  expect(getCurrent()).toHaveProperty('label', 'main')
+  expect(getCurrent()). oHaveProperty('label', 'main')
   expect(getAll().map((w) => w.label)).toEqual(['main', 'second', 'third'])
 })
 ```
