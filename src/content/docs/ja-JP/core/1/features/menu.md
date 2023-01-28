@@ -1,19 +1,19 @@
-# Window Menu
+# ウィンドウメニュー
 
-Native application menus can be attached to a window.
+ネイティブアプリケーションメニューは、ウィンドウに添付することができます。
 
-### Creating a menu
+### メニューの作成
 
-To create a native window menu, import the `Menu`, `Submenu`, `MenuItem` and `CustomMenuItem` types. The `MenuItem` enum contains a collection of platform-specific items (currently not implemented on Windows). The `CustomMenuItem` allows you to create your own menu items and add special functionality to them.
+ネイティブ ウィンドウ メニューを作成するには、 `メニュー`、 `サブメニュー`、 `MenuItem` および `CustomMenuItem` 型をインポートします。 `MenuItem` 列挙型には、プラットフォーム固有のアイテムのコレクションが含まれています(現在は Windows には実装されていません)。 `CustomMenuItem` を使用すると、独自のメニュー項目を作成し、それらに特別な機能を追加できます。
 
 ```rust
-use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
+tauri::{CustomMenuItem, Menu, MenuItem, Submenu}; を使用する
 ```
 
-Create a `Menu` instance:
+`メニュー` インスタンスを作成:
 
 ```rust
-// here `"quit".to_string()` defines the menu item id, and the second parameter is the menu item label.
+// こちら `quit".to_string()` はメニューアイテムIDを定義し、2番目のパラメータはメニューアイテムラベルです。
 let quit = CustomMenuItem::new("quit".to_string(), "Quit");
 let close = CustomMenuItem::new("close".to_string(), "Close");
 let submenu = Submenu::new("File", Menu::new().add_item(quit).add_item(close));
@@ -23,9 +23,9 @@ let menu = Menu::new()
   .add_submenu(submenu);
 ```
 
-### Adding the menu to all windows
+### すべてのウィンドウにメニューを追加する
 
-The defined menu can be set to all windows using the `menu` API on the `tauri::Builder` struct:
+定義されたメニューは、 `tauri::Builder` 構造の `メニュー` API を使用して、すべてのウィンドウに設定できます。
 
 ```rust
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
@@ -39,9 +39,9 @@ fn main() {
 }
 ```
 
-### Adding the menu to a specific window
+### 特定のウィンドウにメニューを追加する
 
-You can create a window and set the menu to be used. This allows defining a specific menu set for each application window.
+ウィンドウを作成し、使用するメニューを設定できます。 これにより、アプリケーションウィンドウごとに特定のメニューセットを定義できます。
 
 ```rust
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
@@ -65,11 +65,11 @@ fn main() {
 }
 ```
 
-### Listening to events on custom menu items
+### カスタムメニューアイテムのイベントを再生中
 
-Each `CustomMenuItem` triggers an event when clicked. Use the `on_menu_event` API to handle them, either on the global `tauri::Builder` or on a specific window.
+各 `CustomMenuItem` はクリックされたときにイベントをトリガーします。 `on_menu_event` API を使用して、グローバル `tauri::Builder` または特定のウィンドウのいずれかでこれらを処理します。
 
-#### Listening to events on global menus
+#### グローバルメニューでイベントを再生中
 
 ```rust
 use tauri::{CustomMenuItem, Menu, MenuItem};
@@ -94,7 +94,7 @@ fn main() {
 }
 ```
 
-#### Listening to events on window menus
+#### ウインドウメニューでイベントを再生中
 
 ```rust
 use tauri::{CustomMenuItem, Menu, MenuItem};
@@ -130,9 +130,9 @@ fn main() {
 }
 ```
 
-### Updating menu items
+### メニュー項目を更新中
 
-The `Window` struct has a `menu_handle` method, which allows updating menu items:
+`Window` 構造体には `menu_handle` メソッドがあり、メニュー項目を更新することができます。
 
 ```rust
 fn main() {
