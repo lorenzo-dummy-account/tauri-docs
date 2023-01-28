@@ -1,76 +1,76 @@
 ---
-sidebar_label: Windows Code Signing
+sidebar_label: Firma Codice Windows
 sidebar_position: 2
 ---
 
-# Windows - Code signing guide locally & with GitHub Actions
+# Windows - Guida per la firma del codice localmente & con GitHub Actions
 
-## Intro
+## Introduzione
 
-Code signing your application lets users know that they downloaded the official executable of your app and not some 3rd party malware that poses as your app. While it is not required, it improves users' confidence in your app.
+La firma del codice consente agli utenti di sapere che hanno scaricato l'eseguibile ufficiale della tua app e non alcuni malware di terze parti che si pongono come la tua app. Anche se non è necessario, migliora la fiducia degli utenti nella tua app.
 
-## Prerequisites
+## Prerequisiti
 
-- Windows - you can likely use other platforms, but this tutorial uses Powershell native features.
-- A working Tauri application
-- Code signing certificate - you can acquire one of these on services listed in [Microsoft's docs][]. There are likely additional authorities for non-EV certificates than included in that list, please compare them yourself and choose one at your own risk.
-  - Please make sure to get a **code signing** certificate, SSL certificates do not work!
+- Windows - è possibile utilizzare altre piattaforme, ma questo tutorial utilizza funzionalità native di Powershell.
+- Un'applicazione Tauri funzionante
+- Codice di firma certificato - è possibile acquisire uno di questi sui servizi elencati in [Microsoft docs][]. Ci sono probabilmente ulteriori autorità per i certificati non-EV rispetto a quanto incluso in tale elenco, si prega di confrontarli e scegliere uno a proprio rischio.
+  - Assicurati di ottenere un certificato **per la firma del codice** , i certificati SSL non funzionano!
 
-This guide assumes that you have a standard code signing certificate> If you have an EV certificate, which generally involves a hardware token, please follow your issuer's documentation instead.
+Questa guida presuppone che si dispone di un certificato di firma codice standard> Se si dispone di un certificato EV, che generalmente coinvolge un token hardware, si prega di seguire la documentazione del vostro emittente, invece.
 
 :::note
 
-If you sign the app with an EV Certificate, it'll receive an immediate reputation with Microsoft SmartScreen and won't show any warnings to users.
+Se firmi l'app con un certificato EV, riceverà una reputazione immediata con Microsoft SmartScreen e non mostrerà alcun avvertimento agli utenti.
 
-If you opt for an OV Certificate, which is generally cheaper and available to individuals, Microsoft SmartScreen will still show a warning to users when they download the app. It might take some time until your certificate builds enough reputation. You may opt for [submitting your app][] to Microsoft for manual review. Although not guaranteed, if the app does not contain any malicious code, Microsoft may grant additional reputation and potentially remove the warning for that specific uploaded file.
+Se si sceglie di ottenere un certificato OV, che è generalmente più economico e disponibile per gli individui, Microsoft SmartScreen mostrerà ancora un avviso agli utenti quando scaricano l'app. Potrebbe richiedere del tempo fino a quando il tuo certificato costruisce abbastanza reputazione. Puoi optare per [l'invio della tua app][] a Microsoft per la revisione manuale. Anche se non garantito, se l'applicazione non contiene alcun codice dannoso, Microsoft può concedere ulteriore reputazione e potenzialmente rimuovere l'avviso per quel file caricato specifico.
 
 :::
 
-## Getting Started
+## Per Iniziare
 
-There are a few things we have to do to get Windows prepared for code signing. This includes converting our certificate to a specific format, installing this certificate, and decoding the required information from the certificate.
+Ci sono alcune cose che dobbiamo fare per ottenere Windows preparati per la firma del codice. Ciò include la conversione del nostro certificato in un formato specifico, l'installazione di questo certificato e decodifica le informazioni richieste dal certificato.
 
-### A. Convert your `.cer` to `.pfx`
+### A. Converti il tuo `.cer` in `.pfx`
 
-1. You will need the following:
+1. Avrete bisogno di quanto segue:
 
-   - certificate file (mine is `cert.cer`)
-   - private key file (mine is `private-key.key`)
+   - file certificato (miniera è `cert.cer`)
+   - file della chiave privata (il mio è `chiave privata.key`)
 
-2. Open up a command prompt and change to your current directory using `cd Documents/Certs`
+2. Apri un prompt dei comandi e cambia nella tua directory corrente usando `cd Documents/Certs`
 
-3. Convert your `.cer` to a `.pfx` using `openssl pkcs12 -export -in cert.cer -inkey private-key.key -out certificate.pfx`
+3. Converti il tuo `.cer` in un `.pfx` usando `openssl pkcs12 -export -in cert.cer -inkey private-key.key -out certificate.pfx`
 
-4. You should be prompted to enter an export password **DON'T FORGET IT!**
+4. Dovresti essere richiesto di inserire una password di esportazione **NON FORGETTE!**
 
 ### B. Import your `.pfx` file into the keystore.
 
-We now need to import our `.pfx` file.
+Ora abbiamo bisogno di importare il nostro file `.pfx`.
 
-1. Assign your export password to a variable using `$WINDOWS_PFX_PASSWORD = 'MYPASSWORD'`
+1. Assegna la password di esportazione a una variabile usando `$WINDOWS_PFX_PASSWORD = 'MYPASSWORD'`
 
-2. Now Import the certificate using `Import-PfxCertificate -FilePath Certs/certificate.pfx -CertStoreLocation Cert:\CurrentUser\My -Password (ConvertTo-SecureString -String $env:WINDOWS_PFX_PASSWORD -Force -AsPlainText)`
+2. Ora Importa il certificato usando `Import-PfxCertificate -FilePath Certs/certificate.pfx -CertStoreLocation Cert:\CurrentUser\My -Password (ConvertTo-SecureString -String $env:WINDOWS_PFX_PASSWORD -Force -AsPlainText)`
 
-### C. Prepare Variables
+### C. Prepara Le Variabili
 
-1. We need the SHA-1 thumbprint of the certificate; you can get this using `openssl pkcs12 -info -in certificate.pfx` and look under for following
+1. Abbiamo bisogno della miniatura SHA-1 del certificato; puoi ottenerla usando `openssl pkcs12 -info -in certificate.pfx` e cercare sotto per
 
 ```
-Bag Attributes
+Attributi borsa
     localKeyID: A1 B1 A2 B2 A3 B3 A4 B4 A5 B5 A6 B6 A7 B7 A8 B8 A9 B9 A0 B0
 ```
 
-2. You will capture the `localKeyID` but with no spaces, in this example, it would be `A1B1A2B2A3B3A4B4A5B5A6B6A7B7A8B8A9B9A0B0`. This is our `certificateThumbprint`.
+2. Catturerai il `localKeyID` ma senza spazi, in questo esempio, sarebbe `A1B1A2B2A3B3A4B4A5B5A6B6A7B7A8B8A9B9A0B0`. Questo è il nostro `certificatoThumbprint`.
 
-3. We need the SHA digest algorithm used for your certificate (Hint: this is likely `sha256`
+3. Abbiamo bisogno dell'algoritmo di digest SHA utilizzato per il tuo certificato (Hint: è probabile che `sha256`
 
-4. We also need a timestamp URL; this is a time server used to verify the time of the certificate signing. I'm using `http://timestamp.comodoca.com`, but whoever you got your certificate from likely has one as well.
+4. Abbiamo anche bisogno di un URL timestamp; questo è un server di tempo utilizzato per verificare l'ora della firma del certificato. Sto usando `http://timestamp.comodoca.com`, ma chi hai ottenuto il tuo certificato probabilmente ne ha anche uno.
 
-## Prepare `tauri.conf.json` file
+## Prepara il file `tauri.conf.json`
 
-1. Now that we have our `certificateThumbprint`, `digestAlgorithm`, & `timestampUrl` we will open up the `tauri.conf.json`.
+1. Ora che abbiamo il nostro `certificatoThumbprint`, `digestAlgorithm`, & `timestampUrl` apriremo il `tauri. onf.json`.
 
-2. In the `tauri.conf.json` you will look for the `tauri` -> `bundle` -> `windows` section. You see, there are three variables for the information we have captured. Fill it out like below.
+2. Nella `tauri.conf.json` cercherai il pacchetto `tauri` -> `` -> `finestre` sezione. Vedete, ci sono tre variabili per le informazioni che abbiamo acquisito. Riempilo come sotto.
 
 ```json tauri.conf.json
 "windows": {
@@ -80,114 +80,114 @@ Bag Attributes
 }
 ```
 
-3. Save and run `yarn | yarn build`
+3. Salvare e eseguire `filati <unk> filati costruire`
 
-4. In the console output, you should see the following output.
+4. Nell'output della console si dovrebbe vedere il seguente output.
 
 ```
-info: signing app
-info: running signtool "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.19041.0\\x64\\signtool.exe"
-info: "Done Adding Additional Store\r\nSuccessfully signed: APPLICATION FILE PATH HERE
+info: firma app
+info: esecuzione signtool "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.19041. \\x64\\signtool.exe"
+info: "Done Adding Additional Store\r\nFirmato con successo: FILE DI APPLICAZIONE QUI
 ```
 
-Which shows you have successfully signed the `.exe`.
+Che mostra che hai firmato con successo il `.exe`.
 
-And that's it! You have successfully signed your .exe file.
+E questo è tutto! Hai firmato con successo il file .exe.
 
-## BONUS: Sign your application with GitHub Actions.
+## BONUS: Firma la tua applicazione con GitHub Actions.
 
-We can also create a workflow to sign the application with GitHub actions.
+Possiamo anche creare un flusso di lavoro per firmare l'applicazione con le azioni GitHub.
 
 ### GitHub Secrets
 
-We need to add a few GitHub secrets for the proper configuration of the GitHub Action. These can be named however you would like.
+Abbiamo bisogno di aggiungere alcuni segreti GitHub per la corretta configurazione dell'azione GitHub. Questi possono essere chiamati come si desidera.
 
-- You can view the [encrypted secrets][] guide on how to add GitHub secrets.
+- È possibile visualizzare la guida [cifrati segreti][] su come aggiungere segreti GitHub.
 
-The secrets we used are as follows
+I segreti che abbiamo usato sono i seguenti
 
-|         GitHub Secrets         |                                                        Value for Variable                                                         |
-|:------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------:|
-|      WINDOWS_CERTIFICATE       | Base64 encoded version of your .pfx certificate, can be done using this command `certutil -encode certificate.pfx base64cert.txt` |
-| WINDOWS_CERTIFICATE_PASSWORD |                                 Certificate export password used on creation of certificate .pfx                                  |
+|         GitHub Secrets         |                                                              Valore per la variabile                                                              |
+|:------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------:|
+|      WINDOWS_CERTIFICATE       | La versione codificata Base64 del certificato .pfx, può essere fatta utilizzando questo comando `certutil -encode certificate.pfx base64cert.txt` |
+| WINDOWS_CERTIFICATE_PASSWORD |                               Password di esportazione certificato utilizzata per la creazione del certificato .pfx                               |
 
-### Workflow Modifications
+### Modifiche Del Workflow
 
-1. We need to add a step in the workflow to import the certificate into the Windows environment. This workflow accomplishes the following
+1. Dobbiamo aggiungere un passo nel flusso di lavoro per importare il certificato nell'ambiente Windows. Questo workflow realizza quanto segue
 
-   1. Assign GitHub secrets to environment variables
-   2. Create a new `certificate` directory
-   3. Import `WINDOWS_CERTIFICATE` into tempCert.txt
-   4. Use `certutil` to decode the tempCert.txt from base64 into a `.pfx` file.
-   5. Remove tempCert.txt
-   6. Import the `.pfx` file into the Cert store of Windows & convert the `WINDOWS_CERTIFICATE_PASSWORD` to a secure string to be used in the import command.
+   1. Assegna i segreti di GitHub alle variabili di ambiente
+   2. Crea una nuova directory `certificato`
+   3. Importa `WINDOWS_CERTIFICATE` in tempCert.txt
+   4. Usa `certutil` per decodificare il tempCert.txt da base64 in un file `.pfx`.
+   5. Rimuovi tempCert.txt
+   6. Importa il `. fx` file nel Cert store di Windows & converte il `WINDOWS_CERTIFICATE_PASSWORD` in una stringa sicura da usare nel comando importazione.
 
-2. We will be using the [`tauri-action` publish template][].
+2. Useremo il modello di pubblicazione [`tauri-action`][].
 
 ```yml
-name: 'publish'
-on:
+nome: 'publish'
+su:
   push:
     branches:
       - release
 
 jobs:
   publish-tauri:
-    strategy:
+    strategia:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-latest, windows-latest]
+        piattaforma: [macos-latest, ubuntu-latest, windows-latest]
 
     runs-on: ${{ matrix.platform }}
-    steps:
+    passi:
       - uses: actions/checkout@v2
       - name: setup node
         uses: actions/setup-node@v1
-        with:
+        con:
           node-version: 12
       - name: install Rust stable
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
       - name: install webkit2gtk (ubuntu only)
-        if: matrix.platform == 'ubuntu-latest'
-        run: |
+        if: matrix. latform == 'ubuntu-latest'
+        run: <unk>
           sudo apt-get update
-          sudo apt-get install -y webkit2gtk-4.0
-      - name: install app dependencies and build it
+          sudo apt-get install -y webkit2gtk-4.
+      - nome: installa le dipendenze dell'app e costruiscila
         run: yarn && yarn build
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+        con:
+          tagName: app-v__VERSION__ # l'azione sostituisce automaticamente \_\_VERSION\_\_ con la versione dell'app
           releaseName: 'App v__VERSION__'
-          releaseBody: 'See the assets to download this version and install.'
+          releaseBody: 'Vedi gli asset per scaricare questa versione e installazione.'
           releaseDraft: true
           prerelease: false
 ```
 
-3. Right above `-name: install app dependencies and build it` you will want to add the following step
+3. Proprio sopra `-name: install app dependencies and build it` you will want to add the following step
 
 ```yml
-- name: import windows certificate
-  if: matrix.platform == 'windows-latest'
+- nome: import windows certificate
+  se: matrix. latform == 'windows-latest'
   env:
     WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
     WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
-  run: |
+  esecuzione: <unk>
     New-Item -ItemType directory -Path certificate
-    Set-Content -Path certificate/tempCert.txt -Value $env:WINDOWS_CERTIFICATE
+    Set-Content -Path certificate/tempCert. xt -Value $env:WINDOWS_CERTIFICATE
     certutil -decode certificate/tempCert.txt certificate/certificate.pfx
-    Remove-Item -path certificate -include tempCert.txt
+    Remove-Item -path certificate -include tempCert. xt
     Import-PfxCertificate -FilePath certificate/certificate.pfx -CertStoreLocation Cert:\CurrentUser\My -Password (ConvertTo-SecureString -String $env:WINDOWS_CERTIFICATE_PASSWORD -Force -AsPlainText)
 ```
 
-4. Save and push to your repo.
+4. Salva e invia al tuo repo.
 
-5. Your workflow can now import your windows certificate and import it into the GitHub runner, allowing for automated code-signing!
+5. Il tuo flusso di lavoro può ora importare il certificato Windows e importarlo nel runner GitHub, consentendo la firma automatica del codice!
 
-[Microsoft's docs]: https://learn.microsoft.com/en-us/windows-hardware/drivers/dashboard/code-signing-cert-manage
-[submitting your app]: https://www.microsoft.com/en-us/wdsi/filesubmission/
-[encrypted secrets]: https://docs.github.com/en/actions/reference/encrypted-secrets
-[`tauri-action` publish template]: https://github.com/tauri-apps/tauri-action
+[Microsoft docs]: https://learn.microsoft.com/en-us/windows-hardware/drivers/dashboard/code-signing-cert-manage
+[l'invio della tua app]: https://www.microsoft.com/en-us/wdsi/filesubmission/
+[cifrati segreti]: https://docs.github.com/en/actions/reference/encrypted-secrets
+[`tauri-action`]: https://github.com/tauri-apps/tauri-action
