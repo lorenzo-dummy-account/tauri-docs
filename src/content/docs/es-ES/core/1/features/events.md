@@ -50,16 +50,16 @@ On the backend, the global event channel is exposed on the `App` struct, and win
 ### Global events
 
 ```rust
-use tauri::Manager;
+use tauri:: Manager;
 
 // the payload type must implement `Serialize` and `Clone`.
-#[derive(Clone, serde::Serialize)]
+#[derive(Clone, serde:: Serialize)]
 struct Payload {
   message: String,
 }
 
 fn main() {
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .setup(|app| {
       // listen to the `event-name` (emitted on any window)
       let id = app.listen_global("event-name", |event| {
@@ -83,10 +83,10 @@ fn main() {
 To use the window-specific event channel, a `Window` object can be obtained on a command handler or with the `get_window` function:
 
 ```rust
-use tauri::{Manager, Window};
+use tauri:: {Manager, Window};
 
 // the payload type must implement `Serialize` and `Clone`.
-#[derive(Clone, serde::Serialize)]
+#[derive(Clone, serde:: Serialize)]
 struct Payload {
   message: String,
 }
@@ -102,7 +102,7 @@ fn init_process(window: Window) {
 }
 
 fn main() {
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .setup(|app| {
       // `main` here is the window label; it is defined on the window creation or under `tauri.conf.json`
       // the default value is `main`. note that it must be unique
