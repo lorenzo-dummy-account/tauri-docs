@@ -1,36 +1,36 @@
-# Continuous Integration
+# Integrazione Continua
 
-Utilizing Linux and some programs to create a fake display, it is possible to run [WebDriver][] tests with [`tauri-driver`][] on your CI. The following example uses the [WebdriverIO][] example we [previously built together][] and GitHub Actions.
+Utilizzando Linux e alcuni programmi per creare un falso display, è possibile eseguire [test WebDriver][] con [`tauri-driver`][] sul tuo CI. Il seguente esempio utilizza l'esempio [WebdriverIO][] che [in precedenza abbiamo costruito insieme][] e GitHub Actions.
 
-This means the following assumptions:
+Ciò significa le seguenti ipotesi:
 
-1. The Tauri application is in the repository root and the binary builds when running `cargo build --release`.
-2. The [WebDriverIO][] test runner is in the `webdriver/webdriverio` directory and runs when `yarn test` is used in that directory.
+1. L'applicazione Tauri è nella root del repository e le build binarie quando si esegue `cargo build --release`.
+2. Il [WebDriverIO][] test runner è nella directory `webdriver/webdriverio` e viene eseguito quando `yarn test` viene utilizzato in quella directory .
 
-The following is a commented GitHub Actions workflow file at `.github/workflows/webdriver.yml`
+Di seguito è riportato un file di workflow di GitHub Actions commentato su `.github/workflows/webdriver.yml`
 
 ```yaml
-# run this action when the repository is pushed to
-on: [push]
+# eseguire questa azione quando il repository viene inviato a
+su: [push]
 
-# the name of our workflow
-name: WebDriver
+# il nome del nostro flusso di lavoro
+nome: WebDriver
 
-jobs:
-  # a single job named test
+lavori:
+  # un singolo lavoro chiamato test
   test:
-    # the display name of the test job
-    name: WebDriverIO Test Runner
+    # il nome visualizzato del lavoro di test
+    nome: WebDriverIO Test Runner
 
-    # we want to run on the latest linux environment
+    # vogliamo eseguire sull'ultimo ambiente linux
     runs-on: ubuntu-latest
 
-    # the steps our job runs **in order**
-    steps:
-      # checkout the code on the workflow runner
+    # i passi che il nostro job esegue **in ordine**
+    passi:
+      # checkout il codice sul workflow runner
       - uses: actions/checkout@v2
 
-      # install system dependencies that Tauri needs to compile on Linux.
+      # install le dipendenze di sistema che Tauri deve compilare su Linux.
       # note the extra dependencies for `tauri-driver` to run which are: `webkit2gtk-driver` and `xvfb`
       - name: Tauri dependencies
         run: >-
@@ -73,23 +73,23 @@ jobs:
         working-directory: webdriver/webdriverio
 
       # install the latest version of `tauri-driver`.
-      # note: the tauri-driver version is independent of any other Tauri versions
-      - name: Install tauri-driver
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
+      # nota: la versione tauri-driver è indipendente da qualsiasi altra versione Tauri
+      - nome: Installazione tauri-driver
+        utilizza: actions-rs/cargo@v1
+        con:
+          comando: install
           args: tauri-driver
 
-      # run the WebdriverIO test suite.
-      # we run it through `xvfb-run` (the dependency we installed earlier) to have a fake
-      # display server which allows our application to run headless without any changes to the code
-      - name: WebdriverIO
+      # eseguire la suite di test WebdriverIO.
+      # lo eseguiamo attraverso `xvfb-run` (la dipendenza che abbiamo installato in precedenza) per avere un falso
+      # display server che permette alla nostra applicazione di eseguire senza intestazione senza alcuna modifica al codice
+      - nome: WebdriverIO
         run: xvfb-run yarn test
         working-directory: webdriver/webdriverio
 ```
 
-[WebDriver]: https://www.w3.org/TR/webdriver/
+[test WebDriver]: https://www.w3.org/TR/webdriver/
 [`tauri-driver`]: https://crates.io/crates/tauri-driver
 [WebdriverIO]: https://webdriver.io/
 [WebDriverIO]: https://webdriver.io/
-[previously built together]: ./example/webdriverio.md
+[in precedenza abbiamo costruito insieme]: ./example/webdriverio.md
