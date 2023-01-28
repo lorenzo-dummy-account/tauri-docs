@@ -1,50 +1,50 @@
-# Window Customization
+# 窗口自定义
 
-Tauri provides lots of options for customizing the look and feel of your app's window. You can create custom titlebars, have transparent windows, enforce size constraints, and more.
+Tauri提供了许多自定义应用程序窗口外观和感觉的选项。 您可以创建自定义标题栏，具有透明窗口，强制执行大小限制等等。
 
-## Configuration
+## 配置
 
-There are three ways to change the window configuration:
+有三种方法可以更改窗口配置：
 
-- [Through tauri.conf.json](../../api/config.md#tauri.windows)
-- [Through the JS API](../../api/js/window.md#webviewwindow)
-- [Through the Window in Rust](https://docs.rs/tauri/1/tauri/window/struct.Window.html)
+- [通过 tauri.conf.json](../../api/config.md#tauri.windows)
+- [通过 JS API](../../api/js/window.md#webviewwindow)
+- [穿过Rust中的窗口](https://docs.rs/tauri/1/tauri/window/struct.Window.html)
 
-## Creating a Custom Titlebar
+## 创建自定义标题栏
 
-A common use of these window features is creating a custom titlebar. This short tutorial will guide you through that process.
+这些窗口功能的常用正在创建自定义标题栏。 这个简短的教程将引导您完成这个过程。
 
 ### CSS
 
-You'll need to add some CSS for the titlebar to keep it at the top of the screen and style the buttons:
+您需要为标题栏添加一些CSS，才能将其保留在屏幕顶部并样式按钮：
 
 ```css
-.titlebar {
+.titlebar,
   height: 30px;
-  background: #329ea3;
-  user-select: none;
-  display: flex;
-  justify-content: flex-end;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  背景: #329ea3;
+  用户选择: 无;
+  显示: 弹性;
+  正当内容：弹性结束；
+  立场：修正；
+  顶部：0；
+  剩余：0；
+  右：0；
 }
-.titlebar-button {
+。 itlebar-button v.
   display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 30px;
-  height: 30px;
+  justicy-content: center;
+  校准项目：中心；
+  宽度：30px；
+  高度：30px；
 }
-.titlebar-button:hover {
-  background: #5bbec3;
+itlebar-button:hover PDF
+  bbbec3;
 }
 ```
 
 ### HTML
 
-Now, you'll need to add the HTML for the titlebar. Put this at the top of your `<body>` tag:
+现在，您需要添加标题栏的 HTML 文件。 将此置于您的 `<body>` 标签的顶部：
 
 ```html
 <div data-tauri-drag-region class="titlebar">
@@ -66,19 +66,19 @@ Now, you'll need to add the HTML for the titlebar. Put this at the top of your `
 </div>
 ```
 
-Note that you may need to move the rest of your content down so that the titlebar doesn't cover it.
+请注意，您可能需要将其余内容向下移动，以便标题栏不包含它。
 
 ### JS
 
-Finally, you'll need to make the buttons work:
+最后，您需要使按钮发挥作用：
 
 ```js
-import { appWindow } from '@tauri-apps/api/window'
-document
+从 '@tauri-apps/api/window' 导入 { appWindow }
+文档
   .getElementById('titlebar-minimize')
-  .addEventListener('click', () => appWindow.minimize())
-document
-  .getElementById('titlebar-maximize')
+  ddEventListener('点击', () => appWindow.minimize())
+文档
+  etElementById('titlebar-maximize')
   .addEventListener('click', () => appWindow.toggleMaximize())
 document
   .getElementById('titlebar-close')
