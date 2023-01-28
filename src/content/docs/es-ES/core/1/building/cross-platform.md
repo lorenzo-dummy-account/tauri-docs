@@ -2,150 +2,150 @@
 sidebar_position: 5
 ---
 
-# Cross-Platform Compilation
+# Compilación de Plataforma Cruzada
 
-Tauri relies heavily on native libraries and toolchains, so meaningful cross-compilation is **not possible** at the current moment. The next best option is to compile utilizing a CI/CD pipeline hosted on something like [GitHub Actions][], Azure Pipelines, GitLab, or other options. The pipeline can run the compilation for each platform simultaneously making the compilation and release process much easier.
+Tauri depende en gran medida de las bibliotecas nativas y las toolchains, por lo que la compilación cruzada significativa **no es posible** en el momento actual. La siguiente mejor opción es compilar utilizando un pipeline de CI/CD alojado en algo como [GitHub Actions][], Azure Pipelines, GitLab, u otras opciones. El pipeline puede ejecutar la compilación para cada plataforma simultáneamente haciendo el proceso de compilación y liberación mucho más fácil.
 
-For an easy setup, we currently provide [Tauri Action][], a GitHub Action that runs on all the supported platforms, compiles your software, generates the necessary artifacts, and uploads them to a new GitHub release.
+Para una configuración fácil, actualmente proporcionamos [Tauri Action][], una Acción de GitHub que se ejecuta en todas las plataformas soportadas, compila su software, genera los artefactos necesarios y los carga a una nueva versión de GitHub.
 
 ## Tauri GitHub Action
 
-Tauri Action leverages GitHub Actions to simultaneously build your application as a Tauri native binary for macOS, Linux, and Windows, and automates creating a GitHub release.
+Tauri Action aprovecha las Acciones de GitHub para construir simultáneamente tu aplicación como un binario nativo Tauri para macOS, Linux, y Windows, y automatiza la creación de una versión de GitHub.
 
-This GitHub Action may also be used as a testing pipeline for your Tauri app, guaranteeing compilation runs fine on all platforms for each pull request sent, even if you don't wish to create a new release.
+Esta acción de GitHub también puede utilizarse como un pipeline de prueba para su aplicación Tauri, garantizar la compilación funciona bien en todas las plataformas para cada pull request enviado, incluso si no desea crear una nueva versión.
 
-:::info Code Signing
+:::info firma de código
 
-To setup code signing for both Windows and macOS on your workflow, follow the specific guide for each platform:
+Para configurar la firma de código para Windows y macOS en tu flujo de trabajo, sigue la guía específica para cada plataforma:
 
-- [Windows Code Signing with GitHub Actions][]
-- [macOS Code Signing with GitHub Actions][]
+- [Firmar código de Windows con acciones de GitHub][]
+- [firma de código macOS con acciones de GitHub][]
 
 :::
 
-### Getting Started
+### Comenzando
 
-To set up Tauri Action you must first set up a GitHub repository. You can use this action on a repo that doesn't have Tauri configured since it automatically initializes Tauri before building and configuring it to use your artifacts.
+Para configurar Tauri Action primero debe configurar un repositorio de GitHub. Puedes usar esta acción en un repositorio que no tiene Tauri configurado ya que inicializa automáticamente Tauri antes de construirlo y configurarlo para que use tus artefactos.
 
-Go to the Actions tab on your GitHub project and choose "New workflow", then choose "Set up a workflow yourself". Replace the file with the [Tauri Action production build workflow example][]. Alternatively, you may set up the workflow based on the [example at the bottom of this page](#example-workflow)
+Ve a la pestaña Acciones en tu proyecto de GitHub y elige "Nuevo flujo de trabajo", luego elige "Configurar un flujo de trabajo tú mismo". Replace the file with the [Tauri Action production build workflow example][]. Alternativamente, puede configurar el flujo de trabajo basado en el ejemplo [en la parte inferior de esta página](#example-workflow)
 
-### Configuration
+### Configuración
 
-You can configure Tauri with the `configPath`, `distPath` and `iconPath` options. See the actions Readme for details.
+Puedes configurar Tauri con las opciones `configPath`, `distPath` y `iconPath`. Vea las acciones Léame para más detalles.
 
 
 <!-- FIXME: tauriScript is currently broken.
   Custom Tauri CLI scripts can be run with the `tauriScript` option. So instead of running `yarn tauri build` or `npx tauri build`, `${tauriScript}` will be executed. This can be useful when you need custom build functionality such as when creating Tauri apps e.g. a `desktop:build` script.
 -->
 
-When your app isn't on the root of the repo, use the `projectPath` input.
+Cuando tu aplicación no esté en la raíz del repositorio, usa la entrada `projectPath`.
 
-You may modify the workflow name, change the triggers, and add more steps such as `npm run lint` or `npm run test`. The important part is that you keep the below line at the end of the workflow, since this runs the build script and releases the artifacts:
+Puede modificar el nombre del flujo de trabajo, cambiar los activadores, y añadir más pasos como `npm run lint` o `npm run test`. La parte importante es que usted mantenga la línea de abajo al final del flujo de trabajo, ya que esto ejecuta el script de compilación y libera los artefactos:
 
 ```yaml
-- uses: tauri-apps/tauri-action@v0
+- usos: tauri-apps/tauri-action@v0
 ```
 
-### How to Trigger
+### Cómo activar
 
-The release workflow in the README examples linked above is triggered by pushes on the "release" branch. The action automatically creates a tag and title for the GitHub release using the application version specified in `tauri.config.json`.
+El flujo de trabajo de la liberación en los ejemplos de README enlazados arriba se activa con empuñaduras en la rama "lanzamiento". La acción crea automáticamente una etiqueta y título para el lanzamiento de GitHub usando la versión de aplicación especificada en `tauri.config.json`.
 
-You can also trigger the workflow on the push of a version tag such as "app-v0.7.0". For this you can change the start of the release workflow:
+También puede activar el flujo de trabajo en el push de una etiqueta de versión como "app-v0.7.0". Para esto puede cambiar el inicio del flujo de trabajo de la liberación:
 
 ```yaml
-name: publish
-on:
+nombre: publicar
+el:
   push:
-    tags:
+    etiquetas:
       - 'app-v*'
   workflow_dispatch:
 ```
 
-### Example Workflow
+### Ejemplo de flujo de trabajo
 
-Below is an example workflow that has been setup to run every time a new version is created on git.
+A continuación se muestra un flujo de trabajo de ejemplo que ha sido configurado para ejecutarse cada vez que se crea una nueva versión en git.
 
-This workflow sets up the environment on Windows, Ubuntu, and macOS latest versions. Note under `jobs.release.strategy.matrix` the platform array which contains `macos-latest`, `ubuntu-20.04`, and `windows-latest`.
+Este flujo de trabajo configura el entorno en las últimas versiones de Windows, Ubuntu y macOS. Tenga en cuenta bajo `jobs.release.strategy.matrix` el array de plataforma que contiene `macos-latest`, `ubuntu-20.04`y `windows-latest`.
 
-The steps this workflow takes are:
+Los pasos que toma este flujo de trabajo son:
 
-1. Checkout the repository using `actions/checkout@v3`
-2. Set up Node LTS and a cache for global npm/yarn/pnpm package data using `actions/setup-node@v3`.
-3. Set up Rust and a cache for the `target/` folder using `dtolnay/rust-toolchain@stable` and `swatinem/rust-cache@v2`.
-4. Installs all the dependencies and run the build script (for the web app).
-5. Finally, it uses `tauri-apps/tauri-action@v0` to run `tauri build`, generate the artifacts, and create the GitHub release.
+1. Compruebe el repositorio usando `actions/checkout@v3`
+2. Configurar LTS de Node y un caché para los datos globales del paquete npm/yarn/pnpm usando `actions/setup-node@v3`.
+3. Configura Rust y un caché para la carpeta `target/` usando `dtolnay/rust-toolchain@stable` y `swatinem/rust-cache@v2`.
+4. Instala todas las dependencias y ejecuta el script de compilación (para la aplicación web).
+5. Finalmente, utiliza `tauri-apps/tauri-action@v0` para ejecutar `tauri build`, generar los artefactos y crear la versión de GitHub.
 
 ```yaml
-name: Release
-on:
+nombre: Lanzamiento
+el
   push:
-    tags:
+    etiquetas:
       - 'v*'
   workflow_dispatch:
 
-jobs:
-  release:
-    strategy:
+trabajos:
+  lanzamiento:
+    estrategia:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-20.04, windows-latest]
+        platform: [macos-latest, ubuntu-20. 4, windows-latest]
     runs-on: ${{ matrix.platform }}
-    steps:
+    pasos:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-20.04'
-        # You can remove libayatana-appindicator3-dev if you don't use the system tray feature.
-        run: |
+        if: matrix. latform == 'ubuntu-20.04'
+        # Puede eliminar libayatana-appindicator3-dev si no utiliza la función de la bandeja del sistema.
+        ejecutar: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev librsvg2-dev
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4. -dev libayatana-appindicator3-dev librsvg2-dev
 
-      - name: Rust setup
+      - name: Configuración de Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Rust cache
+      - name: cache de Rust
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: './src-tauri -> target'
+          espacios de trabajo: '. src-tauri -> target'
 
       - name: Sync node version and setup cache
         uses: actions/setup-node@v3
         with:
           node-version: 'lts/*'
-          cache: 'yarn' # Set this to npm, yarn or pnpm.
+          cache: 'yarn' # Set this to npm, yarn o pnpm.
 
-      - name: Install app dependencies and build web
-        # Remove `&& yarn build` if you build your frontend in `beforeBuildCommand`
-        run: yarn && yarn build # Change this to npm, yarn or pnpm.
+      - name: Instalar dependencias de aplicaciones y construir web
+        # Eliminar `&& yarn build` si construyes tu interfaz en `beforeBuildCommand`
+        run: yarn && yarn build # Cambia esto a npm, yarn o pnpm.
 
-      - name: Build the app
+      - name: Construir la aplicación
         uses: tauri-apps/tauri-action@v0
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ github.ref_name }} # This only works if your workflow triggers on new tags.
-          releaseName: 'App Name v__VERSION__' # tauri-action replaces \_\_VERSION\_\_ with the app version.
-          releaseBody: 'See the assets to download and install this version.'
-          releaseDraft: true
-          prerelease: false
+          tagName: ${{ github.ref_name }} # Esto sólo funciona si su flujo de trabajo se activa en nuevas etiquetas.
+          releaseName: 'App Name v__VERSION__' # tauri-action reemplaza \_\_VERSION\_\_ con la versión de la aplicación.
+          releaseBody: 'Ver los recursos para descargar e instalar esta versión.'
+          releaseDraft: verdadero
+          elease: falso
 ```
 
-### GitHub Environment Token
+### Token de entorno de GitHub
 
-The GitHub Token is automatically issued by GitHub for each workflow run without further configuration, which means there is no risk of secret leakage. This token however only has read permissions by default and you may get a "Resource not accessible by integration" error when running the workflow. If this happens, you may need to add write permissions to this token. To do this go to your GitHub Project Settings, and then select Actions, scroll down to "Workflow permissions" and check "Read and write permissions".
+El token de GitHub es emitido automáticamente por GitHub para cada flujo de trabajo ejecutado sin más configuración, lo que significa que no hay riesgo de fugas secretas. Sin embargo, este token sólo tiene permisos de lectura por defecto y puede obtener un error "Recurso no accesible por integración" cuando se ejecuta el flujo de trabajo. Si esto sucede, puede que necesite agregar permisos de escritura a este token. Para ello, vaya a la configuración del proyecto de GitHub y, a continuación, seleccione Acciones, desplácese hacia abajo hacia "Permisos de flujo de trabajo" y marque "permisos de lectura y escritura".
 
-You can see the GitHub Token being passed to the workflow below:
+Puede ver que el token de GitHub se pasa al flujo de trabajo de abajo:
 
 ```yaml
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-### Usage Notes
+### Notas de uso
 
-Make sure to check the [documentation for GitHub Actions][github actions] to understand better how this workflow works. Take care to read the [Usage limits, billing, and administration][usage limits billing and administration] documentation for GitHub Actions. Some project templates may already implement this GitHub action workflow, such as [tauri-svelte-template][]. You can use this action on a repo that doesn't have Tauri configured. Tauri automatically initializes before building and configuring it to use your web artifacts.
+Asegúrate de comprobar la [documentación para GitHub Actions][github actions] para entender mejor cómo funciona este flujo de trabajo. Tenga cuidado de leer la documentación de [Límites de uso, facturación y administración][usage limits billing and administration] para Acciones de GitHub. Algunas plantillas de proyecto pueden ya implementar este flujo de trabajo de acción de GitHub, como [tauri-svelte-template][]. Puede usar esta acción en un repositorio que no tiene Tauri configurado. Tauri se inicializa automáticamente antes de construirlo y configurarlo para que utilice sus artefactos web.
 
 [Tauri Action]: https://github.com/tauri-apps/tauri-action
 [Tauri Action production build workflow example]: https://github.com/tauri-apps/tauri-action#creating-a-release-and-uploading-the-tauri-bundles
@@ -153,5 +153,5 @@ Make sure to check the [documentation for GitHub Actions][github actions] to und
 [github actions]: https://docs.github.com/en/actions
 [usage limits billing and administration]: https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration
 [tauri-svelte-template]: https://github.com/probablykasper/tauri-svelte-template
-[Windows Code Signing with GitHub Actions]: ../distribution/sign-windows.md#bonus-sign-your-application-with-github-actions
-[macOS Code Signing with GitHub Actions]: ../distribution/sign-macos.md#example
+[Firmar código de Windows con acciones de GitHub]: ../distribution/sign-windows.md#bonus-sign-your-application-with-github-actions
+[firma de código macOS con acciones de GitHub]: ../distribution/sign-macos.md#example
