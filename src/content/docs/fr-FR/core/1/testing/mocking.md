@@ -1,37 +1,37 @@
 # Mocking Tauri APIs
 
-When writing your frontend tests, having a "fake" Tauri environment to simulate windows or intercept IPC calls is common, so-called _mocking_. The [`@tauri-apps/api/mocks`][] module provides some helpful tools to make this easier for you:
+Lors de l'écriture de vos tests de frontend, avoir un "faux" environnement Tauri pour simuler des fenêtres ou intercepter des appels IPC est courant, ce qu'on appelle _le bouchonnage_. Le module [`@tauri-apps/api/mocks`][] fournit des outils utiles pour vous faciliter la tâche :
 
-:::caution
+:::prudence
 
-Remember to clear mocks after each test run to undo mock state changes between runs! See [`clearMocks()`][] docs for more info.
+N'oubliez pas d'effacer les bouchons après chaque exécution de test pour annuler les changements d'état de bouchon entre les exécutions ! Voir la documentation de [`clearMocks()`][] pour plus d'informations.
 
 :::
 
-## IPC Requests
+## Demandes IPC
 
-Most commonly, you want to intercept IPC requests; this can be helpful in a variety of situations:
+Le plus souvent, vous voulez intercepter les requêtes IPC ; cela peut être utile dans une variété de situations :
 
-- Ensure the correct backend calls are made
-- Simulate different results from backend functions
+- S'assurer que les bons appels de backend sont faits
+- Simuler différents résultats des fonctions backend
 
-Tauri provides the mockIPC function to intercept IPC requests. You can find more about the specific API in detail [here][<code>mockipc()</code>].
+Tauri fournit la fonction mockIPC pour intercepter les requêtes IPC. Vous pouvez en trouver plus sur l'API spécifique en détail [ici][<code>mockipc()</code>].
 
 :::note
-The following examples use [Vitest][], but you can use any other frontend testing library such as jest.
+Les exemples suivants utilisent [Vitest][], mais vous pouvez utiliser n'importe quelle autre bibliothèque de test frontend comme jest.
 :::
 
 ```js
-import { beforeAll, expect, test } from "vitest";
-import { randomFillSync } from "crypto";
+importer { beforeAll, expect, test } depuis "vitest";
+importer { randomFillSync } depuis "crypto";
 
-import { mockIPC } from "@tauri-apps/api/mocks"
-import { invoke } from "@tauri-apps/api/tauri";
+importer { mockIPC } depuis "@tauri-apps/api/mocks"
+importer { invoke } depuis "@tauri-apps/api/tauri";
 
-// jsdom doesn't come with a WebCrypto implementation
+// jsdom ne vient pas avec une implémentation WebCrypto
 beforeAll(() => {
   //@ts-ignore
-  window.crypto = {
+  fenêtre. rypto = {
     getRandomValues: function (buffer) {
       return randomFillSync(buffer);
     },
@@ -41,29 +41,29 @@ beforeAll(() => {
 
 test("invoke simple", async () => {
     mockIPC((cmd, args) => {
-        // simulated rust command called "add" that just adds two numbers
+        // commande de rouille simulée appelée "add" qui ajoute juste deux nombres
         if(cmd === "add") {
-           return (args.a as number) + (args.b as number)
+           return (args. comme nombre) + (args. comme nombre)
         }
     })
 
-    expect(invoke("add", { a: 12, b: 15 })).resolves.toBe(27)
+    attes(invoque("ajouter", { a: 12, b: 15 })). esolves.toBe(27)
 })
 ```
 
-Sometimes you want to track more information about an IPC call; how many times was the command invoked? Was it invoked at all? You can use [`mockIPC()`][] with other spying and mocking tools to test this:
+Parfois, vous voulez suivre plus d'informations sur un appel IPC ; combien de fois la commande a-t-elle été invoquée ? Avait-il été invoqué ? Vous pouvez utiliser [`mockIPC()`][] avec d'autres outils d'espionnage et de bouchonnage pour tester ceci :
 
 ```js
-import { beforeAll, expect, test, vi } from "vitest";
-import { randomFillSync } from "crypto";
+importer { beforeAll, expect, test, vi } de "vitest";
+importer { randomFillSync } de "crypto";
 
-import { mockIPC } from "@tauri-apps/api/mocks"
-import { invoke } from "@tauri-apps/api/tauri";
+importer { mockIPC } depuis "@tauri-apps/api/mocks"
+importer { invoke } depuis "@tauri-apps/api/tauri";
 
-// jsdom doesn't come with a WebCrypto implementation
+// jsdom ne vient pas avec une implémentation WebCrypto
 beforeAll(() => {
   //@ts-ignore
-  window.crypto = {
+  fenêtre. rypto = {
     getRandomValues: function (buffer) {
       return randomFillSync(buffer);
     },
@@ -73,38 +73,38 @@ beforeAll(() => {
 
 test("invoke", async () => {
     mockIPC((cmd, args) => {
-        // simulated rust command called "add" that just adds two numbers
+        // commande simulée appelée "add" qui ajoute juste deux nombres
         if(cmd === "add") {
-           return (args.a as number) + (args.b as number)
+           return (args. comme nombre) + (args. as number)
         }
     })
 
-    // we can use the spying tools provided by vitest to track the mocked function
-    const spy = vi.spyOn(window, "__TAURI_IPC__")
+    // nous pouvons utiliser les outils d'espionnage fournis par vitest pour suivre la fonction fantaisie
+    const spy = vi. pyOn(window, "__TAURI_IPC__")
 
     expect(invoke("add", { a: 12, b: 15 })).resolves.toBe(27)
     expect(spy).toHaveBeenCalled()
 })
 ```
 
-To mock IPC requests to a sidecar or shell command you need to grab the ID of the event handler when `spawn()` or `execute()` is called and use this ID to emit events the backend would send back:
+Pour simuler les requêtes IPC à une commande latérale ou shell, vous devez saisir l'ID du gestionnaire d'événements lorsque `spawn()` ou `execute()` est appelé et utiliser cet ID pour émettre des événements que le backend enverrait :
 
 ```js
 mockIPC(async (cmd, args) => {
-  if (args.message.cmd === 'execute') {
+  if (args.message. md === 'execute') {
     const eventCallbackId = `_${args.message.onEventFn}`;
     const eventEmitter = window[eventCallbackId];
 
-    // 'Stdout' event can be called multiple times
+    // L'événement 'Stdout' peut être appelé plusieurs fois
     eventEmitter({
       event: 'Stdout',
       payload: 'some data sent from the process',
     });
 
-    // 'Terminated' event must be called at the end to resolve the promise
+    // L'événement 'Terminé' doit être appelé à la fin pour résoudre la promesse
     eventEmitter({
       event: 'Terminated',
-      payload: {
+      payload : {
         code: 0,
         signal: 'kill',
       },
@@ -113,13 +113,13 @@ mockIPC(async (cmd, args) => {
 });
 ```
 
-## Windows
+## Fenêtres
 
-Sometimes you have window-specific code (a splash screen window, for example), so you need to simulate different windows. You can use the [`mockWindows()`][] method to create fake window labels. The first string identifies the "current" window (i.e., the window your JavaScript believes itself in), and all other strings are treated as additional windows.
+Parfois, vous avez un code spécifique à la fenêtre (une fenêtre d'écran de démarrage, par exemple), donc vous devez simuler différentes fenêtres. Vous pouvez utiliser la méthode [`mockWindows()`][] pour créer de fausses étiquettes de fenêtres. La première chaîne identifie la fenêtre "courant" (c'est-à-dire la fenêtre dans laquelle votre JavaScript croit), et toutes les autres chaînes de caractères sont traitées comme des fenêtres supplémentaires.
 
 :::note
 
-[`mockWindows()`][] only fakes the existence of windows but no window properties. To simulate window properties, you need to intercept the correct calls using [`mockIPC()`][]
+[`mockWindows()`][] ne fait que fausser l'existence de fenêtres mais pas de propriétés de fenêtre. Pour simuler les propriétés de fenêtre, vous devez intercepter les bons appels en utilisant [`mockIPC()`][]
 
 :::
 
@@ -132,20 +132,20 @@ import { mockWindows } from '@tauri-apps/api/mocks'
 // jsdom doesn't come with a WebCrypto implementation
 beforeAll(() => {
   //@ts-ignore
-  window.crypto = {
+  window. rypto = {
     getRandomValues: function (buffer) {
       return randomFillSync(buffer)
     },
   }
 })
 
-test('invoke', async () => {
-  mockWindows('main', 'second', 'third')
+test('invoque', async () => {
+  mockWindows('main', 'seconde', 'troisième')
 
-  const { getCurrent, getAll } = await import('@tauri-apps/api/window')
+  const { getCurrent, getAll } = wait import('@tauri-apps/api/window')
 
-  expect(getCurrent()).toHaveProperty('label', 'main')
-  expect(getAll().map((w) => w.label)).toEqual(['main', 'second', 'third'])
+  expect(getCurrent()). oHaveProperty('label', 'main')
+  expect(getAll().map((w) => w.label)).toEqual(['main', 'seconde', 'troisième'])
 })
 ```
 
