@@ -38,7 +38,7 @@ The AppImage bundle automatically embeds the installed tray library, and you can
 To create a native system tray, import the `SystemTray` type:
 
 ```rust
-use tauri::SystemTray;
+use tauri:: SystemTray;
 ```
 
 Initialize a new tray instance:
@@ -52,7 +52,7 @@ let tray = SystemTray::new();
 Optionally you can add a context menu that is visible when the tray icon is right-clicked. Import the `SystemTrayMenu`, `SystemTrayMenuItem` and `CustomMenuItem` types:
 
 ```rust
-use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
+use tauri:: {CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 ```
 
 Create the `SystemTrayMenu`:
@@ -78,13 +78,13 @@ let tray = SystemTray::new().with_menu(tray_menu);
 The created `SystemTray` instance can be set using the `system_tray` API on the `tauri::Builder` struct:
 
 ```rust
-use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu};
+use tauri:: {CustomMenuItem, SystemTray, SystemTrayMenu};
 
 fn main() {
   let tray_menu = SystemTrayMenu::new(); // insert the menu items here
   let system_tray = SystemTray::new()
     .with_menu(tray_menu);
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .system_tray(system_tray)
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -96,36 +96,36 @@ fn main() {
 Each `CustomMenuItem` triggers an event when clicked. Also, Tauri emits tray icon click events. Use the `on_system_tray_event` API to handle them:
 
 ```rust
-use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu, SystemTrayEvent};
-use tauri::Manager;
+use tauri:: {CustomMenuItem, SystemTray, SystemTrayMenu, SystemTrayEvent};
+use tauri:: Manager;
 
 fn main() {
   let tray_menu = SystemTrayMenu::new(); // insert the menu items here
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .system_tray(SystemTray::new().with_menu(tray_menu))
     .on_system_tray_event(|app, event| match event {
-      SystemTrayEvent::LeftClick {
+      SystemTrayEvent:: LeftClick {
         position: _,
         size: _,
         ..
       } => {
         println!("system tray received a left click");
       }
-      SystemTrayEvent::RightClick {
+      SystemTrayEvent:: RightClick {
         position: _,
         size: _,
         ..
       } => {
         println!("system tray received a right click");
       }
-      SystemTrayEvent::DoubleClick {
+      SystemTrayEvent:: DoubleClick {
         position: _,
         size: _,
         ..
       } => {
         println!("system tray received a double click");
       }
-      SystemTrayEvent::MenuItemClick { id, .. } => {
+      SystemTrayEvent:: MenuItemClick { id, .. } => {
         match id.as_str() {
           "quit" => {
             std::process::exit(0);
@@ -151,15 +151,15 @@ The `AppHandle` struct has a `tray_handle` method, which returns a handle to the
 #### Updating context menu items
 
 ```rust
-use tauri::{CustomMenuItem, SystemTray, SystemTrayMenu, SystemTrayEvent};
-use tauri::Manager;
+use tauri:: {CustomMenuItem, SystemTray, SystemTrayMenu, SystemTrayEvent};
+use tauri:: Manager;
 
 fn main() {
   let tray_menu = SystemTrayMenu::new(); // insert the menu items here
-  tauri::Builder::default()
+  tauri:: Builder::default()
     .system_tray(SystemTray::new().with_menu(tray_menu))
     .on_system_tray_event(|app, event| match event {
-      SystemTrayEvent::MenuItemClick { id, .. } => {
+      SystemTrayEvent:: MenuItemClick { id, .. } => {
         // get a handle to the clicked menu item
         // note that `tray_handle` can be called anywhere,
         // just get an `AppHandle` instance with `app.handle()` on the setup hook
@@ -199,7 +199,7 @@ tauri::Builder::default()
   .build(tauri::generate_context!())
   .expect("error while building tauri application")
   .run(|_app_handle, event| match event {
-    tauri::RunEvent::ExitRequested { api, .. } => {
+    tauri:: RunEvent::ExitRequested { api, .. } => {
       api.prevent_exit();
     }
     _ => {}
