@@ -1,103 +1,103 @@
-# Splashscreen
+# Écran de partage
 
-If your webpage could take some time to load, or if you need to run an initialization procedure in Rust before displaying your main window, a splashscreen could improve the loading experience for the user.
+Si votre page Web peut prendre un certain temps pour se charger, ou si vous devez exécuter une procédure d'initialisation dans Rust avant d'afficher votre fenêtre principale, un splashscreen pourrait améliorer l'expérience de chargement pour l'utilisateur.
 
-### Setup
+### Configuration
 
-First, create a `splashscreen.html` in your `distDir` that contains the HTML code for a splashscreen. Then, update your `tauri.conf.json` like so:
+Premièrement, créez un `splashscreen.html` dans votre `distDir` qui contient le code HTML pour un splashscreen. Ensuite, mettez à jour votre `tauri.conf.json` comme ceci :
 
 ```diff
 "windows": [
   {
-    "title": "Tauri App",
-    "width": 800,
-    "height": 600,
-    "resizable": true,
-    "fullscreen": false,
-+   "visible": false // Hide the main window by default
+    "title": "Application Tauri",
+    "largeur": 800,
+    "hauteur": 600,
+    "redimensionnable" : vrai,
+    "plein écran": false,
++ "visible": false // Cacher la fenêtre principale par défaut
   },
-  // Add the splashscreen window
+  // Ajoute la fenêtre splashscreen
 + {
-+   "width": 400,
-+   "height": 200,
-+   "decorations": false,
-+   "url": "splashscreen.html",
-+   "label": "splashscreen"
++ "width": 400,
++ "height": 200,
++ "decorations": false,
++ "url": "splashscreen. tml",
++ "label": "splashscreen"
 + }
 ]
 ```
 
-Now, your main window will be hidden and the splashscreen window will show when your app is launched. Next, you'll need a way to close the splashscreen and show the main window when your app is ready. How you do this depends on what you are waiting for before closing the splashscreen.
+Maintenant, votre fenêtre principale sera masquée et la fenêtre splashscreen s'affichera lorsque votre application sera lancée. Ensuite, vous aurez besoin d'un moyen de fermer l'écran de démarrage et d'afficher la fenêtre principale lorsque votre application sera prête. La façon dont vous le faites dépend de ce que vous attendez avant de fermer l'écran de démarrage.
 
-### Waiting for Webpage
+### En attente de la page Web
 
-If you are waiting for your web code, you'll want to create a `close_splashscreen` [command](command).
+Si vous attendez votre code web, vous voudrez créer une commande `close_splashscreen` [](command).
 
 ```rust src-tauri/main.rs
 use tauri::Manager;
-// Create the command:
-// This command must be async so that it doesn't run on the main thread.
+// Créer la commande:
+// Cette commande doit être async afin qu'elle ne s'exécute pas sur le thread principal.
 #[tauri::command]
 async fn close_splashscreen(window: tauri::Window) {
-  // Close splashscreen
-  if let Some(splashscreen) = window.get_window("splashscreen") {
+  // Ferme splashscreen
+  if let Some(splashscreen) = window. et_window("splashscreen") {
     splashscreen.close().unwrap();
   }
-  // Show main window
-  window.get_window("main").unwrap().show().unwrap();
+  // Afficher la fenêtre principale
+  window.get_window("main").unwrap(). comment(). nwrap();
 }
 
-// Register the command:
+// Enregistrer la commande:
 fn main() {
   tauri::Builder::default()
-    // Add this line
-    .invoke_handler(tauri::generate_handler![close_splashscreen])
+    // Ajoute cette ligne
+    . nvoke_handler(tauri::generate_handler![close_splashscreen])
     .run(tauri::generate_context!())
     .expect("failed to run app");
 }
 
 ```
 
-Then, you can call it from your JS:
+Ensuite, vous pouvez l'appeler depuis votre JS:
 
 ```js
-// With the Tauri API npm package:
-import { invoke } from '@tauri-apps/api/tauri'
-// With the Tauri global script:
+// Avec le paquet npm de l'API Tauri:
+importez { invoke } depuis '@tauri-apps/api/tauri'
+// Avec le script global Tauri:
 const invoke = window.__TAURI__.invoke
 
-document.addEventListener('DOMContentLoaded', () => {
-  // This will wait for the window to load, but you could
-  // run this function on whatever trigger you want
+document. ddEventListener('DOMContentLoaded', () => {
+  // Cela attendra le chargement de la fenêtre, mais vous pouvez
+  // exécuter cette fonction sur n'importe quel déclencheur que vous voulez
   invoke('close_splashscreen')
 })
 ```
 
-### Waiting for Rust
+### En attente de rouille
 
-If you are waiting for Rust code to run, put it in the `setup` function handler so you have access to the `App` instance:
+Si vous attendez que le code Rust fonctionne, mettez-le dans le gestionnaire de fonction `setup` pour que vous ayez accès à l'instance `App`:
 
 ```rust src-tauri/main.rs
-use tauri::Manager;
+utiliser tauri::Manager;
 fn main() {
   tauri::Builder::default()
-    .setup(|app| {
+    . etup(|app| {
       let splashscreen_window = app.get_window("splashscreen").unwrap();
-      let main_window = app.get_window("main").unwrap();
-      // we perform the initialization code on a new task so the app doesn't freeze
+      let main_window = app.get_window("main"). nwrap();
+      // nous exécutons le code d'initialisation sur une nouvelle tâche, donc l'application ne gèle pas
       tauri::async_runtime::spawn(async move {
-        // initialize your app here instead of sleeping :)
-        println!("Initializing...");
-        std::thread::sleep(std::time::Duration::from_secs(2));
-        println!("Done initializing.");
+        // initialise votre application ici au lieu de dormir :)
+        println! Initialisation. .");
+        est ::thread::sleep(std::time::Duration::from_secs(2));
+        println! "Initialisation terminée. );
 
-        // After it's done, close the splashscreen and display the main window
-        splashscreen_window.close().unwrap();
-        main_window.show().unwrap();
+        // Après avoir terminé, fermez l'écran de démarrage et affichez la fenêtre principale
+        splashscreen_window. lose().unwrap();
+        main_window.show(). nwrap();
       });
       Ok(())
     })
-    .run(tauri::generate_context!())
+    . un(tauri::generate_context!())
     .expect("failed to run app");
 }
 ```
