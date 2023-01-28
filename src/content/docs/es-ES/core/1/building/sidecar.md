@@ -100,7 +100,7 @@ let (mut rx, mut child) = Command::new_sidecar("my-sidecar")
 tauri::async_runtime::spawn(async move {
   // read events such as stdout
   while let Some(event) = rx.recv().await {
-    if let CommandEvent::Stdout(line) = event {
+    if let CommandEvent:: Stdout(line) = event {
       window
         .emit("message", Some(format!("'{}'", line)))
         .expect("failed to emit event");
