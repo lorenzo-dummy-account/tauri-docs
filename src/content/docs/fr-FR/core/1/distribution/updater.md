@@ -2,13 +2,13 @@
 sidebar_position: 5
 ---
 
-# Updater
+# Mise à jour
 
 ## Configuration
 
-Once you have your Tauri project ready, you need to configure the updater.
+Une fois que votre projet Tauri est prêt, vous devez configurer la mise à jour.
 
-Add this in tauri.conf.json
+Ajouter ceci dans tauri.conf.json
 
 ```json
 "updater": {
@@ -21,180 +21,180 @@ Add this in tauri.conf.json
 }
 ```
 
-The required keys are "active", "endpoints" and "pubkey"; others are optional.
+Les clés requises sont "actifs", "endpoints" et "pubkey"; les autres sont optionnelles.
 
-"active" must be a boolean. By default, it's set to false.
+« actif » doit être un booléen. Par défaut, il est réglé sur false.
 
-"endpoints" must be an array. The string `{{target}}` and `{{current_version}}` are automatically replaced in the URL allowing you to determine [server-side](#update-server-json-format) if an update is available. If multiple endpoints are specified, the updater will fallback if a server is not responding within the pre-defined timeout.
+"endpoints" doit être un tableau. La chaîne `{{target}}` et `{{current_version}}` sont automatiquement remplacées dans l'URL vous permettant de déterminer [côté serveur](#update-server-json-format) si une mise à jour est disponible. Si plusieurs points de terminaison sont spécifiés, la mise à jour se fera par défaut si un serveur ne répond pas dans le délai prédéfini.
 
-"dialog" if present must be a boolean. By default, it's set to true. If enabled, [events](#events) are turned off as the updater handles everything. If you need the custom events, you MUST turn off the built-in dialog.
+"dialog" si présent doit être un booléen. Par défaut, la valeur est true. Si activé, [événements](#events) sont désactivés car la mise à jour gère tout. Si vous avez besoin des événements personnalisés, vous DEVEZ désactiver la boîte de dialogue intégrée.
 
-"pubkey" must be a valid public-key generated with Tauri CLI. See [Signing updates](#signing-updates).
+"pubkey" doit être une clé publique valide générée avec Tauri CLI. Voir [Mises à jour de signature](#signing-updates).
 
-### Update Requests
+### Demandes de mise à jour
 
-Tauri is indifferent to the request the client application provides for update checking.
+Tauri est indifférent à la requête que l'application client fournit pour la vérification des mises à jour.
 
-`Accept: application/json` is added to the request headers because Tauri is responsible for parsing the response.
+`Accepter : application/json` est ajouté aux en-têtes de requête car Tauri est responsable de l'analyse de la réponse.
 
-For the requirements imposed on the responses and the body format of an update, response see [Server Support](#server-support).
+Pour les exigences imposées aux réponses et au format corporel d'une mise à jour, réponse voir [Support serveur](#server-support).
 
-Your update request must _at least_ include a version identifier so that the server can determine whether an update for this specific version is required.
+Votre requête de mise à jour doit _au moins_ inclure un identifiant de version afin que le serveur puisse déterminer si une mise à jour pour cette version spécifique est nécessaire.
 
-It may also include other identifying criteria, such as operating system version, to allow the server to deliver as fine-grained an update as you would like.
+Il peut également inclure d'autres critères d'identification, tels que la version du système d'exploitation, pour permettre au serveur de livrer une mise à jour aussi fine que vous le souhaitez.
 
-How you include the version identifier, or other criteria is specific to the server from which you request updates. A common approach is to use query parameters, [Configuration](#configuration) shows an example.
+La façon dont vous incluez l'identifiant de version, ou d'autres critères, est spécifique au serveur à partir duquel vous demandez des mises à jour. Une approche commune est d'utiliser les paramètres de requête, [La configuration](#configuration) montre un exemple.
 
-### Built-in dialog
+### Boîte de dialogue intégrée
 
-By default, the updater uses a built-in dialog API from Tauri.
+Par défaut, la mise à jour utilise une API de dialogue intégrée de Tauri.
 
-![New Update](https://i.imgur.com/UMilB5A.png)
+![Nouvelle mise à jour](https://i.imgur.com/UMilB5A.png)
 
-The dialog release notes are represented by the update `note` provided by the [server](#server-support). If the user accepts, the update is downloaded and installed. Afterward, the user is prompted to restart the application.
+Les notes de version de la boîte de dialogue sont représentées par la note `de mise à jour` fournie par le [serveur](#server-support). Si l'utilisateur accepte, la mise à jour est téléchargée et installée. Ensuite, l'utilisateur est invité à redémarrer l'application.
 
-### Javascript API
+### API Javascript
 
 :::caution
-You need to _disable built-in dialog_ in your [tauri configuration](#configuration); Otherwise, the javascript API will NOT work.
+Vous devez _désactiver la boîte de dialogue intégrée_ dans votre [configuration tauri](#configuration); Sinon, l'API javascript ne fonctionnera pas.
 :::
 
 ```js
-import { checkUpdate, installUpdate } from '@tauri-apps/api/updater'
+import { checkUpdate, installUpdate } depuis '@tauri-apps/api/updater'
 import { relaunch } from '@tauri-apps/api/process'
 try {
-  const { shouldUpdate, manifest } = await checkUpdate()
+  const { shouldUpdate, manifest } = wait checkUpdate()
   if (shouldUpdate) {
-    // display dialog
-    await installUpdate()
-    // install complete, restart the app
-    await relaunch()
+    // dialogue d'affichage
+    wait installUpdate()
+    // install complete, redémarrez l'application
+    waiting relaunch()
   }
 } catch (error) {
-  console.log(error)
+  console. og(erreur)
 }
 ```
 
-### Events
+### Évènements
 
-:::caution
+:::prudence
 
-You need to _disable the built-in dialog_ in your [tauri configuration](#configuration); Otherwise, events aren't emitted.
+Vous devez _désactiver la boîte de dialogue intégrée_ dans votre [configuration tauri](#configuration); Sinon, les événements ne sont pas émis.
 
 :::
 
-To know when an update is ready to be installed, you can subscribe to these events:
+Pour savoir quand une mise à jour est prête à être installée, vous pouvez vous abonner à ces événements :
 
-#### Initialize updater and check if a new version is available
+#### Initialiser la mise à jour et vérifier si une nouvelle version est disponible
 
-##### If a new version is available, the event `tauri://update-available` is emitted.
+##### Si une nouvelle version est disponible, l'événement `tauri://update-available` est émis.
 
 Event: `tauri://update`
 
-#### Rust
+#### Rouille
 
 ```rust
-window.emit("tauri://update".to_string(), None);
+window.emit("tauri://update".to_string(), Aucun);
 ```
 
 #### Javascript
 
 ```js
-import { emit } from '@tauri-apps/api/event'
+importer { emit } depuis '@tauri-apps/api/event'
 emit('tauri://update')
 ```
 
-#### Listen to the New Update Available event
+#### Écouter la nouvelle mise à jour disponible
 
-Event: `tauri://update-available`
+Événement : `tauri://update-available`
 
-Emitted data:
+Données émises :
 
 ```
-version    Version announced by the server
-date       Date announced by the server
-body       Note announced by the server
+version annoncée par la date de
+du serveur annoncée par le serveur
+Body Note annoncée par le serveur
 ```
 
-#### Rust
+#### Rouille
 
 ```rust
 window.listen("tauri://update-available".to_string(), move |msg| {
-  println!("New version available: {:?}", msg);
+  println!("Nouvelle version disponible : {:?}", msg);
 })
 ```
 
 #### Javascript
 
 ```js
-import { listen } from '@tauri-apps/api/event'
+importer { listen } depuis '@tauri-apps/api/event'
 listen('tauri://update-available', function (res) {
-  console.log('New version available: ', res)
+  console.log('Nouvelle version disponible: ', res)
 })
 ```
 
-#### Emit Install and Download events
+#### Émettre les événements d'installation et de téléchargement
 
-You need to emit this event to initialize the download and listen to the [install progress](#listen-install-progress).
+Vous devez émettre cet événement pour initialiser le téléchargement et écouter la [progression de l'installation](#listen-install-progress).
 
 Event: `tauri://update-install`
 
-#### Rust
+#### Rouille
 
 ```rust
-window.emit("tauri://update-install".to_string(), None);
+window.emit("tauri://update-install".to_string(), Aucun);
 ```
 
 #### Javascript
 
 ```js
-import { emit } from '@tauri-apps/api/event'
-emit('tauri://update-install')
+importer { emit } depuis '@tauri-apps/api/event'
+emit('tauri://update-installl')
 ```
 
-#### Listen to the Install Progress
+#### Écouter la progression de l'installation
 
 Event: `tauri://update-status`
 
-Emitted data:
+Données émises :
 
 ```
-status    [ERROR/PENDING/DONE]
-error     String/null
+statut [ERREUR/PENDING/DONE]
+erreur String/null
 ```
 
-PENDING is emitted when the download is started and DONE when the installation is complete. You can then ask to restart the application.
+EN ATTENTE est émise lorsque le téléchargement est démarré et FAIT quand l'installation est terminée. Vous pouvez ensuite demander à redémarrer l'application.
 
-ERROR is emitted when there is an error with the updater. We suggest listening to this event even if the dialog is enabled.
+ERREUR est émis quand il y a une erreur avec la mise à jour. Nous vous suggérons d'écouter cet événement même si la boîte de dialogue est activée.
 
-#### Rust
+#### Rouille
 
 ```rust
 window.listen("tauri://update-status".to_string(), move |msg| {
-  println!("New status: {:?}", msg);
+  println!("Nouveau statut: {:?}", msg);
 })
 ```
 
 #### Javascript
 
 ```js
-import { listen } from '@tauri-apps/api/event'
+importer { listen } depuis '@tauri-apps/api/event'
 listen('tauri://update-status', function (res) {
-  console.log('New status: ', res)
+  console.log('Nouveau statut: ', res)
 })
 ```
 
-## Server Support
+## Support serveur
 
-Your server should determine whether an update is required based on the [Update Request](#update-requests) your client issues.
+Votre serveur devrait déterminer si une mise à jour est nécessaire en fonction de la requête de mise à jour [](#update-requests) de votre client.
 
-If an update is required, your server should respond with a status code of [200 OK][] and include the [update JSON](#update-server-json-format) in the body.
+Si une mise à jour est requise, votre serveur devrait répondre avec un code de statut de [200 OK][] et inclure le [JSON de mise à jour](#update-server-json-format) dans le corps.
 
-If no update is required your server must respond with a status code of [204 No Content][].
+Si aucune mise à jour n'est requise, votre serveur doit répondre avec un code de statut de [204 No Content][].
 
-### Update Server JSON Format
+### Mise à jour du format JSON du serveur
 
-When an update is available, Tauri expects the following schema in response to the update request provided:
+Lorsqu'une mise à jour est disponible, Tauri attend le schéma suivant en réponse à la requête de mise à jour fournie :
 
 ```json
 {
@@ -206,126 +206,126 @@ When an update is available, Tauri expects the following schema in response to t
 }
 ```
 
-The required keys are "url", "version" and "signature"; the others are optional.
+Les clés requises sont "url", "version" et "signature"; les autres sont optionnelles.
 
-"pub_date" if present must be formatted according to [RFC 3339][date and time on the internet: timestamps].
+"pub_date" si présent doit être formaté selon la [RFC 3339][date and time on the internet: timestamps].
 
-"signature" is the content of the `.sig` file which was generated by Tauri's CLI. See [Signing Updates](#signing-updates) for instructions on how to set up the required keys.
+"signature" est le contenu du fichier `.sig` qui a été généré par le CLI de Tauri. Reportez-vous à la section [Mises à jour d'inscription](#signing-updates) pour des instructions sur la façon de configurer les clés requises.
 
-### Update File JSON Format
+### Mettre à jour le format JSON du fichier
 
-The alternate update technique uses a plain JSON file, storing your update metadata on S3, gist, or another static file store. Tauri checks against the version field, and if the version of the running process is smaller than the reported one of the JSON and the platform is available, it triggers an update. The format of this file is detailed below:
+La technique de mise à jour alternative utilise un fichier JSON simple, stockant vos métadonnées de mise à jour sur S3, gist ou un autre magasin de fichiers statique. Tauri vérifie le champ de version, et si la version du processus en cours d'exécution est plus petite que le JSON signalé et que la plate-forme est disponible, il déclenche une mise à jour. Le format de ce fichier est détaillé ci-dessous:
 
 ```json
 {
-  "version": "v1.0.0",
-  "notes": "Test version",
+  "version": "v1.0. ",
+  "notes": "Version de test",
   "pub_date": "2020-06-22T19:25:57Z",
   "platforms": {
     "darwin-x86_64": {
       "signature": "",
-      "url": "https://github.com/lemarier/tauri-test/releases/download/v1.0.0/app.app.tar.gz"
+      "url": "https://github. om/lemarier/tauri-test/releases/download/v1.0.0/app.app.tar. z"
     },
     "darwin-aarch64": {
       "signature": "",
-      "url": "https://github.com/lemarier/tauri-test/releases/download/v1.0.0/silicon/app.app.tar.gz"
+      "url": "https://github. om/lemarier/tauri-test/releases/download/v1. .0/silicon/app.app.tar. z"
     },
     "linux-x86_64": {
       "signature": "",
-      "url": "https://github.com/lemarier/tauri-test/releases/download/v1.0.0/app.AppImage.tar.gz"
+      "url": "https://github. om/lemarier/tauri-test/releases/download/v1.0.0/app.AppImage.tar. z"
     },
     "windows-x86_64": {
       "signature": "",
-      "url": "https://github.com/lemarier/tauri-test/releases/download/v1.0.0/app.x64.msi.zip"
+      "url": "https://github. om/lemarier/tauri-test/releases/download/v1.0.0/app.x64.msi.zip"
     }
   }
 }
 ```
 
-Note that each platform key is in the `OS-ARCH` format, where `OS` is one of `linux`, `darwin` or `windows`, and `ARCH` is one of `x86_64`, `aarch64`, `i686` or `armv7`.
+Notez que chaque clé de plateforme est au format `OS-ARCH` , où `OS` est l'un des `Linux`, `darwin` ou `fenêtres`, et `ARCH` est un des `x86_64`, `aarch64`, `i686` ou `armv7`.
 
-## Bundler (Artifacts)
+## Bundler (Artéfacts)
 
-The Tauri bundler automatically generates update artifacts if the updater is enabled in `tauri.conf.json` Your update artifacts are automatically signed if the bundler can locate your private and public keys.
+Le bundler Tauri génère automatiquement des artefacts de mise à jour si la mise à jour est activée dans `tauri.conf. fils` Vos artefacts de mise à jour sont automatiquement signés si le bundler peut localiser vos clés privées et publiques.
 
-The signature is the content of the generated `.sig` file. The signature can be uploaded to GitHub safely or made public if your private key is secure.
+La signature est le contenu du fichier `.sig` généré. La signature peut être téléchargée sur GitHub en toute sécurité ou rendue publique si votre clé privée est sécurisée.
 
-You can see how it's [bundled with the CI][artifacts updater workflow] and a [sample tauri.conf.json][].
+Vous pouvez voir comment il est [fourni avec le CI][artifacts updater workflow] et un échantillon de [tauri.conf.json][].
 
 ### macOS
 
-On macOS, we create a .tar.gz from the whole application. (.app)
+Sur macOS, nous créons un .tar.gz à partir de toute l'application. (.app)
 
 ```
-target/release/bundle
-└── macos
-    └── app.app
-    └── app.app.tar.gz (update bundle)
-    └── app.app.tar.gz.sig
+cible/release/bundle
+<unk> ─ macos
+    <unk> ─ app.app
+    <unk> ─ app.app.tar.gz (lot de mise à jour)
+    <unk> ─ app.app.tar.gz.sig
 ```
 
-### Windows
+### Fenêtres
 
-On Windows, we create a .zip from the MSI; when downloaded and validated, we run the MSI install.
+Sous Windows, nous créons un .zip à partir du MSI; une fois téléchargés et validés, nous exécutons l'installation MSI.
 
 ```
-target/release/bundle
-└── msi
-    └── app.x64.msi
-    └── app.x64.msi.zip (update bundle)
-    └── app.x64.msi.zip.sig
+cible/release/bundle
+<unk> ─ msi
+    <unk> ─ app.x64.msi
+    <unk> ─ app.x64.msi.zip (lot de mise à jour)
+    <unk> ─ app.x64.msi.zip.sig
 ```
 
 ### Linux
 
-On Linux, we create a .tar.gz from the AppImage.
+Sous Linux, nous créons un .tar.gz à partir de l'AppImage.
 
 ```
-target/release/bundle
-└── appimage
-    └── app.AppImage
-    └── app.AppImage.tar.gz (update bundle)
-    └── app.AppImage.tar.gz.sig
+cible/release/bundle
+<unk> ─ appimage
+    <unk> ─ app.AppImage
+    <unk> ─ app.AppImage.tar.gz (lot de mise à jour)
+    <unk> ─ app.AppImage.tar.gz.sig
 ```
 
-## Signing updates
+## Mises à jour de la signature
 
-We offer a built-in signature to ensure your update is safe to be installed.
+Nous offrons une signature intégrée pour vous assurer que votre mise à jour est sûre à installer.
 
-To sign your updates, you need two things.
+Pour signer vos mises à jour, vous avez besoin de deux choses.
 
-The _Public-key_ (pubkey) should be added inside your `tauri.conf.json` to validate the update archive before installing.
+La _clé publique_ (pubkey) doit être ajoutée dans votre `tauri.conf.json` pour valider l'archive de mise à jour avant l'installation.
 
-The _Private key_ (privkey) is used to sign your update and should NEVER be shared with anyone. Also, if you lost this key, you'll NOT be able to publish a new update to the current user base. It's crucial to save it in a safe place, and you can always access it.
+La _clé privée_ (clé privée) est utilisée pour signer votre mise à jour et ne devrait JAMAIS être partagée avec quiconque. En outre, si vous avez perdu cette clé, vous NE serez PAS en mesure de publier une nouvelle mise à jour vers la base d'utilisateurs actuelle. Il est crucial de le sauvegarder dans un endroit sûr, et vous pouvez toujours y accéder.
 
-To generate your keys, you need to use the Tauri CLI:
+Pour générer vos clés, vous devez utiliser le CLI Tauri :
 
 ```shell
 tauri signer generate -w ~/.tauri/myapp.key
 ```
 
-You have multiple options available
+Vous avez plusieurs options disponibles
 
 ```
-Generate keypair to sign files
+Générer une paire de clés pour signer des fichiers
 
-USAGE:
-    tauri signer generate [OPTIONS]
+USAGE :
+    Le signataire tauri génère [OPTIONS]
 
-OPTIONS:
-    -f, --force                      Overwrite private key even if it exists on the specified path
-    -h, --help                       Print help information
-    -p, --password <PASSWORD>        Set private key password when signing
-    -V, --version                    Print version information
-    -w, --write-keys <WRITE_KEYS>    Write private key to a file
+OPTIONS :
+    -f, --force Écraser la clé privée même si elle existe sur le chemin spécifié
+    -h, --help Imprimer les informations d'aide
+    -p, --password <PASSWORD>        Définir le mot de passe de la clé privée lors de la signature de
+    -V, --version Imprimer les informations de version
+    -w, --write-keys <WRITE_KEYS>    Écrire une clé privée dans un fichier
 ```
 
 ---
 
-Environment variables used to sign with the Tauri `bundler`:<br/> If they are set, the bundler automatically generates and signs the updater artifacts.<br/> `TAURI_PRIVATE_KEY` Path or String of your private key<br/> `TAURI_KEY_PASSWORD` Your private key password (optional)
+Variables d'environnement utilisées pour signer avec le bundler `Tauri`:<br/> Si elles sont définies, le bundler génère et signe automatiquement les artefacts de mise à jour.<br/> `TAURI_PRIVATE_KEY` Chemin ou Chaîne de votre clé privée<br/> `TAURI_KEY_PASSWORD` Votre mot de passe de clé privée (facultatif)
 
 [200 OK]: http://tools.ietf.org/html/rfc2616#section-10.2.1
 [204 No Content]: http://tools.ietf.org/html/rfc2616#section-10.2.5
 [date and time on the internet: timestamps]: https://datatracker.ietf.org/doc/html/rfc3339#section-5.8
 [artifacts updater workflow]: https://github.com/tauri-apps/tauri/blob/5b6c7bb6ee3661f5a42917ce04a89d94f905c949/.github/workflows/artifacts-updater.yml#L44
-[sample tauri.conf.json]: https://github.com/tauri-apps/tauri/blob/5b6c7bb6ee3661f5a42917ce04a89d94f905c949/examples/updater/src-tauri/tauri.conf.json#L52
+[tauri.conf.json]: https://github.com/tauri-apps/tauri/blob/5b6c7bb6ee3661f5a42917ce04a89d94f905c949/examples/updater/src-tauri/tauri.conf.json#L52
