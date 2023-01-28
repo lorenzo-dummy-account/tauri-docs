@@ -1,101 +1,100 @@
-import Command from '@theme/Command'
+从 '@theme/Command' 导入命令
 
-# Application Debugging
+# 应用程序调试
 
-With all the moving pieces in Tauri, you may run into a problem that requires debugging. There are many locations where error details are printed, and Tauri includes some tools to make the debugging process more straightforward.
+当所有移动的片段都在 Tauri 中，你可能会遇到一个需要调试的问题。 许多地方都打印了错误详情，Tauri包含一些工具，使调试过程更加简单明了。
 
-## Rust Console
+## Rust 控制台
 
-The first place to look for errors is in the Rust Console. This is in the terminal where you ran, e.g., `tauri dev`. You can use the following code to print something to that console from within a Rust file:
+查找错误的第一个地方是Rust Console。 这是在您所属的终端，例如 `tauridev`。 您可以使用以下代码在Rust 文件内打印到该控制台的东西：
 
 ```rust
 println!("Message from Rust: {}", msg);
 ```
 
-Sometimes you may have an error in your Rust code, and the Rust compiler can give you lots of information. If, for example, `tauri dev` crashes, you can rerun it like this on Linux and macOS:
+有时，您的Rust 代码可能有错误，Rust 编译器可以给您提供大量信息。 例如，如果 `tauri dev` 崩溃，您可以在 Linux 和 macOS 上重启它：
 
 ```shell
 RUST_BACKTRACE=1 tauri dev
 ```
 
-or like this on Windows:
+或类似于Windows：
 
 ```shell
-set RUST_BACKTRACE=1
-tauri dev
+设置RUST_BACKTRACE=1
+taui dev
 ```
 
-This command gives you a granular stack trace. Generally speaking, the Rust compiler helps you by giving you detailed information about the issue, such as:
+此命令给您一个颗粒堆栈跟踪。 一般来说，Rust 编译器通过 为您提供有关问题的详细信息，例如：
 
 ```
-error[E0425]: cannot find value `sun` in this scope
-  --> src/main.rs:11:5
+错误[E0425]: 在这个范围内找不到`sun` 的值
+  --> src/main. s:11:5
    |
-11 |     sun += i.to_string().parse::<u64>().unwrap();
-   |     ^^^ help: a local variable with a similar name exists: `sum`
+11 | sun + = i.to_string()parse:<u64>(). nwrap();
+   | ^^帮助：一个具有类似名称的本地变量存在：`sum`
 
-error: aborting due to previous error
+错误：由于先前的错误而中止
 
-For more information about this error, try `rustc --explain E0425`.
+关于此错误的更多信息 尝试 `rustc --explay E0425` 。
 ```
 
 ## WebView Console
 
-Right-click in the WebView, and choose `Inspect Element`. This opens up a web-inspector similar to the Chrome or Firefox dev tools you are used to. You can also use the `Ctrl + Shift + i` shortcut on Linux and Windows, and `Command + Option + i` on macOS to open the inspector.
+在 Web View中右键点击，然后选择 `查看元素`。 这将打开一个类似于您使用的 Chrome 或 Firefox dev 工具的网络检查器。 您也可以在 Linux 和 Windows 上使用 `Ctrl + Shift + i` 快捷方式 and `Command + 选项 + i` 在 macOS 上打开检查器。
 
-The inspector is platform-specific, rendering the webkit2gtk WebInspector on Linux, Safari's inspector on macOS and the Microsoft Edge DevTools on Windows.
+检查员是特定平台，可以在 Linux 上渲染webkit2gtk WebInspector。Safari在 macOS 上的检查员和 Microsoft Edge DevTools 在 Windows上提供Webkit2gtk WebInspector。
 
-### Opening Devtools Programmatically
+### 以程序方式打开 Devtools
 
-You can control the inspector window visibility by using the [`Window::open_devtools`][] and [`Window::close_devtools`][] functions:
+您可以通过使用 [`Window::open_devtools`][] 和 [`Window::close_devtools`][] 函数来控制查看器窗口可见性：
 
 ```rust
-use tauri::Manager;
+使用 tauri::Manager;
 tauri::Builder::default()
-  .setup(|app| {
-    #[cfg(debug_assertions)] // only include this code on debug builds
-    {
-      let window = app.get_window("main").unwrap();
+  . etup(|app|
+    #[cfg(debug_assertions)] // 仅包括此调试版本的代码
+    *
+      let window = appp. et_window ("main")unwrawind();
       window.open_devtools();
-      window.close_devtools();
+      window lose_devtools();
     }
     Ok(())
-  });
+});
 ```
 
-### Using the Inspector in Production
+### 在生产中使用检查器
 
-By default, the inspector is only enabled in development and debug builds unless you enable it with a Cargo feature.
+默认情况下，检查员只能在开发和调试构建中启用，除非您启用了货运功能。
 
-#### Create a Debug Build
+#### 创建调试版本
 
-To create a debug build, run the `tauri build --debug` command.
+要创建调试构建，请运行 `tauribution --debug` 命令。
 
 <Command name="build --debug" />
 
-Like the normal build and dev processes, building takes some time the first time you run this command but is significantly faster on subsequent runs. The final bundled app has the development console enabled and is placed in `src-tauri/target/debug/bundle`.
+像正常的构建和开发进程一样，构建需要一些时间才能首次运行此命令，但其后运行的速度要快得多。 最后捆绑的应用已启用开发控制台，放置在 `src-tauri/target/debug/bundle` 中。
 
-You can also run a built app from the terminal, giving you the Rust compiler notes (in case of errors) or your `println` messages. Browse to the file `src-tauri/target/(release|debug)/[app name]` and run it in directly in your console or double-click the executable itself in the filesystem (note: the console closes on errors with this method).
+您也可以从终端运行一个内置的应用程序， 给你的Rust 编译器备注(如果有错误的话)或你的 `打印n` 消息。 浏览到文件 `src-tauri/target/(release|debug)/[app name]` 并直接在您的控制台中运行它，或者双击文件系统中的可执行程序本身(注意：控制台以此方法关闭错误)。
 
-#### Enable Devtools Feature
+#### 启用开发工具功能
 
-:::warning
+:::警告
 
-The devtools API is private on macOS. Using private APIs on macOS prevents your application from being accepted to the App Store.
+devtools API 是私有的 macOS。 在 macOS 上使用私有API阻止您的应用程序被接受到 App Store。
 
 :::
 
-To enable the devtools in production builds, you must enable the `devtools` Cargo feature in the `src-tauri/Cargo.toml` file:
+若要在生产构建中启用devtool，您必须在 `src-tauri/Cargo.toml` 文件中启用 `devtools` 货物功能：
 
 ```toml
 [dependencies]
-tauri = { version = "...", features = ["...", "devtools"] }
+tauri = Sponge version = "...", features = ["...", "devtools"] }
 ```
 
-## Debugging the Core Process
+## 调试核心进程
 
-The Core process is powered by Rust so you can use GDB or LLDB to debug it. You can follow the [Debugging in VS Code][] guide to learn how to use the LLDB VS Code Extension to debug the Core Process of Tauri applications.
+核心进程由Rust 提供动力，因此您可以使用 GDB 或 LLDB 调试它。 您可以在 VS 代码</a> 中关注 调试来学习如何使用 LLDB VS 扩展来调试Tauri 应用程序的核心进程。</p>
 
-[Debugging in VS Code]: ./vs-code.md
 [`Window::open_devtools`]: https://docs.rs/tauri/1/tauri/window/struct.Window.html#method.open_devtools
 [`Window::close_devtools`]: https://docs.rs/tauri/1/tauri/window/struct.Window.html#method.close_devtools
