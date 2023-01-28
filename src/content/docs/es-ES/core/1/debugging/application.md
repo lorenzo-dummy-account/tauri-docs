@@ -1,101 +1,101 @@
-import Command from '@theme/Command'
+importar comando de '@theme/Command'
 
-# Application Debugging
+# Depuración de la aplicación
 
-With all the moving pieces in Tauri, you may run into a problem that requires debugging. There are many locations where error details are printed, and Tauri includes some tools to make the debugging process more straightforward.
+Con todas las piezas en movimiento en Tauri, puede encontrarse con un problema que requiere depuración. Hay muchas ubicaciones donde se imprimen los detalles de errores, y Tauri incluye algunas herramientas para hacer el proceso de depuración más sencillo.
 
-## Rust Console
+## Consola de Rust
 
-The first place to look for errors is in the Rust Console. This is in the terminal where you ran, e.g., `tauri dev`. You can use the following code to print something to that console from within a Rust file:
+El primer lugar para buscar errores es en la Consola de Polvo. Esto es en el terminal donde corrió, por ejemplo, `dev tauri`. Puedes usar el siguiente código para imprimir algo en esa consola desde dentro de un archivo de Rust:
 
 ```rust
-println!("Message from Rust: {}", msg);
+println!("Mensaje de Rust: {}", msg);
 ```
 
-Sometimes you may have an error in your Rust code, and the Rust compiler can give you lots of information. If, for example, `tauri dev` crashes, you can rerun it like this on Linux and macOS:
+A veces puedes tener un error en tu código de Rust y el compilador de Rust puede darte mucha información. Si, por ejemplo, `tauri dev` falla, puede volver a ejecutarlo en Linux y macOS:
 
 ```shell
-RUST_BACKTRACE=1 tauri dev
+RUST_BACKTRACE=1 dev tauri
 ```
 
-or like this on Windows:
+o le gusta esto en Windows:
 
 ```shell
-set RUST_BACKTRACE=1
-tauri dev
+establecer RUST_BACKTRACE=1
+dev tauri
 ```
 
-This command gives you a granular stack trace. Generally speaking, the Rust compiler helps you by giving you detailed information about the issue, such as:
+Este comando te da un rastro de pila granular. En general, el compilador de Rust le ayuda dándole información detallada sobre el problema, como:
 
 ```
-error[E0425]: cannot find value `sun` in this scope
-  --> src/main.rs:11:5
+error[E0425]: no se puede encontrar el valor `sol` en este ámbito
+  --> src/main. s:11:5
    |
-11 |     sun += i.to_string().parse::<u64>().unwrap();
-   |     ^^^ help: a local variable with a similar name exists: `sum`
+11 | sun += i.to_string().parse::<u64>(). nwrap();
+   | ^^^ help: existe una variable local con un nombre similar: `suma`
 
-error: aborting due to previous error
+error: abortando debido al error anterior
 
-For more information about this error, try `rustc --explain E0425`.
+Para más información sobre este error, intente `rustc --explain E0425`.
 ```
 
 ## WebView Console
 
-Right-click in the WebView, and choose `Inspect Element`. This opens up a web-inspector similar to the Chrome or Firefox dev tools you are used to. You can also use the `Ctrl + Shift + i` shortcut on Linux and Windows, and `Command + Option + i` on macOS to open the inspector.
+Haga clic con el botón derecho del ratón en la vista web y elija `Elemento de inspección`. Esto abre un inspector web similar a las herramientas de desarrollo de Chrome o Firefox a las que estás acostumbrado. También puede utilizar el acceso directo `Ctrl + Shift + i` en Linux y Windows, y `Comando + Opción + i` en macOS para abrir el inspector.
 
-The inspector is platform-specific, rendering the webkit2gtk WebInspector on Linux, Safari's inspector on macOS and the Microsoft Edge DevTools on Windows.
+El inspector es específico de la plataforma, renderizando el webkit2gtk WebInspector en Linux, el inspector de Safari en macOS y las Microsoft Edge DevTools en Windows.
 
-### Opening Devtools Programmatically
+### Abriendo Devtools programáticamente
 
 You can control the inspector window visibility by using the [`Window::open_devtools`][] and [`Window::close_devtools`][] functions:
 
 ```rust
 use tauri::Manager;
 tauri::Builder::default()
-  .setup(|app| {
-    #[cfg(debug_assertions)] // only include this code on debug builds
+  . etup(|app| {
+    #[cfg(debug_assertions)] // sólo incluye este código en compilaciones de depuración
     {
-      let window = app.get_window("main").unwrap();
+      let window = app. et_window("main").unwrap();
       window.open_devtools();
-      window.close_devtools();
+      window. lose_devtools();
     }
     Ok(())
-  });
+});
 ```
 
-### Using the Inspector in Production
+### Utilizando el Inspector en la producción
 
-By default, the inspector is only enabled in development and debug builds unless you enable it with a Cargo feature.
+De forma predeterminada, el inspector sólo está habilitado en construcciones de desarrollo y depuración a menos que lo habilite con una característica de Carga.
 
-#### Create a Debug Build
+#### Crear una compilación de depuración
 
-To create a debug build, run the `tauri build --debug` command.
+Para crear una compilación de depuración, ejecute el comando `tauri build --debug`.
 
 <Command name="build --debug" />
 
-Like the normal build and dev processes, building takes some time the first time you run this command but is significantly faster on subsequent runs. The final bundled app has the development console enabled and is placed in `src-tauri/target/debug/bundle`.
+Al igual que los procesos normales de compilación y dev, la construcción toma algún tiempo la primera vez que ejecuta este comando, pero es significativamente más rápida en las ejecuciones posteriores. La aplicación empaquetada final tiene la consola de desarrollo habilitada y se coloca en `src-tauri/target/debug/bundle`.
 
-You can also run a built app from the terminal, giving you the Rust compiler notes (in case of errors) or your `println` messages. Browse to the file `src-tauri/target/(release|debug)/[app name]` and run it in directly in your console or double-click the executable itself in the filesystem (note: the console closes on errors with this method).
+También puede ejecutar una aplicación construida desde el terminal, dándote las notas del compilador de Rust (en caso de errores) o los mensajes de tu `println`. Ir al archivo `src-tauri/target/(release|debug)/[nombre de la aplicación]` y ejecutarlo directamente en tu consola o hacer doble clic en el ejecutable en el sistema de archivos (Nota: la consola se cierra en errores con este método).
 
-#### Enable Devtools Feature
+#### Activar Característica Devtools
 
-:::warning
+:::advertencia
 
-The devtools API is private on macOS. Using private APIs on macOS prevents your application from being accepted to the App Store.
+La API de devtools es privada en macOS. El uso de APIs privadas en macOS impide que tu aplicación sea aceptada en la App Store.
 
 :::
 
-To enable the devtools in production builds, you must enable the `devtools` Cargo feature in the `src-tauri/Cargo.toml` file:
+Para habilitar las herramientas de desarrollo en compilaciones de producción, debe habilitar la función `devtools` Cargo en el archivo `src-tauri/Cargo.toml`:
 
 ```toml
 [dependencies]
 tauri = { version = "...", features = ["...", "devtools"] }
 ```
 
-## Debugging the Core Process
+## Depurando el proceso del núcleo
 
-The Core process is powered by Rust so you can use GDB or LLDB to debug it. You can follow the [Debugging in VS Code][] guide to learn how to use the LLDB VS Code Extension to debug the Core Process of Tauri applications.
+El proceso del núcleo está alimentado por Rust para que puedas usar GDB o LLDB para depurarlo. Puede seguir la guía [Depuración en código VS][] para aprender cómo utilizar la extensión de código LLDB VS para depurar el proceso central de las aplicaciones Tauri.
 
-[Debugging in VS Code]: ./vs-code.md
+[Depuración en código VS]: ./vs-code.md
 [`Window::open_devtools`]: https://docs.rs/tauri/1/tauri/window/struct.Window.html#method.open_devtools
 [`Window::close_devtools`]: https://docs.rs/tauri/1/tauri/window/struct.Window.html#method.close_devtools
