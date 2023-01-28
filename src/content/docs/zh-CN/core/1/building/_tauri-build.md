@@ -1,13 +1,13 @@
-import Command from '@theme/Command'
+从 '@theme/Command' 导入命令
 
-# Temp heading to fix render
+# 修复渲染的临时标题
 
 <!-- The above heading is here because fragments aren't really supported in the context of Astro Content Collections -->
 
-To build and bundle your Tauri application into a single executable simply run the following command:
+要构建和捆绑您的 Tauri应用程序到一个单一可执行程序，只需运行以下命令：
 
 <Command name="build" />
 
-It will build your frontend (if configured, see [`beforeBuildCommand`][beforebuildcommand]), compile the Rust binary, collect all external binaries and resources and finally produce neat platform-specific bundles and installers.
+它将构建您的前端(如果配置了，请参阅 [`pre-Building Command`][beforebuildcommand]), 编译Rust binary, 收集所有外部二进制文件和资源，最终生成针对平台的套装和安装器。
 
 [beforebuildcommand]: ../../api/config.md#buildconfig.beforebuildcommand
