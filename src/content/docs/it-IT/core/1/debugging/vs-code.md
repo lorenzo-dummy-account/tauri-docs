@@ -1,21 +1,21 @@
-# Debugging in VS Code
+# Debug nel codice VS
 
-This guide describes how to setup debugging in VS Code for the [Core Process in Tauri applications][].
+Questa guida descrive come configurare il debug in codice VS per il processo [Core in applicazioni Tauri][].
 
-## Setup
+## Configurazione
 
-Install the [`vscode-lldb`][] extension.
+Installa l'estensione [`vscode-lldb`][].
 
-## Configure launch.json
+## Configura launch.json
 
-Create a `.vscode/launch.json` file and paste the below JSON contents into it:
+Crea un file `.vscode/launch.json` e incolla il contenuto JSON sotto in esso:
 
 ```json title=".vscode/launch.json"
 {
   // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
+  // Hover per visualizzare le descrizioni degli attributi esistenti.
+  // Per ulteriori informazioni, visita: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2. ",
   "configurations": [
     {
       "type": "lldb",
@@ -24,52 +24,52 @@ Create a `.vscode/launch.json` file and paste the below JSON contents into it:
       "cargo": {
         "args": [
           "build",
-          "--manifest-path=./src-tauri/Cargo.toml",
+          "--manifest-path=. src-tauri/Cargo. oml",
           "--no-default-features"
         ]
       },
-      // task for the `beforeDevCommand` if used, must be configured in `.vscode/tasks.json`
+      // task per il `beforeDevCommand` se usato, deve essere configurato in `. esplorazione/compiti. son`
       "preLaunchTask": "ui:dev"
     },
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Tauri Production Debug",
+      "name": "Debug, Produzione Tauri",
       "cargo": {
-        "args": ["build", "--release", "--manifest-path=./src-tauri/Cargo.toml"]
+        "args": ["build", "--release", "--manifest-path=. src-tauri/Cargo. oml"]
       },
-      // task for the `beforeBuildCommand` if used, must be configured in `.vscode/tasks.json`
+      // attività per il `beforeBuildCommand` se usato, deve essere configurato in `. scode/tasks.json`
       "preLaunchTask": "ui:build"
     }
   ]
 }
 ```
 
-This uses `cargo` directly to build the Rust application and load it in both development and production modes.
+Questo utilizza `cargo` direttamente per costruire l'applicazione Rust e caricarlo sia in modalità di sviluppo che di produzione.
 
-Note that it does not use the Tauri CLI, so exclusive CLI features are not executed. The `beforeDevCommand` and `beforeBuildCommand` scripts must be executed beforehand or configured as a task in the `preLaunchTask` field. Below is an example `.vscode/tasks.json` file that has two tasks, one for a `beforeDevCommand` that spawns a development server and one for `beforeBuildCommand`:
+Si noti che non utilizza il Tauri CLI, quindi le esclusive funzioni CLI non vengono eseguite. Gli script `beforeDevCommand` e `beforeBuildCommand` devono essere eseguiti in anticipo o configurati come attività nel campo `preLaunchTask`. Di seguito un esempio `.vscode/tasks. file son` che ha due attività, uno per un `beforeDevCommand` che genera un server di sviluppo e uno per `beforeBuildCommand`:
 
 ```json title=".vscode/tasks.json"
 {
-  // See https://go.microsoft.com/fwlink/?LinkId=733558
-  // for the documentation about the tasks.json format
-  "version": "2.0.0",
+  // Vedi https://go.microsoft.com/fwlink/?LinkId=733558
+  // per la documentazione sul formato tasks.json
+  "version": "2.0. ",
   "tasks": [
     {
       "label": "ui:dev",
-      "type": "shell",
-      // `dev` keeps running in the background
-      // ideally you should also configure a `problemMatcher`
-      // see https://code.visualstudio.com/docs/editor/tasks#_can-a-background-task-be-used-as-a-prelaunchtask-in-launchjson
+      "tipo": "guscio",
+      // `dev` continua a funzionare in background
+      // idealmente dovresti anche configurare un `problemMatcher`
+      // vedi https://code. isualstudio. om/docs/editor/tasks#_can-a-background-task-be-used-as-a-prelaunchtask-in-launchjson
       "isBackground": true,
-      // change this to your `beforeDevCommand`:
+      // cambialo nel tuo `beforeDevCommand`:
       "command": "yarn",
       "args": ["dev"]
     },
     {
       "label": "ui:build",
       "type": "shell",
-      // change this to your `beforeBuildCommand`:
+      // cambialo nel tuo `beforeBuildCommand`:
       "command": "yarn",
       "args": ["build"]
     }
@@ -77,8 +77,8 @@ Note that it does not use the Tauri CLI, so exclusive CLI features are not execu
 }
 ```
 
-Now you can set breakpoints in `src-tauri/src/main.rs` or any other Rust file and start debugging by pressing `F5`.
+Ora puoi impostare breakpoint in `src-tauri/src/main.rs` o in qualsiasi altro file Rust e iniziare a debug premendo `F5`.
 
 [`vscode-lldb`]: https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb
 
-[Core Process in Tauri applications]: ../../references/architecture/process-model.md#the-core-process
+[Core in applicazioni Tauri]: ../../references/architecture/process-model.md#the-core-process
