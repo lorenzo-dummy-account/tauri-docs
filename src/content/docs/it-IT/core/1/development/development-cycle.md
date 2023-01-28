@@ -2,29 +2,29 @@
 sidebar_position: 2
 ---
 
-import Command from '@theme/Command'
+importa comando da '@theme/Command'
 
-# Development Cycle
+# Ciclo Di Sviluppo
 
-### 1. Start Your Dev server
+### 1. Avvia il tuo server Dev
 
-Now that you have everything set up, you should start your application development server provided by your UI framework or bundler (assuming you're using one, of course).
+Ora che avete tutto impostato, si dovrebbe avviare il server di sviluppo delle applicazioni fornito dal tuo framework o bundler UI (supponendo che ne stai utilizzando uno, naturalmente).
 
 :::note
 
-Every framework has its own development tooling. It is outside of the scope of this document to cover them all or stay up to date.
+Ogni quadro ha i suoi strumenti di sviluppo. Non rientra nel campo di applicazione del presente documento coprirli tutti o rimanere aggiornati.
 :::
 
-### 2. Start Tauri Development Window
+### 2. Avvia Finestra Di Sviluppo Tauri
 
 <Command name="dev" />
 
-The first time you run this command, the Rust package manager takes several minutes to download and build all the required packages. Since they are cached, subsequent builds are much faster, as only your code needs rebuilding.
+La prima volta che si esegue questo comando, il gestore di pacchetti Rust richiede diversi minuti per scaricare e costruire tutti i pacchetti richiesti. Dal momento che sono memorizzati nella cache, le build successive sono molto più veloci, poiché solo il tuo codice deve essere ricostruito.
 
-Once Rust has finished building, the webview opens, displaying your web app. You can make changes to your web app, and if your tooling enables it, the webview should update automatically, just like a browser. When you make changes to your Rust files, they are rebuilt automatically, and your app automatically restarts.
+Una volta che Rust ha finito di costruire, si apre la vista web, mostrando la tua app web. È possibile apportare modifiche alla tua app web, e se il vostro strumento lo consente, la vista web dovrebbe aggiornarsi automaticamente, proprio come un browser. Quando si apportano modifiche ai file Rust, vengono ricostruiti automaticamente, e la tua app si riavvia automaticamente.
 
-:::info About Cargo.toml and Source Control
+:::info Su Cargo.toml e Controllo Sorgente
 
-In your project repository, you SHOULD commit the "src-tauri/Cargo.lock" along with the "src-tauri/Cargo.toml" to git because Cargo uses the lockfile to provide deterministic builds. As a result, it is recommended that all applications check in their Cargo.lock. You SHOULD NOT commit the "src-tauri/target" folder or any of its contents.
+Nel tuo repository del progetto, SHOULD commit "src-tauri/Cargo.lock" insieme al "src-tauri/Cargo.toml" per git perché Cargo utilizza il file di blocco per fornire build deterministiche. Di conseguenza, si raccomanda di controllare tutte le applicazioni nel loro Cargo.lock. NON DEVE commettere la cartella "src-tauri/target" o uno qualsiasi dei suoi contenuti.
 
 :::
