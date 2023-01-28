@@ -1,22 +1,22 @@
-# Window Customization
+# Personalización de Ventana
 
-Tauri provides lots of options for customizing the look and feel of your app's window. You can create custom titlebars, have transparent windows, enforce size constraints, and more.
+Tauri proporciona muchas opciones para personalizar el aspecto de la ventana de tu aplicación. Puede crear barras de título personalizadas, tener ventanas transparentes, imponer restricciones de tamaño y más.
 
-## Configuration
+## Configuración
 
-There are three ways to change the window configuration:
+Hay tres maneras de cambiar la configuración de la ventana:
 
-- [Through tauri.conf.json](../../api/config.md#tauri.windows)
-- [Through the JS API](../../api/js/window.md#webviewwindow)
-- [Through the Window in Rust](https://docs.rs/tauri/1/tauri/window/struct.Window.html)
+- [A través de tauri.conf.json](../../api/config.md#tauri.windows)
+- [A través de la API JS](../../api/js/window.md#webviewwindow)
+- [A través de la Ventana en Rust](https://docs.rs/tauri/1/tauri/window/struct.Window.html)
 
-## Creating a Custom Titlebar
+## Crear una barra de título personalizada
 
-A common use of these window features is creating a custom titlebar. This short tutorial will guide you through that process.
+Un uso común de estas características de ventana es la creación de una barra de título personalizada. Este breve tutorial le guiará a través de ese proceso.
 
 ### CSS
 
-You'll need to add some CSS for the titlebar to keep it at the top of the screen and style the buttons:
+Necesitarás añadir algo de CSS para la barra de título para mantenerlo en la parte superior de la pantalla y diseñar los botones:
 
 ```css
 .titlebar {
@@ -24,27 +24,27 @@ You'll need to add some CSS for the titlebar to keep it at the top of the screen
   background: #329ea3;
   user-select: none;
   display: flex;
-  justify-content: flex-end;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  justificar-contenido: flex-end;
+  posición: fijado;
+  arriba: 0;
+  izquierda: 0;
+  derecha: 0;
 }
-.titlebar-button {
+. itlebar-button {
   display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 30px;
-  height: 30px;
+  justificar-contenido: centro;
+  elementos alineados: centro;
+  ancho: 30px;
+  altura: 30px;
 }
-.titlebar-button:hover {
-  background: #5bbec3;
+. itlebar-button:hover {
+  fondo: #5bbec3;
 }
 ```
 
 ### HTML
 
-Now, you'll need to add the HTML for the titlebar. Put this at the top of your `<body>` tag:
+Ahora, necesitarás añadir el HTML para la barra de título. Pon esto en la parte superior de tu etiqueta `<body>`:
 
 ```html
 <div data-tauri-drag-region class="titlebar">
@@ -66,21 +66,21 @@ Now, you'll need to add the HTML for the titlebar. Put this at the top of your `
 </div>
 ```
 
-Note that you may need to move the rest of your content down so that the titlebar doesn't cover it.
+Ten en cuenta que tal vez necesites mover el resto de tu contenido hacia abajo para que la barra de título no lo cubra.
 
 ### JS
 
-Finally, you'll need to make the buttons work:
+Por último, necesitarás hacer que los botones funcionen:
 
 ```js
-import { appWindow } from '@tauri-apps/api/window'
-document
+importar { appWindow } desde '@tauri-apps/api/window'
+documento
   .getElementById('titlebar-minimize')
-  .addEventListener('click', () => appWindow.minimize())
-document
-  .getElementById('titlebar-maximize')
+  . ddEventListener('click', () => appWindow.minimize())
+documento
+  . etElementById('titlebar-maximize')
   .addEventListener('click', () => appWindow.toggleMaximize())
-document
+documento
   .getElementById('titlebar-close')
   .addEventListener('click', () => appWindow.close())
 ```
